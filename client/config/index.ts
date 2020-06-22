@@ -1,3 +1,5 @@
+import path from 'path'
+
 const config = {
   projectName: 'classmate-map',
   date: '2020-6-21',
@@ -34,6 +36,10 @@ const config = {
     '@tarojs/plugin-terser'
   ],
   defineConstants: {
+  },
+  alias: {
+    '@/components': path.resolve(__dirname, '..', 'src/components'),
+    '@/utils': path.resolve(__dirname, '..', 'src/utils')
   },
   mini: {
     postcss: {

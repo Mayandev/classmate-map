@@ -1,0 +1,11 @@
+@import "../../styles/mixin.scss";
+
+.avatar_container {
+  @include circle(80px);
+  @include shadow();
+  border: 2px solid #ffffff;
+  box-sizing: content-box;
+  .avatar_image {
+    @include circle(80px);
+  }
+}
