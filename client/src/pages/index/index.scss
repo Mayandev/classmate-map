@@ -3,17 +3,20 @@
 .index {
   color: $primary-color;
 
-  .page {
-    padding: 54px;
+  .user_info {
+    @include flex(row, start, center);
+    position: fixed;
+    left: 54px;
+    z-index: 9999;
 
-    .user_info {
-      @include flex(row, start, center);
-
-      .nickname {
-        @include font('normal');
-        margin-left: 20px;
-      }
+    .nickname {
+      @include font('normal', bold);
+      margin-left: 20px;
     }
+  }
+
+  .page {
+    padding: 0px 54px 54px 54px;
 
     .action_container {
       @include flex(column, center, center);
@@ -25,6 +28,7 @@
         border-radius: $radius;
         padding: 38px;
         margin-top: 44px;
+        box-sizing: border-box;
 
         .action_txt {
           height: 100%;
@@ -71,54 +75,6 @@
 
           .action {
             color: $primary-color;
-          }
-        }
-      }
-
-      .join_item {
-        @include wh(642px, 468px);
-        @include shadow();
-        border-radius: $radius;
-        position: relative;
-        margin-top: 60px;
-
-        .image_container {
-          @include wh(642px, 302px);
-          border-radius: $radius $radius 0 0;
-
-          .image {
-            @extend .image_container;
-          }
-
-          .mask {
-            @extend .image_container;
-            background: rgba(0, 0, 0, 0.19);
-            position: absolute;
-            left: 0;
-            top: 0;
-          }
-        }
-
-        .join_txt {
-          padding: 32px 38px;
-          height: 166px;
-          @include flex(column, space-between);
-
-          .member {
-            @include font('light', normal, 28px);
-          }
-
-          .title {
-            width: 100%;
-            @include flex(row, space-between, center);
-
-            .classname {
-              width: 450px;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-              @include font('normal', bold);
-            }
           }
         }
       }

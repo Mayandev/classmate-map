@@ -3,8 +3,9 @@ import { View, Text, Image } from '@tarojs/components'
 import NavBar from 'taro-navigationbar'
 
 import Avatar from '@/components/Avatar'
-import Tag from '@/components/Tag'
-import AuthModal from '@/components/AuthModal'
+import ClassItem from '@/components/ClassItem'
+import { SEARCH_CLASS } from '@/constants/page'
+// import AuthModal from '@/components/AuthModal'
 
 import './index.scss'
 import defaulAvatar from '../../assets/default_avatar.png'
@@ -14,9 +15,25 @@ import empty from '../../assets/illustration_empty.png'
 
 export default class Index extends Component {
 
+  state = {
+    navHeight: 0,
+    statusBarHeight: 0
+  }
+
   componentWillMount() { }
 
-  componentDidMount() { }
+  componentDidMount() {
+    const systemInfo = Taro.getSystemInfoSync()
+    const { statusBarHeight } = systemInfo
+    const isiOS = systemInfo.system.indexOf('iOS') > -1 
+    let navHeight = 0
+    if (isiOS) {
+      navHeight = 44
+    } else {
+      navHeight = 48
+    }
+    this.setState({navHeight, statusBarHeight})
+  }
 
   componentWillUnmount() { }
 
@@ -24,17 +41,24 @@ export default class Index extends Component {
 
   componentDidHide() { }
 
+  navigateTo(url: string) {
+    Taro.navigateTo({url});
+  }
+
   render() {
+    const { navHeight, statusBarHeight } = this.state;
     return (
       <View className='index'>
-        <NavBar title='导航栏标题' />
+        <NavBar />
+        <View className='user_info' style={{height: `${navHeight}px`, top: `${statusBarHeight}px`}}>
+          <Avatar radius={64} image={defaulAvatar}></Avatar>
+          <Text className='nickname'>未授权</Text>
+        </View>
         <View className="page">
-          <View className='user_info'>
-            <Avatar image={defaulAvatar}></Avatar>
-            <Text className='nickname'>未授权</Text>
-          </View>
           <View className='action_container'>
-            <View className='action_item'>
+            <View 
+              onClick={() => {this.navigateTo(SEARCH_CLASS)}} 
+              className='action_item'>
               <View className='action_txt'>
                 <View className='action_title'>
                   加入班级
@@ -60,7 +84,7 @@ export default class Index extends Component {
           <View className='join_container'>
             <Text className='title'>我加入的</Text>
             <View className='empty_container'>
-              <Image className='image' src={empty}/>
+              <Image className='image' src={empty} />
               <View className='empty_hint'>
                 <Text>您还没加入任何班级</Text>
                 <View>
@@ -71,32 +95,11 @@ export default class Index extends Component {
                 </View>
               </View>
             </View>
-            <View className='join_item'>
-              <View className="image_container">
-                <View className='mask'></View>
-                <Image className='image' mode="aspectFill" src={'https://mayandev.oss-cn-hangzhou.aliyuncs.com/blog/join_item.jpg'}/>
-              </View>
-              <View className='join_txt'>
-                <View className='member'>已加入：16/37人</View>
-                <View className='title'>
-                  <View className='classname'>麻豆幼稚园小（2）班</View>
-                  <Tag label={'已加入'}/>
-                </View>
-              </View>
-            </View>
-            <View className='join_item'>
-              <View className="image_container">
-                <View className='mask'></View>
-                <Image className='image' mode="aspectFill" src={'https://mayandev.oss-cn-hangzhou.aliyuncs.com/blog/join_item.jpg'}/>
-              </View>
-              <View className='join_txt'>
-                <View className='member'>已加入：16/37人</View>
-                <View className='title'>
-                  <View className='classname'>麻豆幼稚园小（2）班</View>
-                  <Tag label={'已加入'}/>
-                </View>
-              </View>
-            </View>
+            <ClassItem 
+              classname={'麻豆幼稚园小（2）班'} 
+              totalNum={30}
+              joinNum={17}
+              coverImage={'https://mayandev.oss-cn-hangzhou.aliyuncs.com/blog/join_item.jpg'}/>
           </View>
         </View>
       </View>

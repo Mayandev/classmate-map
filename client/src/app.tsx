@@ -1,4 +1,5 @@
 import Taro, { Component, Config } from '@tarojs/taro'
+import { INDEX, SEARCH_CLASS } from '@/constants/page'
 import Index from './pages/index'
 
 import './app.scss'
@@ -20,7 +21,8 @@ class App extends Component {
    */
   config: Config = {
     pages: [
-      'pages/index/index'
+      'pages/index/index',
+      'pages/search-class/search-class'
     ],
     window: {
       backgroundTextStyle: 'light',

@@ -39,7 +39,8 @@ const config = {
   },
   alias: {
     '@/components': path.resolve(__dirname, '..', 'src/components'),
-    '@/utils': path.resolve(__dirname, '..', 'src/utils')
+    '@/utils': path.resolve(__dirname, '..', 'src/utils'),
+    '@/constants': path.resolve(__dirname, '..', 'src/constants')
   },
   mini: {
     postcss: {
