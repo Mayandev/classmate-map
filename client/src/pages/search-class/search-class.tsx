@@ -24,6 +24,7 @@ function SearchClass() {
             totalNum={30}
             joinNum={17}
             coverImage={'https://mayandev.oss-cn-hangzhou.aliyuncs.com/blog/join_item.jpg'}
+            isJoin={false}
           />
         </View>
 

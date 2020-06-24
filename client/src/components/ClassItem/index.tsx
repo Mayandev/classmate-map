@@ -8,10 +8,11 @@ interface IClassItemProps {
   joinNum: number       // 已加入
   totalNum: number      // 总人数
   coverImage: string    // 封面图片
+  isJoin: boolean       // 是否已加入
 }
 
 function ClassItem(props: IClassItemProps) {
-  const {classname, joinNum, totalNum, coverImage} = props;
+  const {classname, joinNum, totalNum, coverImage, isJoin} = props;
   return (
     <View className='join_item'>
       <View className="image_container">
@@ -22,7 +23,9 @@ function ClassItem(props: IClassItemProps) {
         <View className='member'>已加入：{joinNum}/{totalNum}人</View>
         <View className='title'>
           <View className='classname'>{classname}</View>
-          <Tag label={'已加入'} />
+          {
+            isJoin ? <Tag label={'已加入'} /> : <Tag label={'未加入'} bgColor={'#ffe7ba'} labelColor={'#fa8c16'}/>
+          }
         </View>
       </View>
     </View>

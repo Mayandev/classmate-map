@@ -4,13 +4,20 @@ import './index.scss'
 import rocket from '../../assets/illustration_login.png'
 import close from '../../assets/icon_close.png'
 
-function AuthModal() {
+interface IAuthModalProps {
+  onClose: Function   // 关闭事件
+}
+
+function AuthModal(props: IAuthModalProps) {
+
+  const { onClose } = props
+
   // 防止滚动穿透
   const handleTouchMove = (e: any) => {
     e.preventDefault()
     e.stopPropagation()
   }
-  
+
   return (
     <View className='auth_modal' onTouchMove={handleTouchMove}>
       <View className='modal_container'>
@@ -20,7 +27,7 @@ function AuthModal() {
         </View>
         <Image className="rocket" src={rocket} />
         <Button className='auth_btn'>确认授权</Button>
-        <View className='modal_close'>
+        <View className='modal_close' onClick={() => {onClose()}}>
           <Image className='close_icon' src={close}></Image>
         </View>
       </View>

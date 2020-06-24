@@ -1,0 +1,63 @@
+@import "../../styles/mixin.scss";
+
+.create_page {
+  padding: 20px 0px;
+  @include flex(column, start, center);
+
+  .image {
+    @include wh(352px, 236px)
+  }
+
+  .form_container {
+    @include shadow();
+    width: 686px;
+    background: #FFFFFF;
+    border-radius: 6px;
+    padding: 0px 36px 36px 36px;
+    margin-top: 36px;
+    box-sizing: border-box;
+
+    .form_item {
+      @include wh(100%, 140px);
+      @include flex(row, start, center);
+      border-bottom: 1px solid $light-grey;
+      position: relative;
+
+      .form_label {
+        @include font('normal');
+        width: 200px;
+      }
+
+
+      .placeholder {
+        @include font('placeholader')
+      }
+
+      .select_arrow {
+        @include wh(40px, 40px);
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-20px);
+      }
+    }
+
+    .create_btn {
+      @include wh(612px, 92px);
+      @include font('white');
+      @include flex(row, center, center);
+      background: $primary-color;
+      box-shadow: 0 14px 40px 0 $second-color;
+      border-radius: 12px;
+      line-height: 92px;
+      margin-top: 60px;
+    }
+  }
+
+  .notice {
+    @include font('light');
+    margin-top: 60px;
+    width: 686px;
+  }
+
+}
