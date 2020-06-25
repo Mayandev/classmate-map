@@ -1,0 +1,67 @@
+@import "../../styles/mixin.scss";
+
+.navbar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+}
+
+.header {
+  @include wh(100%, 600px);
+  background-color: black;
+  z-index: -999;
+  position: relative;
+
+  .head-img {
+    @include wh(100%, 600px);
+  }
+
+
+  .mask {
+    @include wh(100%, 600px);
+    position: absolute;
+    background: rgba(0, 0, 0, 0.19);
+    left: 0;
+    top: 0;
+  }
+}
+
+.detail_container {
+  background: #FFFFFF;
+  margin-top: -40px;
+  border-radius: 32px 32px 0px 0px;
+  width: 100%;
+  padding: 60px 52px;
+
+  .classname {
+    @include font('heading', bold, 48px);
+  }
+
+  .info_item {
+    margin-top: 40px;
+    @include font('second');
+  }
+
+  .avatars {
+    margin-top: 20px;
+    @include flex(row, start, center);
+    flex-wrap: wrap;
+
+    .avatar_item {
+      margin: 20px 10px 0 0;
+    }
+  }
+
+
+  .action_btn {
+    @include wh(100%, 88px);
+    @include font('white');
+    @include flex(row, center, center);
+    background: $primary-color;
+    box-shadow: 0 14px 40px 0 $second-color;
+    border-radius: 12px;
+    margin-top: 40px;
+  }
+}

@@ -9,12 +9,13 @@ interface IClassItemProps {
   totalNum: number      // 总人数
   coverImage: string    // 封面图片
   isJoin: boolean       // 是否已加入
+  onClick?: Function     // 点击事件
 }
 
 function ClassItem(props: IClassItemProps) {
-  const {classname, joinNum, totalNum, coverImage, isJoin} = props;
+  const {classname, joinNum, totalNum, coverImage, isJoin, onClick} = props;
   return (
-    <View className='join_item'>
+    <View className='join_item' onClick={() => {onClick ? onClick() : null}}>
       <View className="image_container">
         <View className='mask'></View>
         <Image className='image' mode="aspectFill" src={coverImage} />

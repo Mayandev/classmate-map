@@ -4,7 +4,7 @@ import NavBar from 'taro-navigationbar'
 
 import Avatar from '@/components/Avatar'
 import ClassItem from '@/components/ClassItem'
-import { SEARCH_CLASS, CREATE_CLASS } from '@/constants/page'
+import { SEARCH_CLASS, CREATE_CLASS, CLASS_DETAIL } from '@/constants/page'
 // import AuthModal from '@/components/AuthModal'
 
 import './index.scss'
@@ -92,7 +92,8 @@ function Index () {
               </View>
             </View>
           </View>
-          <ClassItem 
+          <ClassItem
+            onClick={() => {navigateTo(CLASS_DETAIL)}}
             classname={'麻豆幼稚园小（2）班'} 
             totalNum={30}
             joinNum={17}

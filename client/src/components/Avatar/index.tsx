@@ -5,12 +5,14 @@ import './index.scss'
 interface IAvatarProps {
   image: string   // 传入头像 url
   radius: number    // 半径
+  border?: number  // 边框宽度
 }
 
 function Avatar (props: IAvatarProps) {
-  const { image, radius } = props
+  const { image, radius, border = 1} = props
   return (
-    <View className='avatar_container' style={{width: `${radius}rpx`, height: `${radius}rpx`}}>
+    <View className='avatar_container' 
+      style={{width: `${radius}rpx`, height: `${radius}rpx`, border:`${border}px solid #FFFFFF`}}>
       <Image 
         mode='aspectFill' 
         src={image} 

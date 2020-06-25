@@ -20,9 +20,11 @@ class App extends Component {
    */
   config: Config = {
     pages: [
-      'pages/create-class/create-class',
       'pages/index/index',
+      'pages/create-class/create-class',
       'pages/search-class/search-class',
+      'pages/class-detail/class-detail',
+      'pages/join-class/join-class',
     ],
     window: {
       backgroundTextStyle: 'light',

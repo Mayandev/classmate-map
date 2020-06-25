@@ -3,7 +3,6 @@
 .avatar_container {
   border-radius: 50%;
   @include shadow();
-  border: 2px solid #ffffff;
   box-sizing: content-box;
   .avatar_image {
     border-radius: 50%;

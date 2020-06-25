@@ -8,7 +8,6 @@ import './search-class.scss'
 
 function SearchClass() {
   return (
-
     <View className='search-class'>
       <View className='page_search'>
         <NavBar

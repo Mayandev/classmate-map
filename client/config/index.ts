@@ -36,6 +36,7 @@ const config = {
     '@tarojs/plugin-terser'
   ],
   defineConstants: {
+    LOCATION_APIKEY: JSON.stringify('574BZ-DHDRU-FDQVV-4H63F-XI7EO-LVBPB')
   },
   alias: {
     '@/components': path.resolve(__dirname, '..', 'src/components'),
