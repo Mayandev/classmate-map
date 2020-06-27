@@ -9,11 +9,12 @@
   padding: 0px 56px;
   .search_icon {
     @include wh(36px, 36px);
+    margin-right: 44px;
+
   }
 
   .input {
-    margin-left: 44px;
-    width: 100%;
+    width: 90%;
   }
 
   .input_hint {

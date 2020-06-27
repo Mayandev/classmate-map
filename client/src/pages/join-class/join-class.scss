@@ -13,4 +13,11 @@
 
 .form_container {
   margin-top: -180px;
+
+  .select_address {
+    width: 400px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }

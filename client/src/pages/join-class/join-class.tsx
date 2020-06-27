@@ -13,6 +13,7 @@ function JoinClass() {
   const whereOptions = ['升学', '就业']
   const [goWhereIdx, setGoWhereIdx] = useState(0)
   const [addressSelect, setAddressSelect] = useState('')
+  const [avatar, setAvatar] = useState('')
   const goWhereChange = (e) => {
     const value = Number(e.detail.value);
     setGoWhereIdx(value);
@@ -22,6 +23,19 @@ function JoinClass() {
     console.log(location);
     const { address, longitude, latitude } = location;
     setAddressSelect(address);
+  }
+  const selectAvatar = async () => {
+    try {
+      const image = await Taro.chooseImage({
+        count: 1,
+        sizeType: ['compressed'],
+        sourceType: ['album', 'camera']
+      })
+      setAvatar(image.tempFilePaths[0])
+    } catch (error) {
+      console.log(error);
+      Taro.showToast({title: '取消选择', icon: 'none'})
+    }
   }
   useEffect(() => {
     // 设置状态栏的颜色以及背景色
@@ -39,8 +53,8 @@ function JoinClass() {
         background={'#2F54EB'}
         color={'#FFFFFF'}
       />
-      <View className='form_bg'>
-        <Avatar image={avatar1} radius={148} border={4}/>
+      <View className='form_bg' onClick={selectAvatar}>
+        <Avatar image={avatar.length === 0 ? avatar1 : avatar } radius={148} border={4}/>
       </View>
       <Form className='form_container'>
         <View className='form_item'>
@@ -75,7 +89,7 @@ function JoinClass() {
           <View className='form_label'>地址</View>
           {addressSelect.length === 0 
           ? <View className='placeholder'>请选择</View>
-          : <View>{addressSelect}</View>
+          : <View className='select_address'>{addressSelect}</View>
           }
           <Image className='select_arrow' src={selectArrow}/>
         </View>
@@ -86,7 +100,7 @@ function JoinClass() {
             placeholder='请输入'
             placeholderClass='placeholder' />
         </View>
-        <Button className='create_btn'>创建班级</Button>
+        <Button className='create_btn'>加入班级</Button>
       </Form>
       <View className='notice'>* 信息只能被同一班级的同学查看</View>
     </View>
