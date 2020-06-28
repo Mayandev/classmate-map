@@ -7,6 +7,20 @@ import { NavBar } from 'taro-navigationbar'
 import './search-class.scss'
 
 function SearchClass() {
+  const bindOnSearch = async (e) => {
+    const { value } = e.detail;
+    // 调用查询函数
+    const res = await Taro.cloud.callFunction({
+      name: 'class',
+      data: {
+        $url:"search",
+        queryData:{
+          token: value
+        }
+      }
+    })
+    console.log(res);
+  }
   return (
     <View className='search-class'>
       <View className='page_search'>
@@ -14,7 +28,7 @@ function SearchClass() {
           title='搜索班级'
           back />
         <View className='search_wrap'>
-          <Search hint='输入口令加入班级' />
+          <Search hint='输入口令加入班级' onSearch={bindOnSearch} />
         </View>
         <View className='search_result'>
           <Text className='title'>为你找到</Text>

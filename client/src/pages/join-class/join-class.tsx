@@ -33,7 +33,6 @@ function JoinClass() {
       })
       setAvatar(image.tempFilePaths[0])
     } catch (error) {
-      console.log(error);
       Taro.showToast({title: '取消选择', icon: 'none'})
     }
   }
@@ -59,7 +58,7 @@ function JoinClass() {
       <Form className='form_container'>
         <View className='form_item'>
           <View className='form_label'>姓名：</View>
-          <Input
+          <Input cursor-spacing={5}
             className='form_input'
             placeholder='请输入'
             placeholderClass='placeholder' />
@@ -73,14 +72,14 @@ function JoinClass() {
         </View>
         <View className='form_item'>
           <View className='form_label'>学校：</View>
-          <Input
+          <Input cursor-spacing={5}
             className='form_input'
             placeholder='请输入'
             placeholderClass='placeholder' />
         </View>
         <View className='form_item'>
           <View className='form_label'>电话</View>
-          <Input
+          <Input cursor-spacing={5}
             className='form_input'
             placeholder='请输入'
             placeholderClass='placeholder' />
@@ -95,7 +94,7 @@ function JoinClass() {
         </View>
         <View className='form_item'>
           <View className='form_label'>口令</View>
-          <Input
+          <Input cursor-spacing={5}
             className='form_input'
             placeholder='请输入'
             placeholderClass='placeholder' />

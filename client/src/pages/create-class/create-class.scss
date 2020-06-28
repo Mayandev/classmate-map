@@ -6,7 +6,14 @@
   @include flex(column, start, center);
 
   .image {
-    @include wh(352px, 236px)
+    @include wh(352px, 236px);
+    margin-bottom: 50px;
+  }
+
+  .selected_image {
+    @include wh(80px, 80px);
+    border-radius: 12px;
+    @include shadow();
   }
 
 }

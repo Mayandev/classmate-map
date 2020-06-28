@@ -21,8 +21,13 @@
 
 
     .placeholder {
-      @include font('placeholader')
+      @include font('placeholader');
     }
+
+    .form_input {
+      @include font('normal')
+    }
+
 
     .select_arrow {
       @include wh(40px, 40px);
@@ -47,6 +52,9 @@
     border-radius: 12px;
     line-height: 92px;
     margin-top: 60px;
+  }
+  .create_btn_hover {
+    box-shadow: none;
   }
 }
 

@@ -18,6 +18,9 @@ function Index () {
   const [navHeight, setNavHeight] = useState(0)
   const [statusBarHeight, setStatusBarHeight] = useState(0)
   const [showAuthModal, setShowAuthModal] = useState(false)
+  const [avatarUrl, setAvatarUrl] = useState(defaulAvatar)
+  const [nickname, setNickname] = useState('未授权')
+  const [isAuth, setIsAuth] = useState(false)
 
   const navigateTo = (url: string) => {
     Taro.navigateTo({url});
@@ -35,6 +38,21 @@ function Index () {
     }
     setStatusBarHeight(statusBarHeight)
     setNavHeight(navHeight)
+    // 获取用户信息
+    Taro.getSetting({
+      success: res => {
+        if (res.authSetting['scope.userInfo']) {
+          setIsAuth(true)
+          // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
+          Taro.getUserInfo({
+            success: res => {
+              setAvatarUrl(res.userInfo.avatarUrl)
+              setNickname(res.userInfo.nickName)
+            }
+          })
+        }
+      }
+    })
   })
 
   return (
@@ -44,10 +62,10 @@ function Index () {
       <View 
         className='user_info' 
         style={{height: `${navHeight}px`, top: `${statusBarHeight}px`}}
-        onClick={() => {setShowAuthModal(true)}}
+        onClick={() => {isAuth ? null : setShowAuthModal(true)}}
         >
-        <Avatar radius={64} image={defaulAvatar}></Avatar>
-        <Text className='nickname'>未授权</Text>
+        <Avatar radius={64} image={avatarUrl}></Avatar>
+        <Text className='nickname'>{nickname}</Text>
       </View>
       <View className="page">
         <View className='action_container'>

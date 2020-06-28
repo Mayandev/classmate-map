@@ -146,7 +146,6 @@ function ClassMap() {
             </View>
           </View>
           <Button onClick={() => {
-            console.log('contact');
           }} className='contact_btn'>一键联系</Button>
         </View>
       </Map>

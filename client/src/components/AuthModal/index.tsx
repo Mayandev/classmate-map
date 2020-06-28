@@ -3,6 +3,7 @@ import { View, Image, Button } from "@tarojs/components"
 import './index.scss'
 import rocket from '../../assets/illustration_login.png'
 import close from '../../assets/icon_close.png'
+import { AUTH_SUCCESS } from "@/constants/toast"
 
 interface IAuthModalProps {
   onClose: Function   // 关闭事件
@@ -18,6 +19,29 @@ function AuthModal(props: IAuthModalProps) {
     e.stopPropagation()
   }
 
+  const bindGetUserInfo = (e) => {
+    // 将用户信息进行缓存
+    const data = Taro.getStorageSync('userInfo');
+    if (!data &&  e.detail.userInfo) {
+      const { userInfo } = e.detail;
+      Taro.setStorage({key: 'userInfo', data: userInfo})
+      // 并请求登录云函数，获取openid
+      Taro.cloud.callFunction({
+        name: 'login',
+        data: {userInfo},
+        success: res => {
+          if (res.result) {
+            Taro.setStorage({key: 'openid', data: res.result['openid']});
+          }
+        }
+      })
+      // 提示授权成功
+      Taro.showToast({title: AUTH_SUCCESS})
+      // 关闭弹窗
+      onClose()
+    }
+  }
+
   return (
     <View className='auth_modal' onTouchMove={handleTouchMove}>
       <View className='modal_container'>
@@ -26,14 +50,18 @@ function AuthModal(props: IAuthModalProps) {
           <View className='modal_desc'>请先授权登录进行操作</View>
         </View>
         <Image className="rocket" src={rocket} />
-        <Button className='auth_btn'>确认授权</Button>
-        <View className='modal_close' onClick={() => {onClose()}}>
+        <Button
+          hoverClass='auth_btn_hover'
+          className='auth_btn'
+          openType='getUserInfo'
+          onGetUserInfo={bindGetUserInfo}>确认授权</Button>
+        <View className='modal_close' onClick={() => { onClose() }}>
           <Image className='close_icon' src={close}></Image>
         </View>
       </View>
       <View className='modal_mask'></View>
     </View>
-  );
+  )
 }
 
 export default AuthModal
