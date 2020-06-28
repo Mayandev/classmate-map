@@ -8,5 +8,6 @@ export const EMPTY_CLASSNAME = '请输入班级名称'
 export const ILLEGAL_COUNT = '班级人数需>0且≤100'
 export const EMPTY_IMAGE = '请上传一张班级照片'
 export const LOADING = '加载中...'
-export const EXPECTION = '网络错误，请稍后重试'
+export const EXPECTION = '网络异常，请稍后重试'
+export const SEARCHING = '搜索中...'
 

@@ -1,25 +1,45 @@
-import { View, Text } from '@tarojs/components'
-import Search from '@/components/Search'
-import ClassItem from '@/components/ClassItem';
-
+import { View, Text, Image } from '@tarojs/components'
+import { useState } from '@tarojs/taro'
 import { NavBar } from 'taro-navigationbar'
 
+import Search from '@/components/Search'
+import ClassItem from '@/components/ClassItem'
+import { SEARCHING, EXPECTION } from '@/constants/toast'
+import empty from '../../assets/illustration_empty.png'
 import './search-class.scss'
 
 function SearchClass() {
+  const [classInfo, setClassInfo] = useState({})
+  const [isJoin, setIsJoin] = useState(false)
+  const [isSearching, setIsSearching] = useState(false)
   const bindOnSearch = async (e) => {
-    const { value } = e.detail;
-    // 调用查询函数
-    const res = await Taro.cloud.callFunction({
-      name: 'class',
-      data: {
-        $url:"search",
-        queryData:{
-          token: value
+    try {
+      // 清空搜索结果
+      setClassInfo({})
+      setIsSearching(false)
+      Taro.showLoading({ title: SEARCHING })
+      const { value } = e.detail;
+      // 调用查询函数
+      const { result } = await Taro.cloud.callFunction({
+        name: 'class',
+        data: {
+          $url: "search",
+          queryData: {
+            token: value
+          }
         }
+      })
+      setIsSearching(true)
+      // 如果查询结果存在
+      if (result && result['data'].length > 0) {
+        setClassInfo(result['data'][0])
+        setIsJoin(result['isJoin'])
       }
-    })
-    console.log(res);
+      Taro.hideLoading()
+    } catch (e) {
+      Taro.hideLoading()
+      Taro.showToast({ title: EXPECTION })
+    }
   }
   return (
     <View className='search-class'>
@@ -30,16 +50,29 @@ function SearchClass() {
         <View className='search_wrap'>
           <Search hint='输入口令加入班级' onSearch={bindOnSearch} />
         </View>
-        <View className='search_result'>
-          <Text className='title'>为你找到</Text>
-          <ClassItem
-            classname={'麻豆幼稚园小（2）班'}
-            totalNum={30}
-            joinNum={17}
-            coverImage={'https://mayandev.oss-cn-hangzhou.aliyuncs.com/blog/join_item.jpg'}
-            isJoin={false}
-          />
-        </View>
+        {isSearching &&
+          <View>
+            {classInfo['_id']
+              ? <View className='search_result'>
+                <Text className='title'>为你找到</Text>
+                <ClassItem
+                  classname={classInfo['className']}
+                  totalNum={classInfo['count']}
+                  joinNum={classInfo['joinUsers'].length}
+                  coverImage={classInfo['classImage']}
+                  isJoin={isJoin}
+                />
+
+              </View>
+              : <View className='empty_container'>
+                <Image className='image' src={empty} />
+                <View className='empty_hint'>
+                  <Text>未找到相关内容，请检查口令是否输入正确</Text>
+                </View>
+              </View>
+            }
+          </View>
+        }
 
       </View>
     </View>

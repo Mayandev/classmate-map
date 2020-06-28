@@ -34,8 +34,12 @@ exports.main = async (event, context) => {
 	app.router('search', async (ctx, next) => {
 		let isJoin = false;
 		const { data } = await db.collection(collection).where(queryData).get()
-		const [user] = data[0].joinUsers.filter(v => v.openId === OPENID)
-		if (user) isJoin = true
+		if (data.length) {
+			// 查询到班级
+			const [user] = data[0].joinUsers.filter(v => v.openId === OPENID)
+			// 如果用户加入，返回标志位
+			if (user) isJoin = true
+		}
 		ctx.body = { data, isJoin }
 	})
 	return app.serve();
