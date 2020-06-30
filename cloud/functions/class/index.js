@@ -32,7 +32,7 @@ exports.main = async (event, context) => {
 	})
 
 	app.router('search', async (ctx, next) => {
-		let isJoin = false;
+		let isJoin = false
 		const { data } = await db.collection(collection).where(queryData).get()
 		if (data.length) {
 			// 查询到班级
@@ -41,6 +41,10 @@ exports.main = async (event, context) => {
 			if (user) isJoin = true
 		}
 		ctx.body = { data, isJoin }
+	})
+
+	app.router('detail', async (ctx, next) => {
+
 	})
 	return app.serve();
 }

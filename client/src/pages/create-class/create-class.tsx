@@ -28,13 +28,18 @@ function CreateClass() {
         cloudPath: `class-image/${imageName}`,
         filePath: imagePath, // 文件路径
       })
+      const { creator, className, count, token } = formData;
+
       // 调用创建班级的云函数
       await Taro.cloud.callFunction({
         name: 'class',
         data: {
           $url: 'create',
           createData: {
-            ...formData,
+            creator,
+            className,
+            token,
+            count: Number(count),
             classImage: fileID,
             createTime: Date.now(),
           }

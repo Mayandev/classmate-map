@@ -12,6 +12,9 @@ function SearchClass() {
   const [classInfo, setClassInfo] = useState({})
   const [isJoin, setIsJoin] = useState(false)
   const [isSearching, setIsSearching] = useState(false)
+  const openClassDetail = (id: string) => {
+    Taro.navigateTo({url: `/pages/class-detail/class-detail?_id=${id}`})
+  }
   const bindOnSearch = async (e) => {
     try {
       // 清空搜索结果
@@ -61,8 +64,8 @@ function SearchClass() {
                   joinNum={classInfo['joinUsers'].length}
                   coverImage={classInfo['classImage']}
                   isJoin={isJoin}
+                  onClick={() => {openClassDetail(classInfo['_id'])}}
                 />
-
               </View>
               : <View className='empty_container'>
                 <Image className='image' src={empty} />
