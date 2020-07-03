@@ -21,4 +21,7 @@ export const WRONG_TOKEN = '口令错误'
 export const CANCEL_SELECT = '取消选择'
 export const JOIN_SUCCESS ='加入成功'
 
+export const CREATING = '创建中...'
+
+export const SHARE_TITLE = '加入班级，查看同学分布地图。同学们，多联系。'
 

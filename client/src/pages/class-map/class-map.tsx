@@ -8,7 +8,7 @@ import avatar1 from '../../assets/icon_avatar1.png'
 import iconCompass from '../../assets/icon_compass.png'
 import iconPhone from '../../assets/icon_phone.png'
 import iconLocation from '../../assets/icon_location.png'
-import { useState } from "@tarojs/taro"
+import { useState, memo } from "@tarojs/taro"
 
 const MARKERS = [
   {
@@ -155,4 +155,4 @@ function ClassMap() {
   )
 }
 
-export default ClassMap
+export default memo(ClassMap)

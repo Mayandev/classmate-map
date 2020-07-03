@@ -1,4 +1,4 @@
-import Taro, { useState, useEffect } from '@tarojs/taro'
+import Taro, { useState, useEffect, memo, useDidShow } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import NavBar from 'taro-navigationbar'
 
@@ -13,23 +13,45 @@ import joinClass from '../../assets/illustration_join_class.png'
 import createClass from '../../assets/illustration_create_class.png'
 import empty from '../../assets/illustration_empty.png'
 import AuthModal from '@/components/AuthModal'
+import { JOINDSTORAGE } from '@/constants/storage'
+import { LOADING, EXPECTION } from '@/constants/toast'
+import { showToast } from '@/utils/utils';
 
-function Index () {
+function Index() {
   const [navHeight, setNavHeight] = useState(0)
   const [statusBarHeight, setStatusBarHeight] = useState(0)
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [avatarUrl, setAvatarUrl] = useState(defaulAvatar)
   const [nickname, setNickname] = useState('未授权')
   const [isAuth, setIsAuth] = useState(false)
+  const [joinClasses, setJoinClasses] = useState([])
 
   const navigateTo = (url: string) => {
-    Taro.navigateTo({url});
+    Taro.navigateTo({ url });
   }
 
-  useEffect(() => {
+  const fetchIndexData = async () => {
+    try {
+      Taro.showLoading({ title: LOADING })
+      const { result } = await Taro.cloud.callFunction({
+        name: 'index'
+      })
+      console.log(result);
+
+      if (result) {
+        const data = result['joinClasses']
+        setJoinClasses(data)
+      }
+      Taro.hideLoading()
+    } catch (error) {
+      showToast(EXPECTION)
+    }
+  }
+
+  useDidShow(() => {
     const systemInfo = Taro.getSystemInfoSync()
     const { statusBarHeight } = systemInfo
-    const isiOS = systemInfo.system.indexOf('iOS') > -1 
+    const isiOS = systemInfo.system.indexOf('iOS') > -1
     let navHeight = 0
     if (isiOS) {
       navHeight = 44
@@ -38,6 +60,10 @@ function Index () {
     }
     setStatusBarHeight(statusBarHeight)
     setNavHeight(navHeight)
+    fetchIndexData()
+  })
+
+  useEffect(() => {
     // 获取用户信息
     Taro.getSetting({
       success: res => {
@@ -55,22 +81,32 @@ function Index () {
     })
   })
 
+  const classItemsDom = joinClasses.map(item => {
+    return (<ClassItem
+      onClick={() => { navigateTo(`${CLASS_DETAIL}?_id=${item['_id']}`) }}
+      classname={item['className']}
+      totalNum={item['count']}
+      joinNum={item['joinUsers']['length']}
+      coverImage={item['classImage']}
+      isJoin={true} />)
+  })
+
   return (
     <View className='index'>
       <NavBar />
-      { showAuthModal ? <AuthModal onClose={() => {setShowAuthModal(false)}}/> : null }
-      <View 
-        className='user_info' 
-        style={{height: `${navHeight}px`, top: `${statusBarHeight}px`}}
-        onClick={() => {isAuth ? null : setShowAuthModal(true)}}
-        >
+      {showAuthModal ? <AuthModal onClose={() => { setShowAuthModal(false) }} /> : null}
+      <View
+        className='user_info'
+        style={{ height: `${navHeight}px`, top: `${statusBarHeight}px` }}
+        onClick={() => { isAuth ? null : setShowAuthModal(true) }}
+      >
         <Avatar radius={64} image={avatarUrl}></Avatar>
         <Text className='nickname'>{nickname}</Text>
       </View>
       <View className="page">
         <View className='action_container'>
-          <View 
-            onClick={() => {navigateTo(SEARCH_CLASS)}} 
+          <View
+            onClick={() => { navigateTo(SEARCH_CLASS) }}
             className='action_item'>
             <View className='action_txt'>
               <View className='action_title'>
@@ -82,8 +118,8 @@ function Index () {
             </View>
             <Image className="aciton_image" src={joinClass} />
           </View>
-          <View 
-            onClick={() => {navigateTo(CREATE_CLASS)}}
+          <View
+            onClick={() => { isAuth ? navigateTo(CREATE_CLASS) : setShowAuthModal(true) }}
             className='action_item'>
             <Image className='aciton_image' src={createClass} />
             <View className='action_txt txt_right'>
@@ -98,29 +134,30 @@ function Index () {
         </View>
         <View className='join_container'>
           <Text className='title'>我加入的</Text>
-          <View className='empty_container'>
-            <Image className='image' src={empty} />
-            <View className='empty_hint'>
-              <Text>您还没加入任何班级</Text>
-              <View>
-                <Text>你可以选择</Text>
-                <Text className='action'>加入班级</Text>
-                <Text>或者</Text>
-                <Text className='action'>创建班级</Text>
-              </View>
-            </View>
-          </View>
-          <ClassItem
-            onClick={() => {navigateTo(CLASS_DETAIL)}}
-            classname={'麻豆幼稚园小（2）班'} 
-            totalNum={30}
-            joinNum={17}
-            coverImage={'https://mayandev.oss-cn-hangzhou.aliyuncs.com/blog/join_item.jpg'}
-            isJoin={true}/>
+          {
+            joinClasses.length === 0
+              ? (
+                <View className='empty_container'>
+                  <Image className='image' src={empty} />
+                  <View className='empty_hint'>
+                    <Text>您还没加入任何班级</Text>
+                    <View>
+                      <Text>你可以选择</Text>
+                      <Text className='action'>加入班级</Text>
+                      <Text>或者</Text>
+                      <Text className='action'>创建班级</Text>
+                    </View>
+                  </View>
+                </View>
+              )
+              : classItemsDom
+          }
+
+
         </View>
       </View>
     </View>
   )
 }
 
-export default Index
+export default memo(Index)

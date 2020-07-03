@@ -24,11 +24,10 @@ exports.main = async (event, context) => {
 	})
 
 	app.router('create', async (ctx, next) => {
-		const addresult = await db.collection(collection).add({
+		const data = await db.collection(collection).add({
 			data: { ...createData, creatorID: OPENID, joinUsers: [] }
 		})
-		ctx.data.addresult = addresult
-		ctx.body = { "添加记录的返回结果": ctx.data.addresult }
+		ctx.body = { data }
 	})
 
 	app.router('search', async (ctx, next) => {

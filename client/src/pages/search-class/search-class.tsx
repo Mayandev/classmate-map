@@ -1,5 +1,5 @@
 import { View, Text, Image } from '@tarojs/components'
-import { useState } from '@tarojs/taro'
+import { useState, memo } from '@tarojs/taro'
 import { NavBar } from 'taro-navigationbar'
 
 import Search from '@/components/Search'
@@ -82,4 +82,4 @@ function SearchClass() {
   )
 }
 
-export default SearchClass
+export default memo(SearchClass)

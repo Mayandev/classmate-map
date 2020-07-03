@@ -1,6 +1,6 @@
 import { View, Image, Button, Text } from "@tarojs/components"
 import { NavBar } from 'taro-navigationbar'
-import { useState, useDidShow } from '@tarojs/taro'
+import { useState, useDidShow, memo } from '@tarojs/taro'
 
 import Tag from "@/components/Tag"
 import Avatar from "@/components/Avatar"
@@ -45,6 +45,7 @@ function ClassDetail() {
       });
       if (result) {
         setClassState(result['data'])
+        setIsJoin(result['isJoin'])
         // 缓存班级信息
         Taro.setStorageSync(CLASSSTORAGE, result['data'])
         setLoaded(true)
@@ -59,17 +60,12 @@ function ClassDetail() {
 
   // 判断是否已加入
   useDidShow(() => {
-    const { _id } = this.$router.params;
+    const { _id } = this.$router.params
     // 设置状态栏的颜色以及背景色
     Taro.setNavigationBarColor({
       frontColor: '#ffffff',
       backgroundColor: '#ffffff',
     })
-    const joined = Taro.getStorageSync(JOINDSTORAGE) || []
-    const [join] = joined.filter(v => v._id === _id)
-    if (join) {
-      setIsJoin(true)
-    }
     fetchDetail(_id)
   })
 
@@ -137,4 +133,4 @@ function ClassDetail() {
   )
 }
 
-export default ClassDetail
+export default memo(ClassDetail)

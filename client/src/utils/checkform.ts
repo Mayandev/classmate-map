@@ -73,7 +73,7 @@ const checkAddForm = async (data) => {
 
 }
 
-const checkJoinForm = async (data) => {
+const checkJoinForm = (data) => {
   const { name, phone, place, addressSelect } = data;
   if (checkFormEmpty(name)) {
     showToast(EMPTY_NAME)

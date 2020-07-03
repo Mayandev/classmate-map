@@ -25,7 +25,8 @@ class App extends Component {
       'pages/search-class/search-class',
       'pages/class-detail/class-detail',
       'pages/join-class/join-class',
-      'pages/class-map/class-map'
+      'pages/class-map/class-map',
+      'pages/create-class/create-success/create-success'
     ],
     window: {
       backgroundTextStyle: 'light',

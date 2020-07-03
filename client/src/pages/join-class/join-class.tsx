@@ -1,6 +1,6 @@
 import { View, Form, Input, Button, Image, Picker } from "@tarojs/components"
 import { NavBar } from 'taro-navigationbar'
-import { useEffect, useState } from '@tarojs/taro'
+import { useEffect, useState, memo } from '@tarojs/taro'
 
 import Avatar from "@/components/Avatar"
 import { USERSTORAGE, CLASSSTORAGE, JOINDSTORAGE } from "@/constants/storage"
@@ -61,8 +61,8 @@ function JoinClass() {
     let avatarUrl = avatar
 
     // 如果有输入值不合法，返回
-    if (!(checkJoinForm({ ...formData, addressSelect })
-      && checkTokenEqual(formData.token, classInfo.token))) {
+    if (!checkJoinForm({ ...formData, addressSelect })
+      || !checkTokenEqual(formData.token, classInfo.token)) {
       return
     }
 
@@ -85,17 +85,20 @@ function JoinClass() {
         name: 'join',
         data: {
           joinUser: { ...formData, avatarUrl, address: addressSelect, location: geo },
-          joinClass: classInfo
+          classId: classInfo['_id']
         }
       })
       console.log(result);
       if (result && result['success']) {
         const joined = Taro.getStorageSync(JOINDSTORAGE) || []
-        joined.push(classInfo)
+        joined.push(classInfo['_id'])
         Taro.setStorageSync(JOINDSTORAGE, joined)
         Taro.showToast({ title: JOIN_SUCCESS })
         // 返回页面
-        Taro.navigateBack()
+        setTimeout(() => {
+          Taro.navigateBack()
+
+        }, 1500);
       }
     } catch (error) {
       showToast(EXPECTION)
@@ -180,11 +183,11 @@ function JoinClass() {
             placeholderClass='placeholder'
             name='token' />
         </View>
-        <Button  formType='submit' className='form_btn' hoverClass='form_btn_hover' >加入班级</Button>
+        <Button formType='submit' className='form_btn' hoverClass='form_btn_hover' >加入班级</Button>
       </Form>
       <View className='notice'>* 信息只能被同一班级的同学查看</View>
     </View>
   )
 }
 
-export default JoinClass
+export default memo(JoinClass)

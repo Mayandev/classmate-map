@@ -1,13 +1,14 @@
 
-import { useState } from '@tarojs/taro';
+import { useState, memo } from '@tarojs/taro';
 import { View, Image, Input, Form, Button } from '@tarojs/components';
 import { NavBar } from 'taro-navigationbar'
 
 import './create-class.scss'
 import illustrate from '../../assets/illustration_create_class_form.png'
 import selectArrow from '../../assets/icon_select_arrow.png'
-import { EXPECTION, AUTH_SUCCESS, CREATE_SUCCESS } from '@/constants/toast'
+import { EXPECTION, AUTH_SUCCESS, CREATE_SUCCESS, CREATING } from '@/constants/toast'
 import { checkAddForm } from '@/utils/checkform';
+import { CREATE_SUCCESS_PAGE } from '@/constants/page';
 
 function CreateClass() {
 
@@ -15,14 +16,14 @@ function CreateClass() {
   const [imageName, setImageName] = useState('default')
   const onCreateSubmit = async (e) => {
     const formData = e.detail.value
-    
+
     try {
       // 校验数据
       if (!await checkAddForm({ ...formData, imagePath })) {
         return
       }
-      Taro.showLoading({title: '创建中...'})
-      
+      Taro.showLoading({ title: CREATING })
+
       // 先上传图片
       const { fileID } = await Taro.cloud.uploadFile({
         cloudPath: `class-image/${imageName}`,
@@ -31,7 +32,7 @@ function CreateClass() {
       const { creator, className, count, token } = formData;
 
       // 调用创建班级的云函数
-      await Taro.cloud.callFunction({
+      const { result } = await Taro.cloud.callFunction({
         name: 'class',
         data: {
           $url: 'create',
@@ -46,7 +47,13 @@ function CreateClass() {
         }
       })
       Taro.hideLoading()
-      Taro.showToast({title: CREATE_SUCCESS})
+      if (result) {
+        Taro.showToast({ title: CREATE_SUCCESS })
+        Taro.redirectTo({
+          url: `${CREATE_SUCCESS_PAGE}?token=${token}&_id=${result['data']['_id']}`
+        })
+      }
+
     } catch (e) {
       console.log(e)
       Taro.hideLoading()
@@ -121,4 +128,4 @@ function CreateClass() {
   )
 }
 
-export default CreateClass
+export default memo(CreateClass)

@@ -48,7 +48,7 @@
     @include font('white');
     @include flex(row, center, center);
     background: $primary-color;
-    box-shadow: 0 14px 40px 0 $second-color;
+    box-shadow: 0 14px 40px 0 $second-color;  
     border-radius: 12px;
     line-height: 92px;
     margin-top: 60px;
