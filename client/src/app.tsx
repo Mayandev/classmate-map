@@ -35,7 +35,12 @@ class App extends Component {
       navigationBarTextStyle: 'black',
       navigationStyle: 'custom'
     },
-    cloud: true
+    cloud: true,
+    permission: {
+      "scope.userLocation": {
+        "desc": "你的位置信息将用于在地图中展示"
+      }
+    }
   }
 
   componentDidMount () {
