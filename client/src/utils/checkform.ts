@@ -5,9 +5,16 @@ import {
   ILLEGAL_COUNT,
   EMPTY_IMAGE,
   OCCUPY_TOKEN,
-  CHECK_TOKEN_LOADING
+  CHECK_TOKEN_LOADING,
+  EMPTY_NAME,
+  ILLEGAL_PHONE,
+  EMPTY_PLAGE,
+  EMPTY_ADDRESS,
+  WRONG_TOKEN
 } from '@/constants/toast'
-import Taro  from '@tarojs/taro';
+import Taro, { showTabBar, showLoading }  from '@tarojs/taro'
+import { showToast } from '@/utils/utils';
+
 
 
 const checkFormEmpty = (formItem: string) => {
@@ -15,31 +22,35 @@ const checkFormEmpty = (formItem: string) => {
 }
 
 const checkToken = (token: string) => {
-  return token.length === 0 || !/^(?=.*\d)(?=.*[a-zA-z]).{6,}$/.test(token)
+  return /^(?=.*\d)(?=.*[a-zA-z]).{6,}$/.test(token)
+}
+
+const checkPhone = (phone: 'string') => {
+  return /^[1]([3-9])[0-9]{9}$/.test(phone)
 }
 
 const checkCount = (count: string) => {
   const num = Number(count)
   return num > 100 || num <= 0
 }
+
 const checkAddForm = async (data) => {
   const { creator, className, count, token, imagePath } = data;
-  console.log('12312');
   
   if (checkFormEmpty(creator)) {
-    Taro.showToast({ title: EMPTY_CREATOR, icon: 'none' })
+    showToast(EMPTY_CREATOR)
     return false
-  } else if (checkToken(token)) {
-    Taro.showToast({ title: ILLEGAL_TOKEN, icon: 'none' })
+  } else if (!checkToken(token)) {
+    showToast(ILLEGAL_TOKEN)
     return false
   } else if (checkFormEmpty(className)) {
-    Taro.showToast({ title: EMPTY_CLASSNAME, icon: 'none' })
+    showToast(EMPTY_CLASSNAME)
     return false
   } else if (checkCount(count)) {
-    Taro.showToast({ title: ILLEGAL_COUNT, icon: 'none' })
+    showToast(ILLEGAL_COUNT)
     return false
   } else if (checkFormEmpty(imagePath)) {
-    Taro.showToast({ title: EMPTY_IMAGE, icon: 'none' })
+    showToast(EMPTY_IMAGE)
     return false
   }
   Taro.showLoading({title: CHECK_TOKEN_LOADING})
@@ -55,11 +66,37 @@ const checkAddForm = async (data) => {
   
   Taro.hideLoading()
   if (res.result && res.result['data']['data'].length !== 0) {
-    Taro.showToast({ title: OCCUPY_TOKEN, icon: 'none' })
+    showToast(OCCUPY_TOKEN)
     return false
   }
   return true
 
 }
 
-export { checkAddForm }
+const checkJoinForm = async (data) => {
+  const { name, phone, place, addressSelect } = data;
+  if (checkFormEmpty(name)) {
+    showToast(EMPTY_NAME)
+    return false
+  } else if (!checkPhone(phone)) {
+    showToast(ILLEGAL_PHONE)
+    return false
+  } else if (checkFormEmpty(place)) {
+    showToast(EMPTY_PLAGE)
+    return false
+  } else if (checkFormEmpty(addressSelect)) {
+    showToast(EMPTY_ADDRESS)
+    return false
+  }
+  return true
+}
+
+const checkTokenEqual = (inputToken, rightToken) => {
+  if (inputToken === rightToken) {
+    return true
+  }
+  showToast(WRONG_TOKEN)
+  return false
+}
+
+export { checkAddForm, checkJoinForm, checkTokenEqual }

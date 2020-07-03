@@ -42,9 +42,5 @@ exports.main = async (event, context) => {
 		}
 		ctx.body = { data, isJoin }
 	})
-
-	app.router('detail', async (ctx, next) => {
-
-	})
 	return app.serve();
 }

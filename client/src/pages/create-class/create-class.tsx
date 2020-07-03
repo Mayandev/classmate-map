@@ -114,7 +114,7 @@ function CreateClass() {
           }
           <Image className='select_arrow' src={selectArrow} />
         </View>
-        <Button formType='submit' className='create_btn' hoverClass='create_btn_hover'>创建班级</Button>
+        <Button formType='submit' className='form_btn' hoverClass='form_btn_hover'>创建班级</Button>
       </Form>
       <View className='notice'>* 请记住创建的加入口令</View>
     </View>

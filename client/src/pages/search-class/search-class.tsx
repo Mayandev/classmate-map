@@ -4,7 +4,7 @@ import { NavBar } from 'taro-navigationbar'
 
 import Search from '@/components/Search'
 import ClassItem from '@/components/ClassItem'
-import { SEARCHING, EXPECTION } from '@/constants/toast'
+import { SEARCHING, EXPECTION, SEARCH_EMPTY } from '@/constants/toast'
 import empty from '../../assets/illustration_empty.png'
 import './search-class.scss'
 
@@ -70,7 +70,7 @@ function SearchClass() {
               : <View className='empty_container'>
                 <Image className='image' src={empty} />
                 <View className='empty_hint'>
-                  <Text>未找到相关内容，请检查口令是否输入正确</Text>
+                  <Text>{SEARCH_EMPTY}</Text>
                 </View>
               </View>
             }
