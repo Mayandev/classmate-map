@@ -29,7 +29,7 @@
 
   .people_info {
     transform: translateY(120%);
-    @include wh(100%,574px);
+    @include wh(100%, 574px);
     background: #FFFFFF;
     position: fixed;
     left: 0;
@@ -53,6 +53,7 @@
       .info_item {
         @include flex(row, start, center);
         height: 70px;
+        width: 100%;
 
         .info_icon {
           @include wh(36px, 36px);
@@ -61,7 +62,9 @@
 
         .info_txt {
           @include font('second', normal, 32px);
-
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
       }
 
@@ -81,7 +84,8 @@
 
 @keyframes slideContentUp {
   from {
-    transform: translateY(120%); /*设置为正数则底部弹出来，负数则相反*/
+    transform: translateY(120%);
+    /*设置为正数则底部弹出来，负数则相反*/
   }
 
   to {

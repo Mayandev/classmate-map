@@ -79,12 +79,11 @@ function JoinClass() {
         avatarUrl = fileID
       }
 
-
       // 调用加入云函数，将用户信息插入班级表，将班级信息插入到用户集合
       const { result } = await Taro.cloud.callFunction({
         name: 'join',
         data: {
-          joinUser: { ...formData, avatarUrl, address: addressSelect, location: geo },
+          joinUser: { ...formData, avatarUrl, address: addressSelect, location: geo, state: whereOptions[goWhereIdx] },
           classId: classInfo['_id']
         }
       })

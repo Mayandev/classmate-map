@@ -1,4 +1,4 @@
-import Taro, { useState, useEffect, memo, useDidShow } from '@tarojs/taro'
+import Taro, { useState, useEffect, usePullDownRefresh } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import NavBar from 'taro-navigationbar'
 
@@ -13,9 +13,9 @@ import joinClass from '../../assets/illustration_join_class.png'
 import createClass from '../../assets/illustration_create_class.png'
 import empty from '../../assets/illustration_empty.png'
 import AuthModal from '@/components/AuthModal'
-import { JOINDSTORAGE } from '@/constants/storage'
 import { LOADING, EXPECTION } from '@/constants/toast'
 import { showToast } from '@/utils/utils';
+
 
 function Index() {
   const [navHeight, setNavHeight] = useState(0)
@@ -48,7 +48,16 @@ function Index() {
     }
   }
 
-  useDidShow(() => {
+
+  usePullDownRefresh(() => {
+    fetchIndexData()
+  })
+
+  useEffect(() => {
+    fetchIndexData()
+  }, [])
+
+  useEffect(() => {
     const systemInfo = Taro.getSystemInfoSync()
     const { statusBarHeight } = systemInfo
     const isiOS = systemInfo.system.indexOf('iOS') > -1
@@ -60,8 +69,7 @@ function Index() {
     }
     setStatusBarHeight(statusBarHeight)
     setNavHeight(navHeight)
-    fetchIndexData()
-  })
+  }, [])
 
   useEffect(() => {
     // 获取用户信息
@@ -79,7 +87,7 @@ function Index() {
         }
       }
     })
-  })
+  }, [showAuthModal])
 
   const classItemsDom = joinClasses.map(item => {
     return (<ClassItem
@@ -152,12 +160,13 @@ function Index() {
               )
               : classItemsDom
           }
-
-
         </View>
       </View>
     </View>
   )
 }
-
-export default memo(Index)
+Index.config = {
+  enablePullDownRefresh: true,
+  backgroundTextStyle: 'dark'
+}
+export default Index

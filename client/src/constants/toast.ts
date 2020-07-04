@@ -23,5 +23,3 @@ export const JOIN_SUCCESS ='加入成功'
 
 export const CREATING = '创建中...'
 
-export const SHARE_TITLE = '加入班级，查看同学分布地图。同学们，多联系。'
-
