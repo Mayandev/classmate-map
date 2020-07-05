@@ -65,7 +65,7 @@ function CreateClass() {
     try {
       const image = await Taro.chooseImage({
         count: 1,
-        sizeType: ['original'],
+        sizeType: ['compressed'],
         sourceType: ['album']
       })
       setImagePath(image.tempFilePaths[0])

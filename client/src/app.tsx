@@ -24,7 +24,7 @@ class App extends Component {
       'pages/create-class/create-class',
       'pages/search-class/search-class',
       'pages/class-detail/class-detail',
-      'pages/join-class/join-class',
+      'pages/join-info/join-info',
       'pages/class-map/class-map',
       'pages/create-class/create-success/create-success'
     ],

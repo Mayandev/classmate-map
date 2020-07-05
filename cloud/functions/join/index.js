@@ -9,12 +9,12 @@ exports.main = async (event) => {
   const {OPENID} = cloud.getWXContext()
   const classCollection = 'class'
   const userCollection = 'user'
-  const { joinUser, classId } = event
+  const { infoId, classId } = event
 
   // 更新 class 数据库中的 joinUsers 字段
   const classRes = await db.collection(classCollection).doc(classId).update({
     data: {
-      joinUsers: _.push({...joinUser, openId: OPENID})
+      joinUsers: _.push(infoId)
     }
   })
 
@@ -25,10 +25,6 @@ exports.main = async (event) => {
     }
   })
 
-  if (userRes && classRes) {
-    return {success: true}
-  }
-
-  return {success: false}
+  return {classRes, userRes}
   
 }

@@ -4,7 +4,7 @@ import NavBar from 'taro-navigationbar'
 
 import Avatar from '@/components/Avatar'
 import ClassItem from '@/components/ClassItem'
-import { SEARCH_CLASS, CREATE_CLASS, CLASS_DETAIL } from '@/constants/page'
+import { SEARCH_CLASS, CREATE_CLASS, CLASS_DETAIL, JOIN_INFO } from '@/constants/page'
 // import AuthModal from '@/components/AuthModal'
 
 import './index.scss'
@@ -87,7 +87,7 @@ function Index() {
         }
       }
     })
-  }, [showAuthModal])
+  }, [])
 
   const classItemsDom = joinClasses.map(item => {
     return (<ClassItem
@@ -106,7 +106,7 @@ function Index() {
       <View
         className='user_info'
         style={{ height: `${navHeight}px`, top: `${statusBarHeight}px` }}
-        onClick={() => { isAuth ? null : setShowAuthModal(true) }}
+        onClick={() => { isAuth ? navigateTo(JOIN_INFO) : setShowAuthModal(true) }}
       >
         <Avatar radius={64} image={avatarUrl}></Avatar>
         <Text className='nickname'>{nickname}</Text>

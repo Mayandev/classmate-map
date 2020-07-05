@@ -22,4 +22,6 @@ export const CANCEL_SELECT = '取消选择'
 export const JOIN_SUCCESS ='加入成功'
 
 export const CREATING = '创建中...'
+export const SAVE_SUCCESS = '保存成功'
+export const UPDATE_SUCCESS = '修改成功'
 

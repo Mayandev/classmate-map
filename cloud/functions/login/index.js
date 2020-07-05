@@ -17,7 +17,9 @@ exports.main = async (event) => {
         openId: OPENID,
         createdTime: db.serverDate(),
         userInfo,
-        joinClasses: []
+        joinClasses: [],
+        createClasses: [],
+        level: 'normal'
       },
     })
   } else {

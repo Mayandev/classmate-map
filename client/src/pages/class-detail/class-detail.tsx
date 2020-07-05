@@ -5,9 +5,9 @@ import { useState, useDidShow, memo, useEffect, useShareAppMessage } from '@taro
 import Tag from "@/components/Tag"
 import Avatar from "@/components/Avatar"
 
-import { JOIN_CLASS, CLASS_MAP, CLASS_DETAIL } from '@/constants/page'
-import { LOADING, EXPECTION } from "@/constants/toast"
-import { CLASSSTORAGE, JOINDSTORAGE } from '@/constants/storage'
+import { JOIN_INFO, CLASS_MAP, CLASS_DETAIL } from '@/constants/page'
+import { LOADING, EXPECTION, JOIN_SUCCESS } from "@/constants/toast"
+import { CLASSSTORAGE, JOININFO } from '@/constants/storage'
 
 import empty from '../../assets/illustration_empty.png'
 import imagePlaceholder from '../../assets/image_placeholder.png'
@@ -15,6 +15,8 @@ import shareImg from '../../assets/illustration_share.png'
 
 import './class-detail.scss'
 import AuthModal from "@/components/AuthModal"
+import TokenModal from "@/components/TokenModal"
+import { showToast } from '@/utils/utils';
 
 
 interface IClassDetailProps {
@@ -25,6 +27,9 @@ interface IClassDetailProps {
   count: number
 }
 
+let isInfoSaved = false
+let token
+let classId
 function ClassDetail() {
   const defaultProps: IClassDetailProps = {
     classImage: imagePlaceholder,
@@ -37,14 +42,31 @@ function ClassDetail() {
   const [isJoin, setIsJoin] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const [showAuthModal, setShowAuthModal] = useState(false)
+  const [showTokenModal, setShowTokenModal] = useState(false)
   const [isAuth, setIsAuth] = useState(false)
 
   const bindBtnClick = () => {
-    if (isAuth) {
-      isJoin ? Taro.navigateTo({url: CLASS_MAP}) : Taro.navigateTo({ url: JOIN_CLASS })
-    } else {
+    // 首先判断是否授权
+    if (!isAuth) {
       setShowAuthModal(true)
+      return
     }
+    console.log(isInfoSaved);
+
+    // 判断是否填写了信息
+    if (!isInfoSaved) {
+      Taro.navigateTo({ url: JOIN_INFO })
+      return
+    }
+
+    // 弹出口令填写弹窗
+    if (!isJoin) {
+      setShowTokenModal(true)
+      return;
+    }
+
+    // TODO: 跳转到地图页面
+
   }
   const fetchDetail = async (_id: string) => {
     try {
@@ -57,10 +79,11 @@ function ClassDetail() {
         }
       });
       if (result) {
-        setClassState(result['data'])
+        setClassState(result['classData'])
         setIsJoin(result['isJoin'])
         // 缓存班级信息
-        Taro.setStorageSync(CLASSSTORAGE, result['data'])
+        Taro.setStorageSync(CLASSSTORAGE, result['classData'])
+        token = result['classData']['token']
         setLoaded(true)
       }
       Taro.hideLoading()
@@ -71,16 +94,80 @@ function ClassDetail() {
 
   }
 
+  const fetchSavedInfo = async () => {
+    const { result } = await Taro.cloud.callFunction({
+      name: 'info',
+      data: {
+        $url: 'get'
+      }
+    })
+    if (result && result['data'].length > 0) {
+      const info = result['data'][0]
+      Taro.setStorage({
+        key: JOININFO,
+        data: info
+      })
+      isInfoSaved = true
+    }
+  }
+
+
+  const checkToken = async (e) => {
+    console.log(e);
+    const value = e.detail.value['token']
+    if (value !== token) {
+      showToast('口令错误')
+      return
+    }
+    // TODO: 插入数据，跳转到地图页面
+    try {
+      Taro.showLoading({ title: LOADING })
+      // 获取 infoId
+      const info = Taro.getStorageSync(JOININFO)
+      // 调用加入接口
+      const { result } = await Taro.cloud.callFunction({
+        name: 'join',
+        data: {
+          infoId: info['_id'],
+          classId: classId
+        }
+      })
+      console.log(result)
+      if (result && result['classRes']['stats']['updated']) {
+        Taro.showToast({ title: JOIN_SUCCESS })
+        setTimeout(() => {
+          // 关闭弹窗
+          setShowTokenModal(false)
+          fetchDetail(classId)
+        }, 1500);
+      }
+    } catch (error) {
+      showToast(EXPECTION)
+    }
+  }
+
   // 判断是否已加入
   useDidShow(() => {
     const { _id } = this.$router.params
+    classId = _id
+    fetchDetail(_id)
+  })
+
+  useEffect(() => {
     // 设置状态栏的颜色以及背景色
     Taro.setNavigationBarColor({
       frontColor: '#ffffff',
       backgroundColor: '#ffffff',
     })
-    fetchDetail(_id)
-  })
+    // 判断是否缓存了 infoId，如果缓存了直接用，否则取数据库
+    const info = Taro.getStorageSync(JOININFO)
+    if (!info) {
+      fetchSavedInfo()
+      return
+    }
+    isInfoSaved = true
+
+  }, [])
 
   useEffect(() => {
     // 获取用户信息
@@ -89,7 +176,7 @@ function ClassDetail() {
         if (res.authSetting['scope.userInfo']) {
           setIsAuth(true)
           // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-          
+
         }
       }
     })
@@ -103,19 +190,17 @@ function ClassDetail() {
     }
   })
 
-  const avatarDom = classState.joinUsers.map(item => {
-    return (
-      <View className='avatar_item'>
-        <Avatar image={item['avatarUrl']} radius={60} />
-      </View>
-    )
-  })
-
-
+  // const avatarDom = classState.joinUsers.map(item => {
+  //   return (
+  //     <View className='avatar_item'>
+  //       <Avatar image={item['avatarUrl']} radius={60} border={2} />
+  //     </View>
+  //   )
+  // })
 
   return (
     <View className='page_detail'>
-    
+
       <View className='navbar'>
         <NavBar
           home
@@ -127,6 +212,9 @@ function ClassDetail() {
           }} />
       </View>
       {showAuthModal ? <AuthModal onClose={() => { setShowAuthModal(false) }} /> : null}
+      {showTokenModal ? <TokenModal
+        onClose={() => { setShowTokenModal(false) }}
+        onCheck={checkToken} /> : null}
 
       <View className='header'>
         <Image mode="aspectFill" className='head-img' src={classState.classImage} />
@@ -145,8 +233,8 @@ function ClassDetail() {
           <View className='info_item'>已加入：{classState.joinUsers.length}人</View>
         </View>
         {
-         loaded &&  
-         (classState.joinUsers.length === 0
+          loaded &&
+          (classState.joinUsers.length === 0
             ? (<View className='empty_container'>
               <Image className='image' src={empty} />
               <View className='empty_hint'>
@@ -155,13 +243,12 @@ function ClassDetail() {
             </View>)
             : (
               <View className='avatars'>
-                {avatarDom}
               </View>
             )
-         )
+          )
         }
         <View className='action_btn_container'>
-          <Button hoverClass='btn_hover' 
+          <Button hoverClass='btn_hover'
             className='action_btn'
             onClick={bindBtnClick}>
             {isJoin ? '查看地图' : '加入班级'}

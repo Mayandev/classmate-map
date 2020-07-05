@@ -3,18 +3,20 @@ import { NavBar } from 'taro-navigationbar'
 import { useEffect, useState, memo } from '@tarojs/taro'
 
 import Avatar from "@/components/Avatar"
-import { USERSTORAGE, CLASSSTORAGE, JOINDSTORAGE } from "@/constants/storage"
-import { checkJoinForm, checkTokenEqual } from "@/utils/checkform"
+import { USERSTORAGE, JOININFO } from "@/constants/storage"
+import { checkJoinForm } from "@/utils/checkform"
 import { showToast } from "@/utils/utils"
 
 import defaulAvatar from '../../assets/default_avatar.png'
 import selectArrow from '../../assets/icon_select_arrow.png'
 
-import './join-class.scss'
-import { CANCEL_SELECT, LOADING, JOIN_SUCCESS, EXPECTION } from "@/constants/toast"
+import './join-info.scss'
+import { CANCEL_SELECT, LOADING, EXPECTION, SAVE_SUCCESS, UPDATE_SUCCESS } from "@/constants/toast"
 
-// 缓存班级信息
-let classInfo
+enum ActionType {
+  Add,
+  Update
+}
 let avatarSelected = false
 let avatarName = ''
 let geo
@@ -24,6 +26,8 @@ function JoinClass() {
   const [goWhereIdx, setGoWhereIdx] = useState(0)
   const [addressSelect, setAddressSelect] = useState('')
   const [avatar, setAvatar] = useState(defaulAvatar)
+  const [formAction, setFormAction] = useState(ActionType.Add)
+  const [updateValue, setUpdateValue] = useState({})
   const goWhereChange = (e) => {
     const value = Number(e.detail.value);
     setGoWhereIdx(value);
@@ -56,13 +60,10 @@ function JoinClass() {
   }
   // 表单提交
   const onJoinSubmit = async (e) => {
-
     const formData = e.detail.value
     let avatarUrl = avatar
-
     // 如果有输入值不合法，返回
-    if (!checkJoinForm({ ...formData, addressSelect })
-      || !checkTokenEqual(formData.token, classInfo.token)) {
+    if (!checkJoinForm({ ...formData, addressSelect })) {
       return
     }
 
@@ -79,39 +80,81 @@ function JoinClass() {
         avatarUrl = fileID
       }
 
-      // 调用加入云函数，将用户信息插入班级表，将班级信息插入到用户集合
-      const { result } = await Taro.cloud.callFunction({
-        name: 'join',
-        data: {
-          joinUser: { ...formData, avatarUrl, address: addressSelect, location: geo, state: whereOptions[goWhereIdx] },
-          classId: classInfo['_id']
-        }
-      })
-      console.log(result);
-      if (result && result['success']) {
-        const joined = Taro.getStorageSync(JOINDSTORAGE) || []
-        joined.push(classInfo['_id'])
-        Taro.setStorageSync(JOINDSTORAGE, joined)
-        Taro.showToast({ title: JOIN_SUCCESS })
-        // 返回页面
-        setTimeout(() => {
-          Taro.navigateBack()
+      switch (formAction) {
+        case ActionType.Add:
+          // 调用加入云函数，将用户信息插入班级表，将班级信息插入到用户集合
+          const { result } = await Taro.cloud.callFunction({
+            name: 'info',
+            data: {
+              $url: 'add',
+              info: { ...formData, avatarUrl, address: addressSelect, location: geo, state: goWhereIdx },
+            }
+          })
+          console.log(result);
 
-        }, 1500);
+          if (result && result['data']) {
+            Taro.setStorageSync(JOININFO, result['data'])
+            Taro.showToast({ title: SAVE_SUCCESS })
+            // 返回页面
+            setTimeout(() => {
+              Taro.navigateBack()
+            }, 1500);
+          }
+          break;
+        case ActionType.Update:
+          const updateResult = await Taro.cloud.callFunction({
+            name: 'info',
+            data: {
+              $url: 'update',
+              info: { ...formData, avatarUrl, address: addressSelect, location: geo, state: goWhereIdx },
+            }
+          })
+          console.log(updateResult);
+          if (updateResult && updateResult['result']) {
+            Taro.showToast({ title: UPDATE_SUCCESS })
+            // 返回页面
+            setTimeout(() => {
+              Taro.navigateBack()
+            }, 1500);
+          }
+          break;
       }
+
     } catch (error) {
       showToast(EXPECTION)
     }
 
   }
   const fetchStorage = () => {
-    // 获取班级的缓存，与表单信息一同提交
-    classInfo = Taro.getStorageSync(CLASSSTORAGE)
     const { avatarUrl } = Taro.getStorageSync(USERSTORAGE)
-    console.log(classInfo);
-
-    // 设置头像
     setAvatar(avatarUrl)
+  }
+
+  // 查询用户信息
+  const fetchInfo = async () => {
+    try {
+      Taro.showLoading({ title: LOADING })
+      const { result } = await Taro.cloud.callFunction({
+        name: 'info',
+        data: {
+          $url: 'get'
+        }
+      })
+      console.log(result);
+      if (result && result['data'].length > 0) {
+        const data = result['data'][0]
+        setFormAction(ActionType.Update)
+        setUpdateValue(data)
+        setAddressSelect(data['address'])
+        setGoWhereIdx(data['state'])
+        // const infoStorage = Taro.getStorageSync(JOIN_INFO)
+        
+        // TODO: 设置缓存
+      }
+      Taro.hideLoading()
+    } catch (error) {
+      showToast(EXPECTION)
+    }
   }
   useEffect(() => {
     // 设置状态栏的颜色以及背景色
@@ -120,11 +163,12 @@ function JoinClass() {
       backgroundColor: '#ffffff',
     })
     fetchStorage()
+    fetchInfo()
   }, [])
   return (
     <View className='join_page'>
       <NavBar
-        title='加入班级'
+        title='完善信息'
         back
         iconTheme={'white'}
         background={'#2F54EB'}
@@ -140,7 +184,8 @@ function JoinClass() {
             className='form_input'
             placeholder='输入您的姓名或昵称'
             placeholderClass='placeholder'
-            name='name' />
+            name='name'
+            value={formAction === ActionType.Update ? updateValue['name'] : ''} />
         </View>
         <View className='form_item'>
           <View className='form_label'>去向</View>
@@ -155,7 +200,8 @@ function JoinClass() {
             className='form_input'
             placeholder={`输入${placeOption[goWhereIdx]}名称`}
             placeholderClass='placeholder'
-            name='place' />
+            name='place'
+            value={formAction === ActionType.Update ? updateValue['place'] : ''} />
         </View>
         <View className='form_item'>
           <View className='form_label'>电话</View>
@@ -164,7 +210,8 @@ function JoinClass() {
             placeholder='输入您的电话'
             placeholderClass='placeholder'
             name='phone'
-            type='number' />
+            type='number'
+            value={formAction === ActionType.Update ? updateValue['phone'] : ''} />
         </View>
         <View onClick={openChooseAddress} className='form_item'>
           <View className='form_label'>地址</View>
@@ -174,15 +221,7 @@ function JoinClass() {
           }
           <Image className='select_arrow' src={selectArrow} />
         </View>
-        <View className='form_item'>
-          <View className='form_label'>口令</View>
-          <Input cursor-spacing={5}
-            className='form_input'
-            placeholder='输入正确的口令'
-            placeholderClass='placeholder'
-            name='token' />
-        </View>
-        <Button formType='submit' className='form_btn' hoverClass='form_btn_hover' >加入班级</Button>
+        <Button formType='submit' className='form_btn' hoverClass='form_btn_hover' >保存信息</Button>
       </Form>
       <View className='notice'>* 信息只能被同一班级的同学查看</View>
     </View>
