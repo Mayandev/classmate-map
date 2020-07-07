@@ -23,11 +23,13 @@ function TokenModal(props: IAuthModalProps) {
   return (
     <View className='auth_modal' onTouchMove={handleTouchMove}>
       <View className='modal_container'>
+        <View className='modal_title'>班级口令</View>
         <Form onSubmit={onCheck}>
           <Input cursor-spacing={5}
             className='form_input'
             placeholder='请输入口令'
             placeholderClass='placeholder'
+            autoFocus
             name='token' />
           <Button
             hoverClass='check_btn_hover'

@@ -1,13 +1,13 @@
 import { View, Image, Button, Text } from "@tarojs/components"
 import { NavBar } from 'taro-navigationbar'
-import { useState, useDidShow, memo, useEffect, useShareAppMessage } from '@tarojs/taro'
+import { useState, useDidShow, memo, useEffect, useShareAppMessage, usePageScroll } from '@tarojs/taro'
 
 import Tag from "@/components/Tag"
 import Avatar from "@/components/Avatar"
 
 import { JOIN_INFO, CLASS_MAP, CLASS_DETAIL } from '@/constants/page'
 import { LOADING, EXPECTION, JOIN_SUCCESS } from "@/constants/toast"
-import { CLASSSTORAGE, JOININFO } from '@/constants/storage'
+import { CLASSSTORAGE, JOININFO, JOINUSERS } from '@/constants/storage'
 
 import empty from '../../assets/illustration_empty.png'
 import imagePlaceholder from '../../assets/image_placeholder.png'
@@ -30,6 +30,7 @@ interface IClassDetailProps {
 let isInfoSaved = false
 let token
 let classId
+let classImage
 function ClassDetail() {
   const defaultProps: IClassDetailProps = {
     classImage: imagePlaceholder,
@@ -44,6 +45,9 @@ function ClassDetail() {
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [showTokenModal, setShowTokenModal] = useState(false)
   const [isAuth, setIsAuth] = useState(false)
+  const [joinUsers, setJoinUsers] = useState([])
+  const [navOpacity, setNavOpacity] = useState(0)
+  const [navIconTheme, setNavIconTheme] = useState('white')
 
   const bindBtnClick = () => {
     // 首先判断是否授权
@@ -66,6 +70,7 @@ function ClassDetail() {
     }
 
     // TODO: 跳转到地图页面
+    Taro.navigateTo({ url: CLASS_MAP })
 
   }
   const fetchDetail = async (_id: string) => {
@@ -81,9 +86,13 @@ function ClassDetail() {
       if (result) {
         setClassState(result['classData'])
         setIsJoin(result['isJoin'])
+        setJoinUsers(result['infoData'])
         // 缓存班级信息
-        Taro.setStorageSync(CLASSSTORAGE, result['classData'])
+        Taro.setStorage({ key: CLASSSTORAGE, data: result['classData'] })
+        // 缓存加入用户的信息
+        Taro.setStorage({ key: JOINUSERS, data: result['infoData'] })
         token = result['classData']['token']
+        classImage = result['classData']['classImage']
         setLoaded(true)
       }
       Taro.hideLoading()
@@ -146,11 +155,42 @@ function ClassDetail() {
     }
   }
 
-  // 判断是否已加入
-  useDidShow(() => {
-    const { _id } = this.$router.params
-    classId = _id
-    fetchDetail(_id)
+  const onAuthSuccess = () => {
+    console.log('success');
+    
+    if (!isInfoSaved) {
+      setTimeout(() => {
+        Taro.navigateTo({url: JOIN_INFO})
+      }, 1500)
+    }
+  }
+
+  usePageScroll(res => {
+    const { scrollTop } = res
+    if (scrollTop < 20 && scrollTop >= 0) {
+      Taro.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: '#ffffff',
+      })
+      setNavIconTheme('white')
+      setNavOpacity(0)
+      return
+    } else if (scrollTop >= 20 && scrollTop < 40) {
+      Taro.setNavigationBarColor({
+        frontColor: '#000000',
+        backgroundColor: '#000000',
+      })
+      setNavIconTheme('dark')
+      setNavOpacity(0.2)
+    } else if (scrollTop >= 40 && scrollTop < 60) {
+      setNavOpacity(0.4)
+    } else if (scrollTop >= 60 && scrollTop < 80) {
+      setNavOpacity(0.6)
+    } else if (scrollTop >= 80 && scrollTop < 100) {
+      setNavOpacity(0.8)
+    } else if (scrollTop > 100 && scrollTop <= 120) {
+      setNavOpacity(1)
+    }
   })
 
   useEffect(() => {
@@ -159,6 +199,12 @@ function ClassDetail() {
       frontColor: '#ffffff',
       backgroundColor: '#ffffff',
     })
+    const { _id } = this.$router.params
+    classId = _id
+    fetchDetail(_id)
+  }, [])
+
+  useDidShow(() => {
     // 判断是否缓存了 infoId，如果缓存了直接用，否则取数据库
     const info = Taro.getStorageSync(JOININFO)
     if (!info) {
@@ -166,8 +212,7 @@ function ClassDetail() {
       return
     }
     isInfoSaved = true
-
-  }, [])
+  })
 
   useEffect(() => {
     // 获取用户信息
@@ -183,20 +228,22 @@ function ClassDetail() {
   }, [showAuthModal])
 
   useShareAppMessage(() => {
+    console.log(classId, classImage);
+    
     return {
       title: `加入${classState.className}，查看同学分布地图。同学们，多联系。`,
-      path: `${CLASS_DETAIL}?_id=${this.$router.params['_id']}`,
-      imageUrl: shareImg
+      path: `${CLASS_DETAIL}?_id=${classId}`,
+      imageUrl: classImage
     }
   })
 
-  // const avatarDom = classState.joinUsers.map(item => {
-  //   return (
-  //     <View className='avatar_item'>
-  //       <Avatar image={item['avatarUrl']} radius={60} border={2} />
-  //     </View>
-  //   )
-  // })
+  const avatarDom = joinUsers.map(item => {
+    return (
+      <View className='avatar_item'>
+        <Avatar image={item['avatarUrl']} radius={80} border={3} />
+      </View>
+    )
+  })
 
   return (
     <View className='page_detail'>
@@ -205,13 +252,17 @@ function ClassDetail() {
         <NavBar
           home
           back
-          iconTheme={'white'}
-          background={'rgba(0,0,0,0)'}
+          iconTheme={navIconTheme}
+          background={`rgba(255,255,255,${navOpacity})`}
           onHome={() => {
             Taro.redirectTo({ url: '/pages/index/index' });
           }} />
       </View>
-      {showAuthModal ? <AuthModal onClose={() => { setShowAuthModal(false) }} /> : null}
+      {showAuthModal 
+        ? <AuthModal 
+          onClose={() => { setShowAuthModal(false) }}
+          onSuccess={onAuthSuccess}
+          /> : null}
       {showTokenModal ? <TokenModal
         onClose={() => { setShowTokenModal(false) }}
         onCheck={checkToken} /> : null}
@@ -243,6 +294,7 @@ function ClassDetail() {
             </View>)
             : (
               <View className='avatars'>
+                {avatarDom}
               </View>
             )
           )
@@ -251,7 +303,7 @@ function ClassDetail() {
           <Button hoverClass='btn_hover'
             className='action_btn'
             onClick={bindBtnClick}>
-            {isJoin ? '查看地图' : '加入班级'}
+            {isJoin ? '查看同学分布地图' : '加入班级'}
           </Button>
         </View>
       </View>

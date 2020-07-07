@@ -11,7 +11,7 @@
   }
 
   .modal_container {
-    @include wh(568px, 284px);
+    @include wh(568px, 384px);
     @include flex(column, space-evenly, center);
     position: fixed;
     top: 45%;
@@ -21,17 +21,9 @@
     border-radius: 20px;
     background-color: #FFFFFF;
 
-    .modal_title-container {
-      @include flex(column, center, center);
+    .modal_title {
 
-      .modal_title {
         @include font('normal', bold);
-      }
-
-      .modal_desc {
-        @include font('light', nomal, 28px);
-        margin-top: 20px;
-      }
     }
     .placeholder {
       @include font('placeholader');

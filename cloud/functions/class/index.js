@@ -35,9 +35,17 @@ exports.main = async (event, context) => {
 		const { data } = await db.collection(collection).where(queryData).get()
 		if (data.length) {
 			// 查询到班级
-			const [user] = data[0].joinUsers.filter(v => v.openId === OPENID)
-			// 如果用户加入，返回标志位
-			if (user) isJoin = true
+			const classId = data[0]._id
+			// 查询user表，看是否加入
+			const userData  = await db.collection('user').where({
+				openId: OPENID
+			}).get()
+
+			const joinClasses = userData['data'][0]['joinClasses']
+			const [id] = joinClasses.filter(id => id === classId)
+			if (id) {
+				isJoin  = true
+			}
 		}
 		ctx.body = { data, isJoin }
 	})

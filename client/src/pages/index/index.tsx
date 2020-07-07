@@ -87,7 +87,7 @@ function Index() {
         }
       }
     })
-  }, [])
+  })
 
   const classItemsDom = joinClasses.map(item => {
     return (<ClassItem

@@ -7,11 +7,12 @@ import { AUTH_SUCCESS } from "@/constants/toast"
 
 interface IAuthModalProps {
   onClose: Function   // 关闭事件
+  onSuccess?: Function // 授权成功事件
 }
 
 function AuthModal(props: IAuthModalProps) {
 
-  const { onClose } = props
+  const { onClose, onSuccess } = props
 
   // 防止滚动穿透
   const handleTouchMove = (e: any) => {
@@ -39,6 +40,9 @@ function AuthModal(props: IAuthModalProps) {
       Taro.showToast({title: AUTH_SUCCESS})
       // 关闭弹窗
       onClose()
+      if (onSuccess) {
+        onSuccess()
+      }
     }
   }
 

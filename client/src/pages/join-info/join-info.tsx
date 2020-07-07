@@ -12,6 +12,7 @@ import selectArrow from '../../assets/icon_select_arrow.png'
 
 import './join-info.scss'
 import { CANCEL_SELECT, LOADING, EXPECTION, SAVE_SUCCESS, UPDATE_SUCCESS } from "@/constants/toast"
+import { PRIMARY_COLOR } from "@/constants/theme"
 
 enum ActionType {
   Add,
@@ -93,12 +94,21 @@ function JoinClass() {
           console.log(result);
 
           if (result && result['data']) {
+            Taro.hideLoading()
             Taro.setStorageSync(JOININFO, result['data'])
-            Taro.showToast({ title: SAVE_SUCCESS })
             // 返回页面
-            setTimeout(() => {
-              Taro.navigateBack()
-            }, 1500);
+            Taro.showModal({
+              title: SAVE_SUCCESS,
+              content: '您可以在首页-点击头像，对信息进行修改',
+              showCancel: false,
+              confirmText: '我知道了',
+              confirmColor: PRIMARY_COLOR,
+              success: (res) => {
+                if (res.confirm) {
+                  Taro.navigateBack()
+                }
+              }
+            })
           }
           break;
         case ActionType.Update:
@@ -121,6 +131,8 @@ function JoinClass() {
       }
 
     } catch (error) {
+      console.log(error);
+      
       showToast(EXPECTION)
     }
 
@@ -179,7 +191,7 @@ function JoinClass() {
       </View>
       <Form onSubmit={onJoinSubmit} className='form_container'>
         <View className='form_item'>
-          <View className='form_label'>姓名</View>
+          <View className='form_label'>姓名：</View>
           <Input cursor-spacing={5}
             className='form_input'
             placeholder='输入您的姓名或昵称'
@@ -188,7 +200,7 @@ function JoinClass() {
             value={formAction === ActionType.Update ? updateValue['name'] : ''} />
         </View>
         <View className='form_item'>
-          <View className='form_label'>去向</View>
+          <View className='form_label'>去向：</View>
           <Picker value={goWhereIdx} mode='selector' range={whereOptions} onChange={goWhereChange}>
             <View className='picker'>{whereOptions[goWhereIdx]}</View>
           </Picker>
@@ -204,7 +216,7 @@ function JoinClass() {
             value={formAction === ActionType.Update ? updateValue['place'] : ''} />
         </View>
         <View className='form_item'>
-          <View className='form_label'>电话</View>
+          <View className='form_label'>电话：</View>
           <Input cursor-spacing={5}
             className='form_input'
             placeholder='输入您的电话'
@@ -214,7 +226,7 @@ function JoinClass() {
             value={formAction === ActionType.Update ? updateValue['phone'] : ''} />
         </View>
         <View onClick={openChooseAddress} className='form_item'>
-          <View className='form_label'>地址</View>
+          <View className='form_label'>地址：</View>
           {addressSelect.length === 0
             ? <View className='placeholder'>选择一个地址</View>
             : <View className='select_address'>{addressSelect}</View>

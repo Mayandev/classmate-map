@@ -10,7 +10,8 @@ import iconPhone from '../../assets/icon_phone.png'
 import iconLocation from '../../assets/icon_location.png'
 import { useState, memo, useEffect } from "@tarojs/taro"
 import { LOADING } from '@/constants/toast'
-import { CLASSSTORAGE } from '@/constants/storage'
+import { JOINUSERS } from '@/constants/storage'
+import joinInfo from "../join-info/join-info"
 
 interface IUserProps {
   avatarUrl: string
@@ -46,9 +47,8 @@ function ClassMap() {
   useEffect(() => {
     Taro.showLoading({ title: LOADING })
     // 从缓存获取 joinUser 的信息
-    const classDetail = Taro.getStorageSync(CLASSSTORAGE)
-    joinUsers = classDetail['joinUsers'] || []
-    let markArray = Array();
+    joinUsers = Taro.getStorageSync(JOINUSERS) || []
+    let markArray = Array()
     joinUsers.map(user => {
       const mark = {
         id: user['openId'],
@@ -87,8 +87,6 @@ function ClassMap() {
 
   const onMarkerTap = (e) => {
     const { markerId } = e
-    console.log(joinUsers);
-    
     const [user] = joinUsers.filter(user => user.openId === markerId)
     setCurrentUser(user)
     setCallOutOpen('open')
