@@ -11,7 +11,6 @@ import { CLASSSTORAGE, JOININFO, JOINUSERS } from '@/constants/storage'
 
 import empty from '../../assets/illustration_empty.png'
 import imagePlaceholder from '../../assets/image_placeholder.png'
-import shareImg from '../../assets/illustration_share.png'
 
 import './class-detail.scss'
 import AuthModal from "@/components/AuthModal"

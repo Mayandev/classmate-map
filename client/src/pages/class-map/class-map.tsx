@@ -11,7 +11,6 @@ import iconLocation from '../../assets/icon_location.png'
 import { useState, memo, useEffect } from "@tarojs/taro"
 import { LOADING } from '@/constants/toast'
 import { JOINUSERS } from '@/constants/storage'
-import joinInfo from "../join-info/join-info"
 
 interface IUserProps {
   avatarUrl: string
