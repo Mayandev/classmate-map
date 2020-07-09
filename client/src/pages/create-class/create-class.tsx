@@ -6,15 +6,23 @@ import { NavBar } from 'taro-navigationbar'
 import './create-class.scss'
 import illustrate from '../../assets/illustration_create_class_form.png'
 import selectArrow from '../../assets/icon_select_arrow.png'
-import { EXPECTION, AUTH_SUCCESS, CREATE_SUCCESS, CREATING } from '@/constants/toast'
+import { EXPECTION, CREATE_SUCCESS, CREATING } from '@/constants/toast'
 import { checkAddForm } from '@/utils/checkform';
 import { CREATE_SUCCESS_PAGE } from '@/constants/page';
+import { CREATE_TEMPLATE_MSG_ID } from '@/constants/template';
+import { PRIMARY_COLOR } from '@/constants/theme';
 
 function CreateClass() {
 
   const [imagePath, setImagePath] = useState('')
   const [imageName, setImageName] = useState('default')
   const onCreateSubmit = async (e) => {
+    const res = await Taro.requestSubscribeMessage({
+      tmplIds: [CREATE_TEMPLATE_MSG_ID],
+      success: (res) => {
+        console.log(res);
+      }
+    })
     const formData = e.detail.value
 
     try {
@@ -22,6 +30,10 @@ function CreateClass() {
       if (!await checkAddForm({ ...formData, imagePath })) {
         return
       }
+
+      console.log(res);
+      
+
       Taro.showLoading({ title: CREATING })
 
       // 先上传图片
@@ -51,6 +63,13 @@ function CreateClass() {
         Taro.showToast({ title: CREATE_SUCCESS })
         Taro.redirectTo({
           url: `${CREATE_SUCCESS_PAGE}?className=${className}&token=${token}&_id=${result['data']['_id']}`
+        })
+        Taro.cloud.callFunction({
+          name: 'msg',
+          data: {
+            classInfo: formData,
+            classId: result['data']['_id']
+          }
         })
       }
 

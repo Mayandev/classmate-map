@@ -125,7 +125,7 @@ function JoinClass() {
             // 返回页面
             setTimeout(() => {
               Taro.navigateBack()
-            }, 1500);
+            }, 1500)
           }
           break;
       }
@@ -187,7 +187,7 @@ function JoinClass() {
         color={'#FFFFFF'}
       />
       <View className='form_bg' onClick={selectAvatar}>
-        <Avatar image={avatar} radius={148} border={4} />
+        <Avatar image={formAction === ActionType.Update ? updateValue['name'] : avatar} radius={148} border={4} />
       </View>
       <Form onSubmit={onJoinSubmit} className='form_container'>
         <View className='form_item'>

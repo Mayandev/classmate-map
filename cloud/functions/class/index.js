@@ -25,7 +25,7 @@ exports.main = async (event, context) => {
 
 	app.router('create', async (ctx, next) => {
 		const data = await db.collection(collection).add({
-			data: { ...createData, creatorID: OPENID, joinUsers: [] }
+			data: { ...createData, creatorID: OPENID, joinUsers: [], usersId: [] }
 		})
 		ctx.body = { data }
 	})

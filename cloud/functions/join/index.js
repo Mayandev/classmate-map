@@ -14,7 +14,8 @@ exports.main = async (event) => {
   // 更新 class 数据库中的 joinUsers 字段
   const classRes = await db.collection(classCollection).doc(classId).update({
     data: {
-      joinUsers: _.push(infoId)
+      joinUsers: _.push(infoId),
+      usersId: _push(OPENID)
     }
   })
 
