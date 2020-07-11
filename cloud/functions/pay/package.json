@@ -1,5 +1,5 @@
 {
-  "name": "msg",
+  "name": "secret",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,8 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "md5": "^2.2.1",
-    "wx-server-sdk": "latest",
-    "tcb-router": "latest"
-
+    "wx-server-sdk": "~2.1.2"
   }
 }

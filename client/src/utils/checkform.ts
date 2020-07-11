@@ -13,7 +13,8 @@ import {
   WRONG_TOKEN
 } from '@/constants/toast'
 import Taro, { showTabBar, showLoading }  from '@tarojs/taro'
-import { showToast } from '@/utils/utils';
+import { showToast, showLimitModal } from '@/utils/utils';
+import { PRIMARY_COLOR } from '@/constants/theme';
 
 
 
@@ -29,13 +30,13 @@ const checkPhone = (phone: 'string') => {
   return /^[1]([3-9])[0-9]{9}$/.test(phone)
 }
 
-const checkCount = (count: string) => {
+const checkCount = (count: string, countLimit: number) => {
   const num = Number(count)
-  return num > 100 || num <= 0
+  return num > countLimit || num <= 0
 }
 
 const checkAddForm = async (data) => {
-  const { creator, className, count, token, imagePath } = data;
+  const { creator, className, count, token, imagePath, countLimit } = data;
   
   if (checkFormEmpty(creator)) {
     showToast(EMPTY_CREATOR)
@@ -46,8 +47,8 @@ const checkAddForm = async (data) => {
   } else if (checkFormEmpty(className)) {
     showToast(EMPTY_CLASSNAME)
     return false
-  } else if (checkCount(count)) {
-    showToast(ILLEGAL_COUNT)
+  } else if (checkCount(count, countLimit)) {
+    showLimitModal('提示', `班级人数需≤${countLimit}，升级高级用户可以设置更多人数`, '了解一下')
     return false
   } else if (checkFormEmpty(imagePath)) {
     showToast(EMPTY_IMAGE)

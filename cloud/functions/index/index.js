@@ -17,13 +17,14 @@ exports.main = async (event) => {
   // 如果数据存在
   if (data.length) {
     const classIds = data[0].joinClasses
+    const createClasses = data[0].createClasses
     // 查询班级集合，找出符合的班级
     const { data: joinClasses } = await db.collection(classCollection).where({
       _id: _.in(classIds)
     }).get()
-    return { joinClasses }
+    return { joinClasses, createClasses }
   }
 
-  return {joinClasses: []}
+  return {joinClasses: [], createClasses: []}
 
 }

@@ -11,6 +11,7 @@ import iconLocation from '../../assets/icon_location.png'
 import { useState, memo, useEffect } from "@tarojs/taro"
 import { LOADING } from '@/constants/toast'
 import { JOINUSERS } from '@/constants/storage'
+import { WHEREOPTION } from "@/constants/data"
 
 interface IUserProps {
   avatarUrl: string
@@ -114,7 +115,7 @@ function ClassMap() {
           <View className='info_detail'>
             <View className='info_item' onClick={() => {Taro.setClipboardData({data: currentUser.place})}}>
               <Image className='info_icon' src={iconCompass} />
-              <View className='info_txt'>去向：{currentUser.state} / {currentUser.place}</View>
+              <View className='info_txt'>去向：{WHEREOPTION[currentUser.state]} / {currentUser.place}</View>
             </View>
             <View onClick={() => {Taro.setClipboardData({data: currentUser.phone})}} className='info_item'>
               <Image className='info_icon' src={iconPhone} />

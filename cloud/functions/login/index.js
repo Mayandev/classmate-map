@@ -19,7 +19,8 @@ exports.main = async (event) => {
         userInfo,
         joinClasses: [],
         createClasses: [],
-        level: 'normal'
+        level: 'normal',
+        state: 1        // 1 正常  0 冻结
       },
     })
   } else {

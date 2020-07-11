@@ -16,4 +16,11 @@
     @include shadow();
   }
 
+  .notice {
+    @include font('light', normal, 32px)
+  }
+  .attention_txt {
+    color: $primary-color;
+  }
+
 }

@@ -1,6 +1,6 @@
 
 import { useState, memo } from '@tarojs/taro';
-import { View, Image, Input, Form, Button } from '@tarojs/components';
+import { View, Image, Input, Form, Button, Text } from '@tarojs/components';
 import { NavBar } from 'taro-navigationbar'
 
 import './create-class.scss'
@@ -8,14 +8,15 @@ import illustrate from '../../assets/illustration_create_class_form.png'
 import selectArrow from '../../assets/icon_select_arrow.png'
 import { EXPECTION, CREATE_SUCCESS, CREATING } from '@/constants/toast'
 import { checkAddForm } from '@/utils/checkform';
-import { CREATE_SUCCESS_PAGE } from '@/constants/page';
+import { CREATE_SUCCESS_PAGE, CREATE_ATTENTION } from '@/constants/page';
 import { CREATE_TEMPLATE_MSG_ID } from '@/constants/template';
-import { PRIMARY_COLOR } from '@/constants/theme';
+import { LIMITSTORAGE } from '@/constants/storage';
 
 function CreateClass() {
 
   const [imagePath, setImagePath] = useState('')
   const [imageName, setImageName] = useState('default')
+  const [countLimit, setCountLimit] = useState(50)
   const onCreateSubmit = async (e) => {
     const res = await Taro.requestSubscribeMessage({
       tmplIds: [CREATE_TEMPLATE_MSG_ID],
@@ -27,12 +28,11 @@ function CreateClass() {
 
     try {
       // 校验数据
-      if (!await checkAddForm({ ...formData, imagePath })) {
+      if (!await checkAddForm({ ...formData, imagePath, countLimit })) {
         return
       }
 
-      console.log(res);
-      
+      // TODO: 对小程序进行内容检测
 
       Taro.showLoading({ title: CREATING })
 
@@ -67,6 +67,7 @@ function CreateClass() {
         Taro.cloud.callFunction({
           name: 'msg',
           data: {
+            $url: 'createMsg',
             classInfo: formData,
             classId: result['data']['_id']
           }
@@ -93,6 +94,11 @@ function CreateClass() {
       Taro.showToast({ title: '取消选择', icon: 'none' })
     }
   }
+  useState(() => {
+    // 获取加入班级人数限制
+    const limitInfo = Taro.getStorageSync(LIMITSTORAGE)
+    setCountLimit(limitInfo['countLimit'])
+  })
 
   return (
     <View className='create_page'>
@@ -129,7 +135,7 @@ function CreateClass() {
             name='count'
             type='number'
             className='form_input'
-            placeholder='班级人数需≤100'
+            placeholder={`班级人数需≤${countLimit}`}
             placeholderClass='placeholder' />
         </View>
         <View className='form_item' onClick={chooseImage}>
@@ -142,7 +148,14 @@ function CreateClass() {
         </View>
         <Button formType='submit' className='form_btn' hoverClass='form_btn_hover'>创建班级</Button>
       </Form>
-      <View className='notice'>* 请记住创建的加入口令</View>
+      <View className='notice'>
+        * 创建前请先阅读
+        <Text
+          className='attention_txt'
+          onClick={() => Taro.navigateTo({ url: CREATE_ATTENTION })}>
+          《创建规范》
+        </Text>
+      </View>
     </View>
   )
 }

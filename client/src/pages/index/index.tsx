@@ -1,4 +1,4 @@
-import Taro, { useState, useEffect, usePullDownRefresh } from '@tarojs/taro'
+import Taro, { useState, useEffect, usePullDownRefresh, getStorageSync, useDidShow } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import NavBar from 'taro-navigationbar'
 
@@ -14,9 +14,13 @@ import createClass from '../../assets/illustration_create_class.png'
 import empty from '../../assets/illustration_empty.png'
 import AuthModal from '@/components/AuthModal'
 import { LOADING, EXPECTION } from '@/constants/toast'
-import { showToast } from '@/utils/utils';
+import { showToast, showLimitModal } from '@/utils/utils';
+import { getLevel } from '@/utils/callcloudfunction'
+import { LIMITSTORAGE } from '@/constants/storage'
+import Tag from '@/components/Tag'
+import { PRO_TEXT_COLOR, PRO_BG_COLOR } from '@/constants/theme'
 
-
+let createClasses
 function Index() {
   const [navHeight, setNavHeight] = useState(0)
   const [statusBarHeight, setStatusBarHeight] = useState(0)
@@ -25,9 +29,42 @@ function Index() {
   const [nickname, setNickname] = useState('未授权')
   const [isAuth, setIsAuth] = useState(false)
   const [joinClasses, setJoinClasses] = useState([])
+  const [userLevel, setUserLevel] = useState('normal')
 
   const navigateTo = (url: string) => {
     Taro.navigateTo({ url });
+  }
+
+  const bindCreateClass = () => {
+    if (!isAuth) {
+      setShowAuthModal(true)
+      return
+    }
+    const limitInfo = Taro.getStorageSync(LIMITSTORAGE) || []
+    if (!limitInfo['createLimit']) {
+      showToast(EXPECTION)
+      return
+    }
+
+    if (limitInfo['createLimit'] > createClasses.length) {
+      navigateTo(CREATE_CLASS)
+    } else {
+      showLimitModal('提示', '创建班级数已满，您需要升级账户', '升级 Pro')
+    }
+
+  }
+
+  const fetchLimitInfo = async () => {
+  console.log('fetch limitinfo');
+  
+    const limitInfo = await getLevel()
+    if (limitInfo && limitInfo['level']) {
+      Taro.setStorageSync(
+         LIMITSTORAGE,
+        limitInfo['limitData']
+      )
+      setUserLevel(limitInfo['level'])
+    }
   }
 
   const fetchIndexData = async () => {
@@ -36,17 +73,22 @@ function Index() {
       const { result } = await Taro.cloud.callFunction({
         name: 'index'
       })
-      console.log(result);
 
       if (result) {
         const data = result['joinClasses']
         setJoinClasses(data)
+        createClasses = result['createClasses']
       }
+      fetchLimitInfo()
       Taro.hideLoading()
     } catch (error) {
       showToast(EXPECTION)
     }
   }
+
+  useDidShow(() => {
+    fetchLimitInfo()
+  })
 
 
   usePullDownRefresh(() => {
@@ -102,7 +144,7 @@ function Index() {
   return (
     <View className='index'>
       <NavBar />
-      {showAuthModal ? <AuthModal onClose={() => { setShowAuthModal(false) }} /> : null}
+      {showAuthModal ? <AuthModal onSuccess={() => {fetchLimitInfo()}} onClose={() => { setShowAuthModal(false) }} /> : null}
       <View
         className='user_info'
         style={{ height: `${navHeight}px`, top: `${statusBarHeight}px` }}
@@ -110,6 +152,16 @@ function Index() {
       >
         <Avatar radius={64} image={avatarUrl}></Avatar>
         <Text className='nickname'>{nickname}</Text>
+        {
+          userLevel == 'normal' ? null : <View style={{ marginLeft: '15rpx' }}>
+            <Tag
+              label={userLevel}
+              labelColor={PRO_TEXT_COLOR}
+              bgColor={PRO_BG_COLOR}
+              height={40}
+              width={60} />
+          </View>
+        }
       </View>
       <View className="page">
         <View className='action_container'>
@@ -127,7 +179,7 @@ function Index() {
             <Image className="aciton_image" src={joinClass} />
           </View>
           <View
-            onClick={() => { isAuth ? navigateTo(CREATE_CLASS) : setShowAuthModal(true) }}
+            onClick={bindCreateClass}
             className='action_item'>
             <Image className='aciton_image' src={createClass} />
             <View className='action_txt txt_right'>

@@ -25,3 +25,6 @@ export const CREATING = '创建中...'
 export const SAVE_SUCCESS = '信息保存成功'
 export const UPDATE_SUCCESS = '信息更新成功'
 
+export const THIRD_PARTY = '支付需要跳转到第三方平台进行'
+
+export const PAY_SUCCESS = '支付成功'

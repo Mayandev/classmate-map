@@ -8,7 +8,7 @@
 
 @mixin font($type, $bold: normal, $size: 36px) {
   font-weight: $bold;
-  letter-spacing: 4px;
+  letter-spacing: 2px;
   font-size: $size;
   @if $type == 'heading' {
     font-size: 42px;

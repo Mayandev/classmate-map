@@ -1,1 +1,1 @@
-export const CREATE_TEMPLATE_MSG_ID = 'Nrkkwc0gHjg52ccBvVLjDo0rUMvH0wPltrsDkME1OHQ'
+export const CREATE_TEMPLATE_MSG_ID = 'hWSLUxrsphQb5G3_v9fuGsh3apcCYwbB51nuBdDXDI4'

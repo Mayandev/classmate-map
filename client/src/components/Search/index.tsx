@@ -27,6 +27,7 @@ function Search(props: ISearchProps) {
         placeholder={hint}
         placeholderClass='input_hint'
         confirm-type='search'
+        autoFocus
         onConfirm={onSearch ? onSearch : () => {}}
       />
     </View>

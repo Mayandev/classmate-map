@@ -1,7 +1,6 @@
 @import "../../styles/mixin.scss";
 
 .tag_container {
-  @include wh(110px, 48px);
   border-radius: 6px;
   @include flex(row, center, center);
   .label {

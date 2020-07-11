@@ -20,29 +20,28 @@ function AuthModal(props: IAuthModalProps) {
     e.stopPropagation()
   }
 
-  const bindGetUserInfo = (e) => {
+  const bindGetUserInfo = async (e) => {
     // 将用户信息进行缓存
     const data = Taro.getStorageSync('userInfo');
-    if (!data &&  e.detail.userInfo) {
+    if (!data && e.detail.userInfo) {
       const { userInfo } = e.detail;
-      Taro.setStorage({key: 'userInfo', data: userInfo})
+      Taro.setStorage({ key: 'userInfo', data: userInfo })
       // 并请求登录云函数，获取openid
-      Taro.cloud.callFunction({
+      const { result } = await Taro.cloud.callFunction({
         name: 'login',
-        data: {userInfo},
-        success: res => {
-          if (res.result) {
-            Taro.setStorage({key: 'openid', data: res.result['openid']});
-          }
-        }
+        data: { userInfo }
       })
-      // 提示授权成功
-      Taro.showToast({title: AUTH_SUCCESS})
-      // 关闭弹窗
-      onClose()
-      if (onSuccess) {
-        onSuccess()
+      if (result && result['openid']) {
+        Taro.setStorage({ key: 'openid', data: result['openid'] })
+        // 提示授权成功
+        Taro.showToast({ title: AUTH_SUCCESS })
+        // 关闭弹窗
+        onClose()
+        if (onSuccess) {
+          onSuccess()
+        }
       }
+
     }
   }
 

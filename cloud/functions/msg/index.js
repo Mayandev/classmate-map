@@ -3,35 +3,72 @@ const cloud = require('wx-server-sdk')
 cloud.init({
 	env: cloud.DYNAMIC_CURRENT_ENV
 })
+const TcbRouter = require('tcb-router')
+
+const db = cloud.database()
+const _ = db.command
+const $ = db.command.aggregate
 // 云函数入口函数
 exports.main = async(event, context) => {
-  return sendTemplateMessage(event)
-}
-
-//小程序模版消息推送
-async function sendTemplateMessage(event) {
-  const {
-    OPENID
-  } = cloud.getWXContext()
-
+  const app = new TcbRouter({ event })
+  const { OPENID } = cloud.getWXContext()
   const {classInfo, classId} = event
-  const templateId = 'Nrkkwc0gHjg52ccBvVLjDo0rUMvH0wPltrsDkME1OHQ'
-  const {className, token, creator, count} = classInfo
-  const sendResult = await cloud.openapi.subscribeMessage.send({
-    touser: OPENID,
-    templateId,
-    page: `pages/class-detail/class-detail?_id=${classId}`,
-    data: {
-      thing1: {
-        value: className,
-      },
-      thing2: {
-        value: creator,
-      },
-      thing5: {
-        value: token,
-      },
-    }
+  
+
+	app.use(async (ctx, next) => {
+		ctx.data = {}
+		await next();
+	});
+
+	app.router('createMsg', async (ctx, next) => {
+    const templateId = 'hWSLUxrsphQb5G3_v9fuGsh3apcCYwbB51nuBdDXDI4'
+    const {className, token, creator, count} = classInfo
+    const sendResult = await cloud.openapi.subscribeMessage.send({
+      touser: OPENID,
+      templateId,
+      page: `pages/class-detail/class-detail?_id=${classId}`,
+      data: {
+        thing1: {
+          value: className,
+        },
+        thing2: {
+          value: creator,
+        },
+        number4: {
+          value: count,
+        },
+        character_string5: {
+          value: token
+        }
+      }
+    })
+    ctx.body = {sendResult}
   })
-  return sendResult
+
+  app.router('joinMsg', async (ctx, next) => {
+    const templateId = '0fuHpw7TekI10fYBVJ_MKAFqCFoxYS0pcoMs2CttE9A'
+    const {className} = classInfo
+
+    const sendResult = await cloud.openapi.subscribeMessage.send({
+      touser: OPENID,
+      templateId,
+      page: `pages/class-detail/class-detail?_id=${classId}`,
+      data: {
+        thing1: {
+          value: className,
+        },
+        thing2: {
+          value: creator,
+        },
+        number4: {
+          value: count,
+        },
+        character_string5: {
+          value: token
+        }
+      }
+    })
+    ctx.body = {sendResult}
+  })
+	return app.serve();
 }

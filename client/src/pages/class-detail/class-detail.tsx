@@ -16,6 +16,7 @@ import './class-detail.scss'
 import AuthModal from "@/components/AuthModal"
 import TokenModal from "@/components/TokenModal"
 import { showToast } from '@/utils/utils';
+import { isClassFull } from "@/utils/callcloudfunction"
 
 
 interface IClassDetailProps {
@@ -127,9 +128,17 @@ function ClassDetail() {
       showToast('口令错误')
       return
     }
+    
     // TODO: 插入数据，跳转到地图页面
     try {
       Taro.showLoading({ title: LOADING })
+      // 判断是否已经加满
+      const  fullData = await isClassFull(classId);
+      console.log('isFull', fullData);
+      if (fullData && fullData['isFull'] == true) {
+        showToast('班级人数已满')
+        return
+      }
       // 获取 infoId
       const info = Taro.getStorageSync(JOININFO)
       // 调用加入接口
@@ -150,6 +159,8 @@ function ClassDetail() {
         }, 1500);
       }
     } catch (error) {
+      console.log(error);
+      
       showToast(EXPECTION)
     }
   }
@@ -161,6 +172,8 @@ function ClassDetail() {
       setTimeout(() => {
         Taro.navigateTo({url: JOIN_INFO})
       }, 1500)
+    } else {
+      setShowTokenModal(true)
     }
   }
 

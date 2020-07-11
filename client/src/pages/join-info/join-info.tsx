@@ -13,6 +13,7 @@ import selectArrow from '../../assets/icon_select_arrow.png'
 import './join-info.scss'
 import { CANCEL_SELECT, LOADING, EXPECTION, SAVE_SUCCESS, UPDATE_SUCCESS } from "@/constants/toast"
 import { PRIMARY_COLOR } from "@/constants/theme"
+import { WHEREOPTION, PLACEOPTION } from "@/constants/data"
 
 enum ActionType {
   Add,
@@ -22,8 +23,6 @@ let avatarSelected = false
 let avatarName = ''
 let geo
 function JoinClass() {
-  const whereOptions = ['升学', '工作']
-  const placeOption = ['学校', '单位']
   const [goWhereIdx, setGoWhereIdx] = useState(0)
   const [addressSelect, setAddressSelect] = useState('')
   const [avatar, setAvatar] = useState(defaulAvatar)
@@ -187,7 +186,7 @@ function JoinClass() {
         color={'#FFFFFF'}
       />
       <View className='form_bg' onClick={selectAvatar}>
-        <Avatar image={formAction === ActionType.Update ? updateValue['name'] : avatar} radius={148} border={4} />
+        <Avatar image={formAction === ActionType.Update ? updateValue['userAvatar'] : avatar} radius={148} border={4} />
       </View>
       <Form onSubmit={onJoinSubmit} className='form_container'>
         <View className='form_item'>
@@ -201,16 +200,16 @@ function JoinClass() {
         </View>
         <View className='form_item'>
           <View className='form_label'>去向：</View>
-          <Picker value={goWhereIdx} mode='selector' range={whereOptions} onChange={goWhereChange}>
-            <View className='picker'>{whereOptions[goWhereIdx]}</View>
+          <Picker value={goWhereIdx} mode='selector' range={WHEREOPTION} onChange={goWhereChange}>
+            <View className='picker'>{WHEREOPTION[goWhereIdx]}</View>
           </Picker>
           <Image className='select_arrow' src={selectArrow} />
         </View>
         <View className='form_item'>
-          <View className='form_label'>{placeOption[goWhereIdx]}：</View>
+          <View className='form_label'>{PLACEOPTION[goWhereIdx]}：</View>
           <Input cursor-spacing={5}
             className='form_input'
-            placeholder={`输入${placeOption[goWhereIdx]}名称`}
+            placeholder={`输入${PLACEOPTION[goWhereIdx]}名称`}
             placeholderClass='placeholder'
             name='place'
             value={formAction === ActionType.Update ? updateValue['place'] : ''} />
