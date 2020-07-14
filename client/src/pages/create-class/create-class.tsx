@@ -67,7 +67,7 @@ function CreateClass() {
       if (result) {
         Taro.showToast({ title: CREATE_SUCCESS })
         Taro.redirectTo({
-          url: `${CREATE_SUCCESS_PAGE}?className=${className}&token=${token}&_id=${result['data']['_id']}`
+          url: `${CREATE_SUCCESS_PAGE}?creator=${creator}&className=${className}&token=${token}&_id=${result['data']['_id']}`
         })
         Taro.cloud.callFunction({
           name: 'msg',

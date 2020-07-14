@@ -7,11 +7,13 @@ import successIcon from '../../../assets/icon_create_success.png'
 import copyIcon from '../../../assets/icon_copy.png'
 import shareImg from '../../../assets/illustration_share.png'
 import { CLASS_DETAIL } from '@/constants/page'
+import { showToast } from '@/utils/utils';
 
 function CreateSuccess() {
   const [token, setToken] = useState<string>('')
   const [classId, setClassId] = useState(null)
   const [className, setClassName] = useState('')
+  const [creatorName, setCreatorName] = useState('')
 
   const copyToken = (token: string) => {
     Taro.setClipboardData({ data: token })
@@ -19,16 +21,22 @@ function CreateSuccess() {
 
 
   useEffect(() => {
-    const { _id, token, className } = this.$router.params
-    
+    const { _id, token, className, creator } = this.$router.params
+    Taro.setClipboardData({
+      data: token,
+      success: (res) => {
+        Taro.showToast({title: '口令已复制'})
+      }
+    })
     setToken(token)
     setClassId(_id)
     setClassName(className)
+    setCreatorName(creator)
   }, [])
 
   useShareAppMessage(() => {
     return {
-      title: `加入${className}，查看同学分布地图。同学们，多联系。`,
+      title: `${creatorName}邀请你加入${className}，一起查看班级同学分布地图，多联(蹭)系(饭)。`,
       path: `${CLASS_DETAIL}?_id=${classId}`,
       imageUrl: shareImg
     }

@@ -7,7 +7,7 @@ import Avatar from "@/components/Avatar"
 
 import { JOIN_INFO, CLASS_MAP, CLASS_DETAIL } from '@/constants/page'
 import { LOADING, EXPECTION, JOIN_SUCCESS } from "@/constants/toast"
-import { CLASSSTORAGE, JOININFO, JOINUSERS } from '@/constants/storage'
+import { CLASSSTORAGE, JOININFO, JOINUSERS, USERSTORAGE } from '@/constants/storage'
 
 import empty from '../../assets/illustration_empty.png'
 import imagePlaceholder from '../../assets/image_placeholder.png'
@@ -31,6 +31,7 @@ let isInfoSaved = false
 let token
 let classId
 let classImage
+let classCreator
 function ClassDetail() {
   const defaultProps: IClassDetailProps = {
     classImage: imagePlaceholder,
@@ -93,6 +94,7 @@ function ClassDetail() {
         Taro.setStorage({ key: JOINUSERS, data: result['infoData'] })
         token = result['classData']['token']
         classImage = result['classData']['classImage']
+        classCreator = result['classData']['creator']
         setLoaded(true)
       }
       Taro.hideLoading()
@@ -241,9 +243,15 @@ function ClassDetail() {
 
   useShareAppMessage(() => {
     console.log(classId, classImage);
-    
+    let shareName
+    // 获取用户昵称
+    const userInfo = Taro.getStorageSync(USERSTORAGE)
+    if (!userInfo) {
+      shareName = classCreator
+    }
+    shareName = userInfo['nickName']
     return {
-      title: `加入${classState.className}，查看同学分布地图。同学们，多联系。`,
+      title: `${shareName}邀请你加入${classState.className}，一起查看班级同学分布地图，多联(蹭)系(饭)。`,
       path: `${CLASS_DETAIL}?_id=${classId}`,
       imageUrl: classImage
     }
