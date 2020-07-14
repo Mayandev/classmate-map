@@ -1,6 +1,6 @@
 import { View, Form, Input, Button, Image, Picker } from "@tarojs/components"
 import { NavBar } from 'taro-navigationbar'
-import { useEffect, useState, memo } from '@tarojs/taro'
+import { useEffect, useState, memo, useDidHide } from '@tarojs/taro'
 
 import Avatar from "@/components/Avatar"
 import { USERSTORAGE, JOININFO } from "@/constants/storage"
@@ -22,6 +22,7 @@ enum ActionType {
 let avatarSelected = false
 let avatarName = ''
 let geo
+let addressClickCount = 0
 function JoinClass() {
   const [goWhereIdx, setGoWhereIdx] = useState(0)
   const [addressSelect, setAddressSelect] = useState('')
@@ -33,13 +34,32 @@ function JoinClass() {
     setGoWhereIdx(value);
   }
   const openChooseAddress = async () => {
+    if (addressClickCount) {
+      const settings = await Taro.getSetting()
+      if (!settings.authSetting['scope.userLocation']) {
+        Taro.showModal({
+          title: '提示',
+          content: '您需要重新授权地理位置信息',
+          confirmText: '去授权',
+          confirmColor: PRIMARY_COLOR,
+          success: (res) => {
+            if (res.confirm) {
+              Taro.openSetting()
+            }
+          }
+        })
+        return
+      }
+    }
+    addressClickCount++
     try {
       const location = await Taro.chooseLocation({});
-      console.log(location);
-      const { address, longitude, latitude } = location;
+      console.log(location)
+      const { address, longitude, latitude } = location
       geo = { longitude, latitude }
-      setAddressSelect(address);
+      setAddressSelect(address)
     } catch (error) {
+      console.log(error);
       showToast(CANCEL_SELECT)
     }
   }
@@ -131,7 +151,7 @@ function JoinClass() {
 
     } catch (error) {
       console.log(error);
-      
+
       showToast(EXPECTION)
     }
 
@@ -159,7 +179,7 @@ function JoinClass() {
         setAddressSelect(data['address'])
         setGoWhereIdx(data['state'])
         // const infoStorage = Taro.getStorageSync(JOIN_INFO)
-        
+
         // TODO: 设置缓存
       }
       Taro.hideLoading()
@@ -176,6 +196,7 @@ function JoinClass() {
     fetchStorage()
     fetchInfo()
   }, [])
+ 
   return (
     <View className='join_page'>
       <NavBar

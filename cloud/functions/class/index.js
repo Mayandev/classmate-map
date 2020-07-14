@@ -24,24 +24,47 @@ exports.main = async (event, context) => {
 	})
 
 	app.router('create', async (ctx, next) => {
+		let joinUsers = [];
+		// 首先判断创建者是否填写了信息
+		const { data: infoData } = await db.collection('info').where({
+			openId: OPENID
+		}).get()
+		// 如果已经填写过信息，则直接加入
+		if (infoData.length) {
+			joinUsers.push(infoData[0]['_id'])
+		}
 		const data = await db.collection(collection).add({
-			data: { ...createData, creatorID: OPENID, joinUsers: [], usersId: [] }
+			data: { ...createData, creatorID: OPENID, joinUsers, usersId: [] }
 		})
 
 		if (data['_id']) {
-			// 更新 User 数据库中的 createClasses 字段
-			await db.collection('user').where({ openId: OPENID }).update({
-				data: {
-					createClasses: _.push(data['_id'])
-				}
-			})
+			// 创建班级成功
+			// 自动加入
+			if (infoData.length) {
+				await db.collection('user').where({ openId: OPENID }).update({
+					data: {
+						createClasses: _.push(data['_id']),
+						joinClasses: _.push(data['_id'])
+					}
+				})
+			} else {
+				// 更新 User 数据库中的 createClasses 字段
+				await db.collection('user').where({ openId: OPENID }).update({
+					data: {
+						createClasses: _.push(data['_id'])
+					}
+				})
+			}
 		}
 		ctx.body = { data }
 	})
 
 	app.router('search', async (ctx, next) => {
 		let isJoin = false
-		const { data } = await db.collection(collection).where(queryData).get()
+		const { data } = await db.collection(collection).where({
+			...queryData,
+			canSearch: true
+		}).get()
 		if (data.length) {
 			// 查询到班级
 			const classId = data[0]._id

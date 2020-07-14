@@ -51,7 +51,7 @@ function SearchClass() {
           title='搜索班级'
           back />
         <View className='search_wrap'>
-          <Search hint='输入口令加入班级' onSearch={bindOnSearch} />
+          <Search autoFocus={true} hint='输入口令加入班级' onSearch={bindOnSearch} />
         </View>
         {isSearching &&
           <View>

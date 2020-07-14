@@ -11,6 +11,7 @@ import { CommonEventFunction } from '@tarojs/components/types/common';
 interface ISearchProps {
   hint: string          // 输入框提示文字
   onSearch?: CommonEventFunction   // 搜索事件
+  autoFocus: boolean
 }
 
 /**
@@ -18,7 +19,7 @@ interface ISearchProps {
  * @param props 输入框属性值
  */
 function Search(props: ISearchProps) {
-  const { hint, onSearch } = props;
+  const { hint, onSearch, autoFocus } = props;
   return (
     <View className='search_container'>
       <Image className='search_icon' src={searchIcon}/>
@@ -27,7 +28,7 @@ function Search(props: ISearchProps) {
         placeholder={hint}
         placeholderClass='input_hint'
         confirm-type='search'
-        autoFocus
+        autoFocus={autoFocus}
         onConfirm={onSearch ? onSearch : () => {}}
       />
     </View>

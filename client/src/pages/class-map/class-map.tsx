@@ -104,7 +104,7 @@ function ClassMap() {
         scale={4}>
         <View className='search_container'>
           <View className='search_opacity'>
-            <Search hint={'输入同学姓名或者地区搜索'} />
+            <Search autoFocus={false} hint={'输入同学姓名或者地区搜索'} />
           </View>
         </View>
         <View className={`people_info ${callOutOpen}`}>

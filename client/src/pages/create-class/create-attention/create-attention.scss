@@ -15,6 +15,7 @@
   .item_container {
     margin-top: 30px;
     padding: 10rpx 20rpx;
+    border-radius: 10px;
     @include shadow();
   }
 }

@@ -1,22 +1,25 @@
 
 import { useState, memo } from '@tarojs/taro';
 import { View, Image, Input, Form, Button, Text } from '@tarojs/components';
+import { AtSwitch } from 'taro-ui'
 import { NavBar } from 'taro-navigationbar'
 
 import './create-class.scss'
 import illustrate from '../../assets/illustration_create_class_form.png'
 import selectArrow from '../../assets/icon_select_arrow.png'
-import { EXPECTION, CREATE_SUCCESS, CREATING } from '@/constants/toast'
+import { EXPECTION, CREATE_SUCCESS, CREATING, IMG_UPLOADING } from '@/constants/toast'
 import { checkAddForm } from '@/utils/checkform';
 import { CREATE_SUCCESS_PAGE, CREATE_ATTENTION } from '@/constants/page';
 import { CREATE_TEMPLATE_MSG_ID } from '@/constants/template';
 import { LIMITSTORAGE } from '@/constants/storage';
+import { PRIMARY_COLOR } from '@/constants/theme';
 
 function CreateClass() {
 
   const [imagePath, setImagePath] = useState('')
   const [imageName, setImageName] = useState('default')
   const [countLimit, setCountLimit] = useState(50)
+  const [searchConfirm, setSearchConfirm] = useState(true)
   const onCreateSubmit = async (e) => {
     const res = await Taro.requestSubscribeMessage({
       tmplIds: [CREATE_TEMPLATE_MSG_ID],
@@ -34,7 +37,7 @@ function CreateClass() {
 
       // TODO: 对小程序进行内容检测
 
-      Taro.showLoading({ title: CREATING })
+      Taro.showLoading({ title: IMG_UPLOADING })
 
       // 先上传图片
       const { fileID } = await Taro.cloud.uploadFile({
@@ -42,6 +45,7 @@ function CreateClass() {
         filePath: imagePath, // 文件路径
       })
       const { creator, className, count, token } = formData;
+      Taro.showLoading({ title: CREATING })
 
       // 调用创建班级的云函数
       const { result } = await Taro.cloud.callFunction({
@@ -55,6 +59,7 @@ function CreateClass() {
             count: Number(count),
             classImage: fileID,
             createTime: Date.now(),
+            canSearch: searchConfirm
           }
         }
       })
@@ -93,6 +98,10 @@ function CreateClass() {
     } catch (error) {
       Taro.showToast({ title: '取消选择', icon: 'none' })
     }
+  }
+  const onSearchConfirm = (e) => {
+    console.log(e);
+    setSearchConfirm(e)
   }
   useState(() => {
     // 获取加入班级人数限制
@@ -145,6 +154,10 @@ function CreateClass() {
             : <View className='placeholder'>选择一张班级合照</View>
           }
           <Image className='select_arrow' src={selectArrow} />
+        </View>
+        <View className='form_item'>
+          <View className='form_label'>允许被搜索</View>
+          <AtSwitch checked={searchConfirm} border={false} onChange={onSearchConfirm} color={PRIMARY_COLOR}/>
         </View>
         <Button formType='submit' className='form_btn' hoverClass='form_btn_hover'>创建班级</Button>
       </Form>
