@@ -1,4 +1,4 @@
-import Taro, { useState, useEffect, usePullDownRefresh, getStorageSync, useDidShow } from '@tarojs/taro'
+import Taro, { useState, useEffect, usePullDownRefresh, useDidShow } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import NavBar from 'taro-navigationbar'
 

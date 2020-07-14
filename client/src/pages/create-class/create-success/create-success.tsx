@@ -7,7 +7,6 @@ import successIcon from '../../../assets/icon_create_success.png'
 import copyIcon from '../../../assets/icon_copy.png'
 import shareImg from '../../../assets/illustration_share.png'
 import { CLASS_DETAIL } from '@/constants/page'
-import { showToast } from '@/utils/utils';
 
 function CreateSuccess() {
   const [token, setToken] = useState<string>('')
@@ -24,7 +23,7 @@ function CreateSuccess() {
     const { _id, token, className, creator } = this.$router.params
     Taro.setClipboardData({
       data: token,
-      success: (res) => {
+      success: () => {
         Taro.showToast({title: '口令已复制'})
       }
     })

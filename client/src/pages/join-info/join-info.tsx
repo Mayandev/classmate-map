@@ -1,6 +1,6 @@
 import { View, Form, Input, Button, Image, Picker } from "@tarojs/components"
 import { NavBar } from 'taro-navigationbar'
-import { useEffect, useState, memo, useDidHide } from '@tarojs/taro'
+import { useEffect, useState, memo } from '@tarojs/taro'
 
 import Avatar from "@/components/Avatar"
 import { USERSTORAGE, JOININFO } from "@/constants/storage"

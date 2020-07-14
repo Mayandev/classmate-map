@@ -21,7 +21,7 @@ function CreateClass() {
   const [countLimit, setCountLimit] = useState(50)
   const [searchConfirm, setSearchConfirm] = useState(true)
   const onCreateSubmit = async (e) => {
-    const res = await Taro.requestSubscribeMessage({
+    await Taro.requestSubscribeMessage({
       tmplIds: [CREATE_TEMPLATE_MSG_ID],
       success: (res) => {
         console.log(res);
