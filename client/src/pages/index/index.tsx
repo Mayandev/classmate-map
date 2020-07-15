@@ -16,15 +16,17 @@ import AuthModal from '@/components/AuthModal'
 import { LOADING, EXPECTION } from '@/constants/toast'
 import { showToast, showLimitModal } from '@/utils/utils';
 import { getLevel } from '@/utils/callcloudfunction'
-import { LIMITSTORAGE } from '@/constants/storage'
+import { LIMITSTORAGE, COLLECT_TOOLTIP_STORAGE } from '@/constants/storage'
 import Tag from '@/components/Tag'
 import { PRO_TEXT_COLOR, PRO_BG_COLOR } from '@/constants/theme'
+import Tooltip from '@/components/Tooltip'
 
 let createClasses
 function Index() {
   const [navHeight, setNavHeight] = useState(0)
   const [statusBarHeight, setStatusBarHeight] = useState(0)
   const [showAuthModal, setShowAuthModal] = useState(false)
+  const [showTooltip, setShowTooltip] = useState(false)
   const [avatarUrl, setAvatarUrl] = useState(defaulAvatar)
   const [nickname, setNickname] = useState('未授权')
   const [isAuth, setIsAuth] = useState(false)
@@ -55,12 +57,10 @@ function Index() {
   }
 
   const fetchLimitInfo = async () => {
-  console.log('fetch limitinfo');
-  
     const limitInfo = await getLevel()
     if (limitInfo && limitInfo['level']) {
       Taro.setStorageSync(
-         LIMITSTORAGE,
+        LIMITSTORAGE,
         limitInfo['limitData']
       )
       setUserLevel(limitInfo['level'])
@@ -83,6 +83,33 @@ function Index() {
       Taro.hideLoading()
     } catch (error) {
       showToast(EXPECTION)
+    }
+  }
+
+  const closeTooltip = () => {
+    setShowTooltip(false)
+    // 缓存设置w为false
+    Taro.setStorage({
+      key: COLLECT_TOOLTIP_STORAGE,
+      data: false
+    })
+  }
+
+  const handleTooltip = async () => {
+    // 获取是否关闭过 Tooltip 的缓存
+    try {
+      await Taro.getStorage({
+        key: COLLECT_TOOLTIP_STORAGE,
+        success: (res) => {
+          setShowTooltip(res.data)
+        },
+        fail: () => {
+          Taro.setStorageSync(COLLECT_TOOLTIP_STORAGE, true)
+          setShowTooltip(true)
+        }
+      })
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -111,6 +138,8 @@ function Index() {
     }
     setStatusBarHeight(statusBarHeight)
     setNavHeight(navHeight)
+    handleTooltip()
+
   }, [])
 
   useEffect(() => {
@@ -144,7 +173,13 @@ function Index() {
   return (
     <View className='index'>
       <NavBar />
-      {showAuthModal ? <AuthModal onSuccess={() => {fetchLimitInfo()}} onClose={() => { setShowAuthModal(false) }} /> : null}
+      {showTooltip
+        ? <Tooltip
+          content={'点击·•·添加到我的小程序'}
+          top={statusBarHeight}
+          onClose={closeTooltip} />
+        : null}
+      {showAuthModal ? <AuthModal onSuccess={() => { fetchLimitInfo() }} onClose={() => { setShowAuthModal(false) }} /> : null}
       <View
         className='user_info'
         style={{ height: `${navHeight}px`, top: `${statusBarHeight}px` }}

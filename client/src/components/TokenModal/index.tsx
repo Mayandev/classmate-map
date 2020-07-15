@@ -3,6 +3,7 @@ import { View, Image, Button, Input, Form } from "@tarojs/components"
 import './index.scss'
 import close from '../../assets/icon_close.png'
 import { CommonEventFunction } from '@tarojs/components/types/common';
+import { memo } from "@tarojs/taro";
 
 interface IAuthModalProps {
   onClose: Function   // 关闭事件
@@ -45,5 +46,5 @@ function TokenModal(props: IAuthModalProps) {
   )
 }
 
-export default TokenModal
+export default memo(TokenModal)
 
