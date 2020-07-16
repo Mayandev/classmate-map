@@ -7,7 +7,7 @@ import Avatar from "@/components/Avatar"
 
 import { JOIN_INFO, CLASS_MAP, CLASS_DETAIL } from '@/constants/page'
 import { LOADING, EXPECTION, JOIN_SUCCESS } from "@/constants/toast"
-import { CLASSSTORAGE, JOININFO, JOINUSERS, USERSTORAGE } from '@/constants/storage'
+import { CLASSSTORAGE, JOININFO, JOINUSERS, USERSTORAGE, CLASS_SHARE_TOOLTIP_STORAGE } from '@/constants/storage'
 
 import empty from '../../assets/illustration_empty.png'
 import imagePlaceholder from '../../assets/image_placeholder.png'
@@ -17,6 +17,7 @@ import AuthModal from "@/components/AuthModal"
 import TokenModal from "@/components/TokenModal"
 import { showToast } from '@/utils/utils';
 import { isClassFull } from "@/utils/callcloudfunction"
+import Tooltip from "@/components/Tooltip"
 
 
 interface IClassDetailProps {
@@ -49,6 +50,9 @@ function ClassDetail() {
   const [joinUsers, setJoinUsers] = useState([])
   const [navOpacity, setNavOpacity] = useState(0)
   const [navIconTheme, setNavIconTheme] = useState('white')
+  const [showTooltip, setShowTooltip] = useState(false)
+  const [statusBarHeight, setStatusBarHeight] = useState(0)
+
 
   const bindBtnClick = () => {
     // 首先判断是否授权
@@ -179,6 +183,33 @@ function ClassDetail() {
     }
   }
 
+  const handleTooltip = async () => {
+    // 获取是否关闭过 Tooltip 的缓存
+    try {
+      await Taro.getStorage({
+        key: CLASS_SHARE_TOOLTIP_STORAGE,
+        success: (res) => {
+          setShowTooltip(res.data)
+        },
+        fail: () => {
+          Taro.setStorageSync(CLASS_SHARE_TOOLTIP_STORAGE, true)
+          setShowTooltip(true)
+        }
+      })
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const closeTooltip = () => {
+    setShowTooltip(false)
+    // 缓存设置w为false
+    Taro.setStorage({
+      key: CLASS_SHARE_TOOLTIP_STORAGE,
+      data: false
+    })
+  }
+
   usePageScroll(res => {
     const { scrollTop } = res
     if (scrollTop < 20 && scrollTop >= 0) {
@@ -213,9 +244,13 @@ function ClassDetail() {
       frontColor: '#ffffff',
       backgroundColor: '#ffffff',
     })
+    const systemInfo = Taro.getSystemInfoSync()
+    const { statusBarHeight } = systemInfo
+    setStatusBarHeight(statusBarHeight)
     const { _id } = this.$router.params
     classId = _id
     fetchDetail(_id)
+    handleTooltip()
   }, [])
 
   useDidShow(() => {
@@ -267,7 +302,12 @@ function ClassDetail() {
 
   return (
     <View className='page_detail'>
-
+      {showTooltip
+        ? <Tooltip
+          content={'点击·•·分享小程序，邀请同学'}
+          top={statusBarHeight}
+          onClose={closeTooltip} />
+        : null}
       <View className='navbar'>
         <NavBar
           home

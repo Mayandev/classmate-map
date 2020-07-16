@@ -176,7 +176,7 @@ function Index() {
       {showTooltip
         ? <Tooltip
           content={'点击·•·添加到我的小程序'}
-          top={statusBarHeight}
+          top={navHeight}
           onClose={closeTooltip} />
         : null}
       {showAuthModal ? <AuthModal onSuccess={() => { fetchLimitInfo() }} onClose={() => { setShowAuthModal(false) }} /> : null}
