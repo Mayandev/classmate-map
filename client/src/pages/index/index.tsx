@@ -79,7 +79,6 @@ function Index() {
         setJoinClasses(data)
         createClasses = result['createClasses']
       }
-      fetchLimitInfo()
       Taro.hideLoading()
     } catch (error) {
       showToast(EXPECTION)

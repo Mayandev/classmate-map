@@ -7,12 +7,14 @@ import { NavBar } from 'taro-navigationbar'
 import './create-class.scss'
 import illustrate from '../../assets/illustration_create_class_form.png'
 import selectArrow from '../../assets/icon_select_arrow.png'
-import { EXPECTION, CREATE_SUCCESS, CREATING, IMG_UPLOADING } from '@/constants/toast'
+import { EXPECTION, CHECK_CONTENT, CHECK_IMAGE, CREATING, CREATE_SUCCESS } from '@/constants/toast'
 import { checkAddForm } from '@/utils/checkform';
-import { CREATE_SUCCESS_PAGE, CREATE_ATTENTION } from '@/constants/page';
+import { CREATE_ATTENTION, CREATE_SUCCESS_PAGE } from '@/constants/page';
 import { CREATE_TEMPLATE_MSG_ID } from '@/constants/template';
 import { LIMITSTORAGE } from '@/constants/storage';
 import { PRIMARY_COLOR } from '@/constants/theme';
+import { checkContentSecurity, checkImageSecurity } from '@/utils/callcloudfunction';
+import { showSecurityModal } from '@/utils/utils';
 
 function CreateClass() {
 
@@ -28,23 +30,37 @@ function CreateClass() {
       }
     })
     const formData = e.detail.value
-
     try {
       // 校验数据
       if (!await checkAddForm({ ...formData, imagePath, countLimit })) {
         return
       }
 
-      // TODO: 对小程序进行内容检测
+      const { creator, className, count, token } = formData;
 
-      Taro.showLoading({ title: IMG_UPLOADING })
+      // TODO: 对小程序进行内容检测
+      Taro.showLoading({title: CHECK_CONTENT})
+      const check_content_res = await checkContentSecurity(`${creator}${className}`)
+      if (check_content_res && check_content_res['code'] == 300) {
+        showSecurityModal('内容')
+        return
+      }
+      Taro.showLoading({title: CHECK_IMAGE})
+      const check_image_res = await checkImageSecurity(imagePath)
+      if (check_image_res && check_image_res['code'] == 300) {
+        showSecurityModal('图片')
+        return
+      }
+
+
+      // Taro.showLoading({ title: IMG_UPLOADING })
 
       // 先上传图片
       const { fileID } = await Taro.cloud.uploadFile({
         cloudPath: `class-image/${imageName}`,
         filePath: imagePath, // 文件路径
       })
-      const { creator, className, count, token } = formData;
+      
       Taro.showLoading({ title: CREATING })
 
       // 调用创建班级的云函数
@@ -157,7 +173,7 @@ function CreateClass() {
         </View>
         <View className='form_item'>
           <View className='form_label'>允许被搜索</View>
-          <AtSwitch checked={searchConfirm} border={false} onChange={onSearchConfirm} color={PRIMARY_COLOR}/>
+          <AtSwitch checked={searchConfirm} border={false} onChange={onSearchConfirm} color={PRIMARY_COLOR} />
         </View>
         <Button formType='submit' className='form_btn' hoverClass='form_btn_hover'>创建班级</Button>
       </Form>

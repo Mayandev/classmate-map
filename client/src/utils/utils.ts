@@ -20,4 +20,14 @@ const showLimitModal = (title, content, confirmText) =>{
   })
 }
 
-export { showToast, showLimitModal }
+const showSecurityModal = (content: string) => {
+  Taro.showModal({
+    title: '警告',
+    content: `禁止上传违法违规${content}，请阅读《创建规范》，并重新填写信息。本次违规已记录，多次违规将冻结账号。`,
+    showCancel: false,
+    confirmColor: PRIMARY_COLOR,
+    confirmText: '我知道了'
+  })
+}
+
+export { showToast, showLimitModal, showSecurityModal }

@@ -1,5 +1,4 @@
 import Taro from '@tarojs/taro'
-import { PRIMARY_COLOR } from '@/constants/theme'
 const getLevel = async () => {
   const { result } = await Taro.cloud.callFunction({
     name: 'level',
@@ -65,4 +64,40 @@ const createOrder = async (orderData, payjsOrderId) => {
   })
   return result
 }
-export { getLevel, getAccountRes, isClassFull, getProPrize, payRequest, createOrder }
+
+const checkContentSecurity = async (content: string) => {
+  const { result } = await Taro.cloud.callFunction({
+    name: 'security',
+    data: {
+      $url: 'content',
+      content : content
+    }
+  })
+  return result
+}
+
+const checkImageSecurity = async (path: string) => {
+  let resData
+  Taro.getFileSystemManager().readFile({
+    filePath: path,
+    success: (res) => {
+      const { result } = await Taro.cloud.callFunction({
+        name: 'security',
+        data: {
+          $url: 'image',
+          image: res['data']
+        }
+      })
+      resData = result
+    }
+  })
+  return resData
+}
+export { getLevel, 
+  getAccountRes, 
+  isClassFull, 
+  getProPrize, 
+  payRequest, 
+  createOrder, 
+  checkContentSecurity,
+  checkImageSecurity }

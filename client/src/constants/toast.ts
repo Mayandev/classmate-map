@@ -26,6 +26,9 @@ export const IMG_UPLOADING = '图片上传...'
 export const SAVE_SUCCESS = '信息保存成功'
 export const UPDATE_SUCCESS = '信息更新成功'
 
+export const CHECK_CONTENT = '内容检测...'
+export const CHECK_IMAGE = '图片检测...'
+
 export const THIRD_PARTY = '支付需要跳转到第三方平台进行'
 
 export const PAY_SUCCESS = '支付成功'
