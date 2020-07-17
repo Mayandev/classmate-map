@@ -1,20 +1,22 @@
 
-import { useState, memo } from '@tarojs/taro';
-import { View, Image, Input, Form, Button, Text } from '@tarojs/components';
+import { useState, memo, useEffect } from '@tarojs/taro';
+import { View, Image, Input, Form, Button, Text, Canvas } from '@tarojs/components';
 import { AtSwitch } from 'taro-ui'
 import { NavBar } from 'taro-navigationbar'
 
 import './create-class.scss'
 import illustrate from '../../assets/illustration_create_class_form.png'
 import selectArrow from '../../assets/icon_select_arrow.png'
-import { EXPECTION, CHECK_CONTENT, CHECK_IMAGE, CREATING, CREATE_SUCCESS } from '@/constants/toast'
+import { EXPECTION, CHECK_CONTENT, CHECK_IMAGE, CREATING, CREATE_SUCCESS, IMG_UPLOADING } from '@/constants/toast'
 import { checkAddForm } from '@/utils/checkform';
 import { CREATE_ATTENTION, CREATE_SUCCESS_PAGE } from '@/constants/page';
 import { CREATE_TEMPLATE_MSG_ID } from '@/constants/template';
 import { LIMITSTORAGE } from '@/constants/storage';
 import { PRIMARY_COLOR } from '@/constants/theme';
 import { checkContentSecurity, checkImageSecurity } from '@/utils/callcloudfunction';
-import { showSecurityModal } from '@/utils/utils';
+import { showSecurityModal, getFileName, compressImage } from '@/utils/utils';
+import { get } from '@/utils/globaldata';
+import { GLOBAL_KEY_COMPRESS_CLASS_IMAGE } from '@/constants/data';
 
 function CreateClass() {
 
@@ -22,6 +24,7 @@ function CreateClass() {
   const [imageName, setImageName] = useState('default')
   const [countLimit, setCountLimit] = useState(50)
   const [searchConfirm, setSearchConfirm] = useState(true)
+  const [canvasWidth, setCanvasWidth] = useState(100)
   const onCreateSubmit = async (e) => {
     await Taro.requestSubscribeMessage({
       tmplIds: [CREATE_TEMPLATE_MSG_ID],
@@ -39,28 +42,35 @@ function CreateClass() {
       const { creator, className, count, token } = formData;
 
       // TODO: 对小程序进行内容检测
-      Taro.showLoading({title: CHECK_CONTENT})
+      Taro.showLoading({ title: CHECK_CONTENT })
       const check_content_res = await checkContentSecurity(`${creator}${className}`)
       if (check_content_res && check_content_res['code'] == 300) {
+        Taro.hideLoading()
         showSecurityModal('内容')
         return
       }
-      Taro.showLoading({title: CHECK_IMAGE})
-      const check_image_res = await checkImageSecurity(imagePath)
+      Taro.showLoading({ title: CHECK_IMAGE })
+      const check_image_res = await checkImageSecurity(get(GLOBAL_KEY_COMPRESS_CLASS_IMAGE))
+      console.log(check_image_res);
+
+      if (!check_image_res) {
+        return
+      }
+
       if (check_image_res && check_image_res['code'] == 300) {
+        Taro.hideLoading()
         showSecurityModal('图片')
         return
       }
 
-
-      // Taro.showLoading({ title: IMG_UPLOADING })
+      Taro.showLoading({ title: IMG_UPLOADING })
 
       // 先上传图片
       const { fileID } = await Taro.cloud.uploadFile({
         cloudPath: `class-image/${imageName}`,
         filePath: imagePath, // 文件路径
       })
-      
+
       Taro.showLoading({ title: CREATING })
 
       // 调用创建班级的云函数
@@ -109,8 +119,12 @@ function CreateClass() {
         sizeType: ['compressed'],
         sourceType: ['album']
       })
-      setImagePath(image.tempFilePaths[0])
-      setImageName(image.tempFilePaths[0].split('_')[1])
+      const path = image.tempFilePaths[0]
+      const format = path.split('.').pop()
+      setImagePath(path)
+      setImageName(`${getFileName()}.${format}`)
+      // 压缩图片
+      await compressImage(path, canvasWidth, 'pressCanvas')
     } catch (error) {
       Taro.showToast({ title: '取消选择', icon: 'none' })
     }
@@ -119,14 +133,22 @@ function CreateClass() {
     console.log(e);
     setSearchConfirm(e)
   }
-  useState(() => {
+  useEffect(() => {
+    // 获取 windowsWidth
+    const systemInfo = Taro.getSystemInfoSync()
+    const { windowWidth } = systemInfo
+    setCanvasWidth(windowWidth)
     // 获取加入班级人数限制
     const limitInfo = Taro.getStorageSync(LIMITSTORAGE)
     setCountLimit(limitInfo['countLimit'])
-  })
+  }, [])
 
   return (
     <View className='create_page'>
+      <Canvas
+        canvasId='pressCanvas'
+        className='press-canvas'
+        style={{width: `${canvasWidth}px`, height: `${canvasWidth}px`}} />
       <NavBar title={'创建班级'} back />
       <Image className='image' src={illustrate} />
       <Form onSubmit={onCreateSubmit} className='form_container'>

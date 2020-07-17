@@ -1,4 +1,5 @@
 import Taro from '@tarojs/taro'
+import { showToast } from './utils'
 const getLevel = async () => {
   const { result } = await Taro.cloud.callFunction({
     name: 'level',
@@ -59,7 +60,7 @@ const createOrder = async (orderData, payjsOrderId) => {
     name: 'order',
     data: {
       $url: 'create',
-      orderData: {...orderData, payjsOrderId}
+      orderData: { ...orderData, payjsOrderId }
     }
   })
   return result
@@ -70,34 +71,41 @@ const checkContentSecurity = async (content: string) => {
     name: 'security',
     data: {
       $url: 'content',
-      content : content
+      content: content
     }
   })
   return result
 }
 
 const checkImageSecurity = async (path: string) => {
-  let resData
-  Taro.getFileSystemManager().readFile({
-    filePath: path,
-    success: (res) => {
-      const { result } = await Taro.cloud.callFunction({
-        name: 'security',
-        data: {
-          $url: 'image',
-          image: res['data']
-        }
-      })
-      resData = result
-    }
-  })
-  return resData
+
+  try {
+    const file = Taro.getFileSystemManager().readFileSync(path)
+    console.log(file);
+    
+    const { result } = await Taro.cloud.callFunction({
+      name: 'security',
+      data: {
+        $url: 'image',
+        image: file
+      }
+    })
+
+    return result
+  } catch (error) {
+    console.log(error);
+    
+    showToast('图片尺寸过大，请先压缩')
+    return false
+  }
 }
-export { getLevel, 
-  getAccountRes, 
-  isClassFull, 
-  getProPrize, 
-  payRequest, 
-  createOrder, 
+export {
+  getLevel,
+  getAccountRes,
+  isClassFull,
+  getProPrize,
+  payRequest,
+  createOrder,
   checkContentSecurity,
-  checkImageSecurity }
+  checkImageSecurity
+}

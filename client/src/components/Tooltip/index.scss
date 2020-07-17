@@ -6,7 +6,6 @@ $background: rgba($color: #000000, $alpha: 0.7);
   position: fixed;
   right: 20px;
   z-index: 999999;
-  margin-top: 90px;
   @include flex(row, start, center)
 }
 .tooltip {

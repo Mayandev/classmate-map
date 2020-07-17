@@ -90,6 +90,8 @@ function JoinClass() {
     Taro.showLoading({ title: LOADING })
 
     try {
+
+      // TODO: 压缩图片
       // 上传头像
       // 先上传图片，如果用户选择了自己的头像，则需要上传，否则使用用户的微信头像
       if (avatarSelected) {
@@ -176,6 +178,7 @@ function JoinClass() {
         const data = result['data'][0]
         setFormAction(ActionType.Update)
         setUpdateValue(data)
+        setAvatar(data['avatarUrl'])
         setAddressSelect(data['address'])
         setGoWhereIdx(data['state'])
         // const infoStorage = Taro.getStorageSync(JOIN_INFO)
@@ -207,7 +210,7 @@ function JoinClass() {
         color={'#FFFFFF'}
       />
       <View className='form_bg' onClick={selectAvatar}>
-        <Avatar image={formAction === ActionType.Update ? updateValue['userAvatar'] : avatar} radius={148} border={4} />
+        <Avatar image={avatar} radius={148} border={4} />
       </View>
       <Form onSubmit={onJoinSubmit} className='form_container'>
         <View className='form_item'>

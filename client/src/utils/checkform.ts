@@ -12,9 +12,8 @@ import {
   EMPTY_ADDRESS,
   WRONG_TOKEN
 } from '@/constants/toast'
-import Taro, { showTabBar, showLoading }  from '@tarojs/taro'
+import Taro from '@tarojs/taro'
 import { showToast, showLimitModal } from '@/utils/utils';
-import { PRIMARY_COLOR } from '@/constants/theme';
 
 
 

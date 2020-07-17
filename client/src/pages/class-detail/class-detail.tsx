@@ -52,6 +52,7 @@ function ClassDetail() {
   const [navIconTheme, setNavIconTheme] = useState('white')
   const [showTooltip, setShowTooltip] = useState(false)
   const [statusBarHeight, setStatusBarHeight] = useState(0)
+  const [navHeight, setNavHeight] = useState(0)
 
 
   const bindBtnClick = () => {
@@ -246,7 +247,15 @@ function ClassDetail() {
     })
     const systemInfo = Taro.getSystemInfoSync()
     const { statusBarHeight } = systemInfo
+    const isiOS = systemInfo.system.indexOf('iOS') > -1
+    let navHeight = 0
+    if (isiOS) {
+      navHeight = 44
+    } else {
+      navHeight = 48
+    }
     setStatusBarHeight(statusBarHeight)
+    setNavHeight(navHeight)
     const { _id } = this.$router.params
     classId = _id
     fetchDetail(_id)
@@ -305,7 +314,7 @@ function ClassDetail() {
       {showTooltip
         ? <Tooltip
           content={'点击·•·分享小程序，邀请同学'}
-          top={statusBarHeight}
+          top={statusBarHeight+navHeight}
           onClose={closeTooltip} />
         : null}
       <View className='navbar'>
