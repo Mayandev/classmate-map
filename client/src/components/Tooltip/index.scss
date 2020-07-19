@@ -17,7 +17,11 @@ $background: rgba($color: #000000, $alpha: 0.7);
   height: 60px;
   border-bottom-left-radius: $radius;
   border-top-left-radius: $radius;
-  
+  .icon_menu_more {
+    width: 37px;
+    height: 14px;
+    margin: 0px 10px;
+  }
   @include flex(row, center, center);
 }
 
@@ -28,9 +32,8 @@ $background: rgba($color: #000000, $alpha: 0.7);
   border-right: 10px solid transparent;
   border-bottom: 10px solid $background;
   position: absolute;
-  left: 50%;
+  right: 70px;
   top: -10px;
-  transform: translateX(80px);
 }
 
 .tooltip-close {

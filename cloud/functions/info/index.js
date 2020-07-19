@@ -41,7 +41,7 @@ exports.main = async (event) => {
       openId: OPENID
     }).get()
 		ctx.body = { data }
-	})
+  })
 
 	return app.serve()
   

@@ -1,5 +1,5 @@
 
-import { useState, memo, useEffect } from '@tarojs/taro';
+import { useState, memo, useEffect, showLoading, hideLoading } from '@tarojs/taro';
 import { View, Image, Input, Form, Button, Text, Canvas } from '@tarojs/components';
 import { AtSwitch } from 'taro-ui'
 import { NavBar } from 'taro-navigationbar'
@@ -16,7 +16,7 @@ import { PRIMARY_COLOR } from '@/constants/theme';
 import { checkContentSecurity, checkImageSecurity } from '@/utils/callcloudfunction';
 import { showSecurityModal, getFileName, compressImage } from '@/utils/utils';
 import { get } from '@/utils/globaldata';
-import { GLOBAL_KEY_COMPRESS_CLASS_IMAGE } from '@/constants/data';
+import { GLOBAL_KEY_COMPRESS_CLASS_IMAGE, CLASS_CANVAS_ID } from '@/constants/data';
 
 function CreateClass() {
 
@@ -124,7 +124,7 @@ function CreateClass() {
       setImagePath(path)
       setImageName(`${getFileName()}.${format}`)
       // 压缩图片
-      await compressImage(path, canvasWidth, 'pressCanvas')
+      await compressImage(path, canvasWidth, CLASS_CANVAS_ID)
     } catch (error) {
       Taro.showToast({ title: '取消选择', icon: 'none' })
     }
@@ -146,7 +146,7 @@ function CreateClass() {
   return (
     <View className='create_page'>
       <Canvas
-        canvasId='pressCanvas'
+        canvasId={CLASS_CANVAS_ID}
         className='press-canvas'
         style={{width: `${canvasWidth}px`, height: `${canvasWidth}px`}} />
       <NavBar title={'创建班级'} back />

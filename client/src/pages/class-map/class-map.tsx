@@ -109,7 +109,7 @@ function ClassMap() {
         </View>
         <View className={`people_info ${callOutOpen}`}>
           <View className='info_avatar'>
-            <Avatar image={currentUser.avatarUrl} radius={128} border={4} />
+            <Avatar image={currentUser.avatarUrl} radius={150} border={0}/>
             <View className='name'>{currentUser.name}</View>
           </View>
           <View className='info_detail'>

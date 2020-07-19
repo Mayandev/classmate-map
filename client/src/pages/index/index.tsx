@@ -16,7 +16,7 @@ import AuthModal from '@/components/AuthModal'
 import { LOADING, EXPECTION } from '@/constants/toast'
 import { showToast, showLimitModal } from '@/utils/utils';
 import { getLevel } from '@/utils/callcloudfunction'
-import { LIMITSTORAGE, COLLECT_TOOLTIP_STORAGE } from '@/constants/storage'
+import { LIMITSTORAGE, COLLECT_TOOLTIP_STORAGE, USERSTORAGE } from '@/constants/storage'
 import Tag from '@/components/Tag'
 import { PRO_TEXT_COLOR, PRO_BG_COLOR } from '@/constants/theme'
 import Tooltip from '@/components/Tooltip'
@@ -73,7 +73,7 @@ function Index() {
       const { result } = await Taro.cloud.callFunction({
         name: 'index'
       })
-
+      
       if (result) {
         const data = result['joinClasses']
         setJoinClasses(data)
@@ -112,7 +112,39 @@ function Index() {
     }
   }
 
+  const setUserInfo = () => {
+    const userInfo = Taro.getStorageSync(USERSTORAGE)
+    if (!userInfo) {
+      Taro.getSetting({
+        success: res => {
+          if (res.authSetting['scope.userInfo']) {
+            setIsAuth(true)
+            // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
+            Taro.getUserInfo({
+              success: res => {
+                setAvatarUrl(res.userInfo.avatarUrl)
+                setNickname(res.userInfo.nickName)
+                console.log(res);
+              }
+            })
+          }
+        }
+      })
+      return
+    }
+    setIsAuth(true)
+    setAvatarUrl(userInfo.avatarUrl)
+    setNickname(userInfo.nickName)
+  }
+
+  const onAuthSuccess = () => {
+    // 获取用户信息
+    setUserInfo()
+    fetchLimitInfo()
+  }
+
   useDidShow(() => {
+    setUserInfo()
     fetchLimitInfo()
   })
 
@@ -121,9 +153,6 @@ function Index() {
     fetchIndexData()
   })
 
-  useEffect(() => {
-    fetchIndexData()
-  }, [])
 
   useEffect(() => {
     const systemInfo = Taro.getSystemInfoSync()
@@ -138,26 +167,9 @@ function Index() {
     setStatusBarHeight(statusBarHeight)
     setNavHeight(navHeight)
     handleTooltip()
-
+    fetchIndexData()
   }, [])
 
-  useEffect(() => {
-    // 获取用户信息
-    Taro.getSetting({
-      success: res => {
-        if (res.authSetting['scope.userInfo']) {
-          setIsAuth(true)
-          // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-          Taro.getUserInfo({
-            success: res => {
-              setAvatarUrl(res.userInfo.avatarUrl)
-              setNickname(res.userInfo.nickName)
-            }
-          })
-        }
-      }
-    })
-  })
 
   const classItemsDom = joinClasses.map(item => {
     return (<ClassItem
@@ -174,11 +186,11 @@ function Index() {
       <NavBar />
       {showTooltip
         ? <Tooltip
-          content={'点击·•·添加到我的小程序'}
-          top={navHeight+statusBarHeight}
+          content={'添加到我的小程序'}
+          top={navHeight + statusBarHeight}
           onClose={closeTooltip} />
         : null}
-      {showAuthModal ? <AuthModal onSuccess={() => { fetchLimitInfo() }} onClose={() => { setShowAuthModal(false) }} /> : null}
+      {showAuthModal ? <AuthModal onSuccess={onAuthSuccess} onClose={() => { setShowAuthModal(false) }} /> : null}
       <View
         className='user_info'
         style={{ height: `${navHeight}px`, top: `${statusBarHeight}px` }}

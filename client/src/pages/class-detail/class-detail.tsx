@@ -7,7 +7,7 @@ import Avatar from "@/components/Avatar"
 
 import { JOIN_INFO, CLASS_MAP, CLASS_DETAIL } from '@/constants/page'
 import { LOADING, EXPECTION, JOIN_SUCCESS } from "@/constants/toast"
-import { CLASSSTORAGE, JOININFO, JOINUSERS, USERSTORAGE, CLASS_SHARE_TOOLTIP_STORAGE } from '@/constants/storage'
+import { CLASSSTORAGE, JOININFO, JOINUSERS, USERSTORAGE, CLASS_SHARE_TOOLTIP_STORAGE, LIMITSTORAGE } from '@/constants/storage'
 
 import empty from '../../assets/illustration_empty.png'
 import imagePlaceholder from '../../assets/image_placeholder.png'
@@ -15,8 +15,8 @@ import imagePlaceholder from '../../assets/image_placeholder.png'
 import './class-detail.scss'
 import AuthModal from "@/components/AuthModal"
 import TokenModal from "@/components/TokenModal"
-import { showToast } from '@/utils/utils';
-import { isClassFull } from "@/utils/callcloudfunction"
+import { showToast, showLimitModal } from '@/utils/utils';
+import { isClassFull, getLevel } from "@/utils/callcloudfunction"
 import Tooltip from "@/components/Tooltip"
 
 
@@ -135,17 +135,18 @@ function ClassDetail() {
       showToast('口令错误')
       return
     }
-    
+
     // TODO: 插入数据，跳转到地图页面
     try {
       Taro.showLoading({ title: LOADING })
       // 判断是否已经加满
-      const  fullData = await isClassFull(classId);
+      const fullData = await isClassFull(classId);
       console.log('isFull', fullData);
       if (fullData && fullData['isFull'] == true) {
         showToast('班级人数已满')
         return
       }
+      
       // 获取 infoId
       const info = Taro.getStorageSync(JOININFO)
       // 调用加入接口
@@ -157,30 +158,32 @@ function ClassDetail() {
         }
       })
       console.log(result)
-      if (result && result['classRes']['stats']['updated']) {
+      if (result && result['code'] == 500) {
+        showLimitModal('提示', '你加入的班级数已满，升级为 pro 账户可以加入更多的班级', '了解一下')
+        setShowTokenModal(false)
+        Taro.hideLoading()
+        return
+      }
+      if (result && result['code'] == 200 && result['data']['classRes']['stats']['updated']) {
+        fetchDetail(classId)
         Taro.showToast({ title: JOIN_SUCCESS })
         setTimeout(() => {
           // 关闭弹窗
           setShowTokenModal(false)
-          fetchDetail(classId)
         }, 1500);
       }
     } catch (error) {
       console.log(error);
-      
       showToast(EXPECTION)
     }
   }
 
   const onAuthSuccess = () => {
-    console.log('success');
-    
+
     if (!isInfoSaved) {
       setTimeout(() => {
-        Taro.navigateTo({url: JOIN_INFO})
+        Taro.navigateTo({ url: JOIN_INFO })
       }, 1500)
-    } else {
-      setShowTokenModal(true)
     }
   }
 
@@ -292,8 +295,9 @@ function ClassDetail() {
     const userInfo = Taro.getStorageSync(USERSTORAGE)
     if (!userInfo) {
       shareName = classCreator
+    } else {
+      shareName = userInfo['nickName']
     }
-    shareName = userInfo['nickName']
     return {
       title: `${shareName}邀请你加入${classState.className}，一起查看班级同学分布地图，多联(蹭)系(饭)。`,
       path: `${CLASS_DETAIL}?_id=${classId}`,
@@ -304,7 +308,7 @@ function ClassDetail() {
   const avatarDom = joinUsers.map(item => {
     return (
       <View className='avatar_item'>
-        <Avatar image={item['avatarUrl']} radius={80} border={3} />
+        <Avatar image={item['avatarUrl']} radius={80} border={0} />
       </View>
     )
   })
@@ -313,8 +317,8 @@ function ClassDetail() {
     <View className='page_detail'>
       {showTooltip
         ? <Tooltip
-          content={'点击·•·分享小程序，邀请同学'}
-          top={statusBarHeight+navHeight}
+          content={'分享小程序，邀请同学'}
+          top={statusBarHeight + navHeight}
           onClose={closeTooltip} />
         : null}
       <View className='navbar'>
@@ -327,11 +331,11 @@ function ClassDetail() {
             Taro.redirectTo({ url: '/pages/index/index' });
           }} />
       </View>
-      {showAuthModal 
-        ? <AuthModal 
+      {showAuthModal
+        ? <AuthModal
           onClose={() => { setShowAuthModal(false) }}
           onSuccess={onAuthSuccess}
-          /> : null}
+        /> : null}
       {showTokenModal ? <TokenModal
         onClose={() => { setShowTokenModal(false) }}
         onCheck={checkToken} /> : null}

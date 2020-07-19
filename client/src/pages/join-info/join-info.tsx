@@ -1,25 +1,26 @@
-import { View, Form, Input, Button, Image, Picker } from "@tarojs/components"
+import { View, Form, Input, Button, Image, Picker, Canvas } from "@tarojs/components"
 import { NavBar } from 'taro-navigationbar'
 import { useEffect, useState, memo } from '@tarojs/taro'
 
 import Avatar from "@/components/Avatar"
 import { USERSTORAGE, JOININFO } from "@/constants/storage"
 import { checkJoinForm } from "@/utils/checkform"
-import { showToast } from "@/utils/utils"
+import { showToast, cropAvatar, getFileName, showSecurityModal } from "@/utils/utils"
 
 import defaulAvatar from '../../assets/default_avatar.png'
 import selectArrow from '../../assets/icon_select_arrow.png'
 
 import './join-info.scss'
-import { CANCEL_SELECT, LOADING, EXPECTION, SAVE_SUCCESS, UPDATE_SUCCESS } from "@/constants/toast"
+import { CANCEL_SELECT, LOADING, EXPECTION, SAVE_SUCCESS, UPDATE_SUCCESS, CHECK_CONTENT } from "@/constants/toast"
 import { PRIMARY_COLOR } from "@/constants/theme"
-import { WHEREOPTION, PLACEOPTION } from "@/constants/data"
+import { WHEREOPTION, PLACEOPTION, CROP_AVATAR_CANVAS_ID, GLOBAL_KEY_CROP_AVATAR_IMAGE } from "@/constants/data"
+import { get } from "@/utils/globaldata"
+import { checkContentSecurity } from "@/utils/callcloudfunction"
 
 enum ActionType {
   Add,
   Update
 }
-let avatarSelected = false
 let avatarName = ''
 let geo
 let addressClickCount = 0
@@ -29,6 +30,8 @@ function JoinClass() {
   const [avatar, setAvatar] = useState(defaulAvatar)
   const [formAction, setFormAction] = useState(ActionType.Add)
   const [updateValue, setUpdateValue] = useState({})
+  const [canvasWidth, setCanvasWidth] = useState(100)
+
   const goWhereChange = (e) => {
     const value = Number(e.detail.value);
     setGoWhereIdx(value);
@@ -63,21 +66,6 @@ function JoinClass() {
       showToast(CANCEL_SELECT)
     }
   }
-  const selectAvatar = async () => {
-    try {
-      const image = await Taro.chooseImage({
-        count: 1,
-        sizeType: ['compressed'],
-        sourceType: ['album', 'camera']
-      })
-      setAvatar(image.tempFilePaths[0])
-      avatarSelected = true
-      avatarName = image.tempFilePaths[0].split('_')[1]
-    } catch (error) {
-      showToast(CANCEL_SELECT)
-      avatarSelected = false
-    }
-  }
   // 表单提交
   const onJoinSubmit = async (e) => {
     const formData = e.detail.value
@@ -86,22 +74,25 @@ function JoinClass() {
     if (!checkJoinForm({ ...formData, addressSelect })) {
       return
     }
-
-    Taro.showLoading({ title: LOADING })
-
+    
     try {
-
+      Taro.showLoading({ title: CHECK_CONTENT })
+      const check_content_res = await checkContentSecurity(`${formData['name']}${formData['place']}`)
+      if (check_content_res && check_content_res['code'] == 300) {
+        Taro.hideLoading()
+        showSecurityModal('内容')
+        return
+      }
       // TODO: 压缩图片
       // 上传头像
       // 先上传图片，如果用户选择了自己的头像，则需要上传，否则使用用户的微信头像
-      if (avatarSelected) {
-        const { fileID } = await Taro.cloud.uploadFile({
-          cloudPath: `user-avatar/${avatarName}`,
-          filePath: avatar, // 文件路径
-        })
-        avatarUrl = fileID
-      }
+      Taro.showLoading({ title: LOADING })
 
+      const { fileID } = await Taro.cloud.uploadFile({
+        cloudPath: `user-avatar/${getFileName()}.png`,
+        filePath: get(GLOBAL_KEY_CROP_AVATAR_IMAGE), // 文件路径
+      })
+      avatarUrl = fileID
       switch (formAction) {
         case ActionType.Add:
           // 调用加入云函数，将用户信息插入班级表，将班级信息插入到用户集合
@@ -112,7 +103,6 @@ function JoinClass() {
               info: { ...formData, avatarUrl, address: addressSelect, location: geo, state: goWhereIdx },
             }
           })
-          console.log(result);
 
           if (result && result['data']) {
             Taro.hideLoading()
@@ -150,16 +140,17 @@ function JoinClass() {
           }
           break;
       }
-
     } catch (error) {
       console.log(error);
-
       showToast(EXPECTION)
     }
-
   }
   const fetchStorage = () => {
     const { avatarUrl } = Taro.getStorageSync(USERSTORAGE)
+    console.log(avatarUrl);
+    
+    // TODO: cropImage 裁剪图片
+    cropAvatar(avatarUrl, canvasWidth, CROP_AVATAR_CANVAS_ID)
     setAvatar(avatarUrl)
   }
 
@@ -178,7 +169,6 @@ function JoinClass() {
         const data = result['data'][0]
         setFormAction(ActionType.Update)
         setUpdateValue(data)
-        setAvatar(data['avatarUrl'])
         setAddressSelect(data['address'])
         setGoWhereIdx(data['state'])
         // const infoStorage = Taro.getStorageSync(JOIN_INFO)
@@ -196,10 +186,14 @@ function JoinClass() {
       frontColor: '#ffffff',
       backgroundColor: '#ffffff',
     })
+    // 获取 windowsWidth
+    const systemInfo = Taro.getSystemInfoSync()
+    const { windowWidth } = systemInfo
+    setCanvasWidth(windowWidth)
     fetchStorage()
     fetchInfo()
   }, [])
- 
+
   return (
     <View className='join_page'>
       <NavBar
@@ -209,7 +203,11 @@ function JoinClass() {
         background={'#2F54EB'}
         color={'#FFFFFF'}
       />
-      <View className='form_bg' onClick={selectAvatar}>
+      <Canvas
+        canvasId={CROP_AVATAR_CANVAS_ID}
+        className='crop-canvas'
+        style={{ width: `${canvasWidth}px`, height: `${canvasWidth}px` }} />
+      <View className='form_bg'>
         <Avatar image={avatar} radius={148} border={4} />
       </View>
       <Form onSubmit={onJoinSubmit} className='form_container'>

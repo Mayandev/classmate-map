@@ -20,7 +20,20 @@
       line-height: 92px;
       margin-top: 60px;
   }
+
+  .contact_btn {
+    @include wh(650px, 92px);
+      @include font('white');
+      @include flex(row, center, center);
+      color: $primary-color;
+      background: none;
+      line-height: 92px;
+      margin-top: 30px;
+  }
   
+  button::after {
+    border: none;
+  }
   .charge_btn_hover {
     box-shadow: none;
     transform: scale(0.99, 0.99);

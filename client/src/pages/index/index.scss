@@ -8,6 +8,10 @@
     position: fixed;
     left: 54px;
     z-index: 9999;
+    width: 450px;
+    overflow: hidden;/*超出隐藏*/
+      white-space: nowrap;/* 强制不换行 */
+      text-overflow: ellipsis;/*文字隐藏的格式 */
 
     .nickname {
       @include font('normal', bold);
