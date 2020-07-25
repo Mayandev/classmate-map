@@ -12,12 +12,12 @@ function Avatar (props: IAvatarProps) {
   const { image, radius, border = 1} = props
   return (
     <View className='avatar_container' 
-      style={{width: `${radius}rpx`, height: `${radius}rpx`, border:`${border}px solid #FFFFFF`}}>
-      <Image 
+      style={{width: `${radius}rpx`, height: `${radius}rpx`}}>
+      <Image
         mode='aspectFill' 
         src={image} 
         className='avatar_image'  
-        style={{width: `${radius}rpx`, height: `${radius}rpx`}}/>
+        style={{width: `${radius}rpx`, height: `${radius}rpx`, border:`${border}px solid #FFFFFF`}}/>
     </View>
   )
 }

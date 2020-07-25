@@ -6,12 +6,16 @@
   .user_info {
     @include flex(row, start, center);
     position: fixed;
-    left: 54px;
+    padding-left: 20px;
+    left: 34px;
     z-index: 9999;
     width: 450px;
-    overflow: hidden;/*超出隐藏*/
-      white-space: nowrap;/* 强制不换行 */
-      text-overflow: ellipsis;/*文字隐藏的格式 */
+    overflow: hidden;
+    /*超出隐藏*/
+    white-space: nowrap;
+    /* 强制不换行 */
+    text-overflow: ellipsis;
+    /*文字隐藏的格式 */
 
     .nickname {
       @include font('normal', bold);

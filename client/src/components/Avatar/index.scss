@@ -2,8 +2,8 @@
 
 .avatar_container {
   border-radius: 50%;
-  @include shadow();
-  box-sizing: content-box;
+  box-sizing: border-box;
+  box-shadow: 0px 7px 20px rgba(0,0,0,0.08);
   .avatar_image {
     border-radius: 50%;
   }

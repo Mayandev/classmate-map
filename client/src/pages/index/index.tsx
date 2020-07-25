@@ -196,7 +196,7 @@ function Index() {
         style={{ height: `${navHeight}px`, top: `${statusBarHeight}px` }}
         onClick={() => { isAuth ? navigateTo(JOIN_INFO) : setShowAuthModal(true) }}
       >
-        <Avatar radius={64} image={avatarUrl}></Avatar>
+        <Avatar radius={64} image={avatarUrl} border={2}></Avatar>
         <Text className='nickname'>{nickname}</Text>
         {
           userLevel == 'normal' ? null : <View style={{ marginLeft: '15rpx' }}>
