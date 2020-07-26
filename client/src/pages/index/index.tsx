@@ -1,25 +1,27 @@
-import Taro, { useState, useEffect, usePullDownRefresh, useDidShow } from '@tarojs/taro'
+// components
+import Taro, { useState, useEffect, usePullDownRefresh, useDidShow, showActionSheet } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
-import NavBar from 'taro-navigationbar'
-
+import AuthModal from '@/components/AuthModal'
 import Avatar from '@/components/Avatar'
 import ClassItem from '@/components/ClassItem'
+import NavBar from 'taro-navigationbar'
+import Tag from '@/components/Tag'
+import Tooltip from '@/components/Tooltip'
+// utils
+import { showToast, showLimitModal, showModal } from '@/utils/utils';
+import { getLevel } from '@/utils/callcloudfunction'
+// constans
+import { INDEX_ACTION_SHEET, IndexActionSheet } from '@/constants/data';
 import { SEARCH_CLASS, CREATE_CLASS, CLASS_DETAIL, JOIN_INFO } from '@/constants/page'
-// import AuthModal from '@/components/AuthModal'
-
+import { LIMITSTORAGE, COLLECT_TOOLTIP_STORAGE, USERSTORAGE } from '@/constants/storage'
+import { PRO_TEXT_COLOR, PRO_BG_COLOR, WARING_COLOR } from '@/constants/theme'
+import { LOADING, EXPECTION } from '@/constants/toast'
+// resources
 import './index.scss'
 import defaulAvatar from '../../assets/default_avatar.png'
 import joinClass from '../../assets/illustration_join_class.png'
 import createClass from '../../assets/illustration_create_class.png'
 import empty from '../../assets/illustration_empty.png'
-import AuthModal from '@/components/AuthModal'
-import { LOADING, EXPECTION } from '@/constants/toast'
-import { showToast, showLimitModal } from '@/utils/utils';
-import { getLevel } from '@/utils/callcloudfunction'
-import { LIMITSTORAGE, COLLECT_TOOLTIP_STORAGE, USERSTORAGE } from '@/constants/storage'
-import Tag from '@/components/Tag'
-import { PRO_TEXT_COLOR, PRO_BG_COLOR } from '@/constants/theme'
-import Tooltip from '@/components/Tooltip'
 
 let createClasses
 function Index() {
@@ -73,7 +75,7 @@ function Index() {
       const { result } = await Taro.cloud.callFunction({
         name: 'index'
       })
-      
+
       if (result) {
         const data = result['joinClasses']
         setJoinClasses(data)
@@ -143,6 +145,49 @@ function Index() {
     fetchLimitInfo()
   }
 
+  const handleActionSheetClick = async () => {
+    try {
+      const { tapIndex } = await showActionSheet({
+        itemList: INDEX_ACTION_SHEET,
+      })
+      switch (tapIndex) {
+        case IndexActionSheet.CLASS:
+          navigateTo(JOIN_INFO)
+          break;
+        case IndexActionSheet.INFO:
+          navigateTo(JOIN_INFO)
+        default:
+          break;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const handleQuiteClass = async (classId: string) => {
+    try {
+      const { tapIndex } = await showActionSheet({
+        itemList: ['退出班级'],
+        itemColor: WARING_COLOR,
+      })
+      if (tapIndex === 0) {
+        const confirm = await showModal('是否确认退出班级', WARING_COLOR)
+        console.log(confirm);
+        
+        if (confirm) {
+          console.log('quite class');
+          
+        } else {
+          return
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+
+
   useDidShow(() => {
     setUserInfo()
     fetchLimitInfo()
@@ -174,6 +219,7 @@ function Index() {
   const classItemsDom = joinClasses.map(item => {
     return (<ClassItem
       onClick={() => { navigateTo(`${CLASS_DETAIL}?_id=${item['_id']}`) }}
+      onLongPress={() => { handleQuiteClass(item['_id']) }}
       classname={item['className']}
       totalNum={item['count']}
       joinNum={item['joinUsers']['length']}
@@ -194,7 +240,7 @@ function Index() {
       <View
         className='user_info'
         style={{ height: `${navHeight}px`, top: `${statusBarHeight}px` }}
-        onClick={() => { isAuth ? navigateTo(JOIN_INFO) : setShowAuthModal(true) }}
+        onClick={() => { isAuth ? handleActionSheetClick() : setShowAuthModal(true) }}
       >
         <Avatar radius={64} image={avatarUrl} border={2}></Avatar>
         <Text className='nickname'>{nickname}</Text>

@@ -48,3 +48,8 @@
     }
   }
 }
+
+.join_item_hover {
+  box-shadow: 0px 7px 20px 0 $shadow-color;
+  transform: scale(0.99);
+}

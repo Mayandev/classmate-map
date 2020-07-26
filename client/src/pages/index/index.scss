@@ -1,7 +1,6 @@
 @import '../../styles/mixin.scss';
 
 .index {
-  color: $primary-color;
 
   .user_info {
     @include flex(row, start, center);

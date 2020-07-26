@@ -10,3 +10,9 @@ export const GLOBAL_KEY_CROP_AVATAR_IMAGE = 'corpAvatarImage'
 
 export const CLASS_CANVAS_ID = 'classImgCanvas'
 export const CROP_AVATAR_CANVAS_ID = 'cropAvatarCanvas'
+
+export const INDEX_ACTION_SHEET = ['个人信息', '班级管理']
+export enum IndexActionSheet {
+  INFO = 0,
+  CLASS = 1
+}

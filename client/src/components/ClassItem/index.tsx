@@ -10,12 +10,16 @@ interface IClassItemProps {
   coverImage: string    // 封面图片
   isJoin: boolean       // 是否已加入
   onClick?: Function     // 点击事件
+  onLongPress?: Function  // 长按事件
 }
 
 function ClassItem(props: IClassItemProps) {
-  const {classname, joinNum, totalNum, coverImage, isJoin, onClick} = props;
+  const {classname, joinNum, totalNum, coverImage, isJoin, onClick, onLongPress} = props;
   return (
-    <View className='join_item' onClick={() => {onClick ? onClick() : null}}>
+    <View className='join_item'
+      hoverClass='join_item_hover'
+      onClick={() => {onClick ? onClick() : null}}
+      onLongPress = { () => {onLongPress ? onLongPress() : null} }>
       <View className="image_container">
         <View className='mask'></View>
         <Image className='image' mode="aspectFill" src={coverImage} />

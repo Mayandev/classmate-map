@@ -8,6 +8,20 @@ const showToast = (title = '') => {
   Taro.showToast({ title, icon: 'none' })
 }
 
+const showModal = async (content: string, confirmColor: string = PRIMARY_COLOR,confirmText: string = '确认', title: string = '提示') => {
+  try {
+    const { confirm } = await Taro.showModal({
+      title: title,
+      content: content,
+      confirmColor: confirmColor,
+      confirmText: confirmText,
+    })
+    return confirm
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 const showLimitModal = (title, content, confirmText) => {
   Taro.showModal({
     title: title,
@@ -114,4 +128,4 @@ const getRandomNumber = (minNum = 100000, maxNum = 999999) => {
    return Math.floor(Math.random() * (maxNum - minNum + 1) + minNum)
 }
 
-export { showToast, showLimitModal, showSecurityModal, getFileName, compressImage, cropAvatar }
+export { showToast, showModal, showLimitModal, showSecurityModal, getFileName, compressImage, cropAvatar }

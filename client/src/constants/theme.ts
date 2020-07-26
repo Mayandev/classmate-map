@@ -6,3 +6,5 @@ export const PRO_TEXT_COLOR = '#fa8c16'
 
 export const UNJOIN_BG_COLOR = '#ffd8bf'
 export const UNJOIN_TEXT_COLOR = '#fa541c'
+
+export const WARING_COLOR = '#cf1322'
