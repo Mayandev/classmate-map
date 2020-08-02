@@ -106,8 +106,17 @@ function Charge() {
             console.log(orderData);
             // 将订单号插入订单表，并将用户状态变为 pro
             Taro.showToast({ title: PAY_SUCCESS })
+            const limitInfo = await getLevel()
+            if (limitInfo && limitInfo['level']) {
+              Taro.setStorageSync(
+                LIMITSTORAGE,
+                limitInfo['limitData']
+              )
+              // setUserLevel(limitInfo['level'])
+            }
             setTimeout(() => {
-              Taro.redirectTo({ url: INDEX })
+              // Taro.redirectTo({ url: INDEX })
+              Taro.navigateBack()
             }, 1500);
           } else {
             showToast(errMsg)
@@ -129,9 +138,8 @@ function Charge() {
     <View className="charge_page">
       <NavBar back title={'关于 Pro'} />
       <Image mode='widthFix' className='account_info' src={accountRes ? accountRes : placeholder} />
-      <View className='tooltip'>* iOS 暂时无法使用支付，请联系客服升级 Pro 账户</View>
       <Button onClick={bindCharge} className='charge_btn' hoverClass='charge_btn_hover'>升级 Pro</Button>
-      <Button openType='contact'className='contact_btn'>联系客服</Button>
+      <Button openType='contact' className='contact_btn'>联系客服</Button>
     </View>
   )
 }

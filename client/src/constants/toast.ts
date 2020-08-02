@@ -11,6 +11,7 @@ export const LOADING = '加载中...'
 export const EXPECTION = '网络异常，请稍后重试'
 export const SEARCHING = '搜索中...'
 export const SEARCH_EMPTY = '未找到内容，请检查口令是否输入正确'
+export const QUIT_SUCCESS = '退出成功'
 
 export const EMPTY_NAME = '请输入您的姓名或昵称'
 export const ILLEGAL_PHONE = '请输入正确格式的电话号码'

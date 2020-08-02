@@ -144,6 +144,7 @@ function ClassDetail() {
       console.log('isFull', fullData);
       if (fullData && fullData['isFull'] == true) {
         showToast('班级人数已满')
+        setShowTokenModal(false)
         return
       }
       
@@ -159,18 +160,19 @@ function ClassDetail() {
       })
       console.log(result)
       if (result && result['code'] == 500) {
-        showLimitModal('提示', '你加入的班级数已满，升级为 pro 账户可以加入更多的班级', '了解一下')
+        showLimitModal('提示', '您加入的班级数已满，升级为 pro 账户可以加入此的班级', '了解一下')
         setShowTokenModal(false)
         Taro.hideLoading()
         return
       }
       if (result && result['code'] == 200 && result['data']['classRes']['stats']['updated']) {
-        fetchDetail(classId)
+        setShowTokenModal(false)
+        await fetchDetail(classId)
         Taro.showToast({ title: JOIN_SUCCESS })
         setTimeout(() => {
           // 关闭弹窗
-          setShowTokenModal(false)
-        }, 1500);
+          Taro.navigateTo({url: CLASS_MAP})
+        }, 2000);
       }
     } catch (error) {
       console.log(error);

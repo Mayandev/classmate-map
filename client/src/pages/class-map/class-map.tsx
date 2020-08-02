@@ -12,6 +12,7 @@ import { useState, memo, useEffect } from "@tarojs/taro"
 import { LOADING } from '@/constants/toast'
 import { JOINUSERS } from '@/constants/storage'
 import { WHEREOPTION } from "@/constants/data"
+import { showToast } from "@/utils/utils"
 
 interface IUserProps {
   avatarUrl: string
@@ -104,7 +105,7 @@ function ClassMap() {
         scale={4}>
         <View className='search_container'>
           <View className='search_opacity'>
-            <Search autoFocus={false} hint={'输入同学姓名或者地区搜索'} />
+            <Search autoFocus={false} hint={'输入同学姓名搜索'} onSearch={() => {showToast('功能开发中')} } />
           </View>
         </View>
         <View className={`people_info ${callOutOpen}`}>

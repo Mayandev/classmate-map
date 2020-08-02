@@ -23,8 +23,43 @@ exports.main = async (event, context) => {
 		ctx.body = { data }
 	})
 
+	app.router('quitClass', async (ctx, next) => {
+		// 找到 infoId
+		try {
+			const { data: infoData } = await db.collection('info').where({
+				openId: OPENID
+			}).get()
+			
+			if (infoData[0]) {
+				// 删除 class 的 joinUsers
+				const data1 = await db.collection(collection).where({
+					_id: classId
+				}).update({
+					data: {
+						joinUsers: _.pull(infoData[0]['_id']),
+						usersId: _.pull(OPENID)
+					}
+				})
+				// 删除 user 的 joinClasses
+				const data2 = await db.collection('user').where({
+					openId: OPENID
+				}).update({
+					data: {
+						joinClasses: _.pull(classId)
+					}
+				})
+			ctx.body = { code: 200 }
+
+			}
+		} catch (error) {
+			ctx.body = { error }
+		}
+
+	})
+
 	app.router('create', async (ctx, next) => {
 		let joinUsers = [];
+		let usersId = [];
 		// 首先判断创建者是否填写了信息
 		const { data: infoData } = await db.collection('info').where({
 			openId: OPENID
@@ -32,9 +67,10 @@ exports.main = async (event, context) => {
 		// 如果已经填写过信息，则直接加入
 		if (infoData.length) {
 			joinUsers.push(infoData[0]['_id'])
+			usersId.push(OPENID)
 		}
 		const data = await db.collection(collection).add({
-			data: { ...createData, creatorID: OPENID, joinUsers, usersId: [] }
+			data: { ...createData, creatorID: OPENID, joinUsers, usersId }
 		})
 
 		if (data['_id']) {
@@ -44,7 +80,7 @@ exports.main = async (event, context) => {
 				await db.collection('user').where({ openId: OPENID }).update({
 					data: {
 						createClasses: _.push(data['_id']),
-						joinClasses: _.push(data['_id'])
+						joinClasses: _.push(data['_id']),
 					}
 				})
 			} else {
@@ -82,13 +118,5 @@ exports.main = async (event, context) => {
 		ctx.body = { data, isJoin }
 	})
 
-	app.router('check_full', async (ctx, next) => {
-		let isFull = false
-		const { data } = await db.collection(collection).doc(classId).get()
-		if (data['count'] == data['joinUsers']['length']) {
-			isFull = true
-		}
-		ctx.body = { isFull }
-	})
 	return app.serve();
 }

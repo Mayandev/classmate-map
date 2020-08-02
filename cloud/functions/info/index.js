@@ -19,18 +19,21 @@ exports.main = async (event) => {
   });
 
   app.router('add', async (ctx, next) => {
+    const now = Date.now()
     const data = await db.collection(collection).add({
-      data: {...info, openId: OPENID}
+      data: {...info, openId: OPENID, createTime: now, updateTime: now}
     })
 		ctx.body = { data }
   })
 
   app.router('update', async (ctx, next) => {
+    const now = Date.now()
     const data = await db.collection(collection).where({
       openId: OPENID
     }).update({
       data: {
-        ...info
+        ...info,
+        updateTime: now
       }
     })
 		ctx.body = { data }

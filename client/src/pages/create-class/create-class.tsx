@@ -1,5 +1,5 @@
 
-import { useState, memo, useEffect, showLoading, hideLoading } from '@tarojs/taro';
+import { useState, memo, useEffect, showLoading, hideLoading, useDidShow } from '@tarojs/taro';
 import { View, Image, Input, Form, Button, Text, Canvas } from '@tarojs/components';
 import { AtSwitch } from 'taro-ui'
 import { NavBar } from 'taro-navigationbar'
@@ -138,10 +138,13 @@ function CreateClass() {
     const systemInfo = Taro.getSystemInfoSync()
     const { windowWidth } = systemInfo
     setCanvasWidth(windowWidth)
+  }, [])
+
+  useDidShow(() => {
     // 获取加入班级人数限制
     const limitInfo = Taro.getStorageSync(LIMITSTORAGE)
     setCountLimit(limitInfo['countLimit'])
-  }, [])
+  })
 
   return (
     <View className='create_page'>

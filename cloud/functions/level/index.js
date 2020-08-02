@@ -37,7 +37,7 @@ exports.main = async (event, context) => {
 
   app.router('account-level-res', async (ctx, next) => {
     // 首选获取用户等级，在根据等级获取限制
-    const {data: resource} = await db.collection('resource').doc('a7d38b365f08a8b9001031943a99520f').get()
+    const {data: resource} = await db.collection('resource').doc('0d06a2fd5f244b1e002a77964590dec1').get()
     ctx.body = {resource}
   })
 

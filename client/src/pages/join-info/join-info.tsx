@@ -74,10 +74,11 @@ function JoinClass() {
     if (!checkJoinForm({ ...formData, addressSelect })) {
       return
     }
-    
+
     try {
       Taro.showLoading({ title: CHECK_CONTENT })
       const check_content_res = await checkContentSecurity(`${formData['name']}${formData['place']}`)
+
       if (check_content_res && check_content_res['code'] == 300) {
         Taro.hideLoading()
         showSecurityModal('内容')
@@ -88,11 +89,7 @@ function JoinClass() {
       // 先上传图片，如果用户选择了自己的头像，则需要上传，否则使用用户的微信头像
       Taro.showLoading({ title: LOADING })
 
-      const { fileID } = await Taro.cloud.uploadFile({
-        cloudPath: `user-avatar/${getFileName()}.png`,
-        filePath: get(GLOBAL_KEY_CROP_AVATAR_IMAGE), // 文件路径
-      })
-      avatarUrl = fileID
+
       switch (formAction) {
         case ActionType.Add:
           // 调用加入云函数，将用户信息插入班级表，将班级信息插入到用户集合
@@ -103,6 +100,12 @@ function JoinClass() {
               info: { ...formData, avatarUrl, address: addressSelect, location: geo, state: goWhereIdx },
             }
           })
+
+          const { fileID } = await Taro.cloud.uploadFile({
+            cloudPath: `user-avatar/${getFileName()}.png`,
+            filePath: get(GLOBAL_KEY_CROP_AVATAR_IMAGE), // 文件路径
+          })
+          avatarUrl = fileID
 
           if (result && result['data']) {
             Taro.hideLoading()
@@ -127,7 +130,7 @@ function JoinClass() {
             name: 'info',
             data: {
               $url: 'update',
-              info: { ...formData, avatarUrl, address: addressSelect, location: geo, state: goWhereIdx },
+              info: { ...formData, address: addressSelect, location: geo, state: goWhereIdx },
             }
           })
           console.log(updateResult);
@@ -148,7 +151,7 @@ function JoinClass() {
   const fetchStorage = () => {
     const { avatarUrl } = Taro.getStorageSync(USERSTORAGE)
     console.log(avatarUrl);
-    
+
     // TODO: cropImage 裁剪图片
     cropAvatar(avatarUrl, canvasWidth, CROP_AVATAR_CANVAS_ID)
     setAvatar(avatarUrl)

@@ -1,5 +1,5 @@
 // components
-import Taro, { useState, useEffect, usePullDownRefresh, useDidShow, showActionSheet } from '@tarojs/taro'
+import Taro, { useState, useEffect, usePullDownRefresh, useDidShow, showActionSheet, showTabBar, useShareAppMessage } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import AuthModal from '@/components/AuthModal'
 import Avatar from '@/components/Avatar'
@@ -9,19 +9,20 @@ import Tag from '@/components/Tag'
 import Tooltip from '@/components/Tooltip'
 // utils
 import { showToast, showLimitModal, showModal } from '@/utils/utils';
-import { getLevel } from '@/utils/callcloudfunction'
+import { getLevel, quitClass } from '@/utils/callcloudfunction'
 // constans
 import { INDEX_ACTION_SHEET, IndexActionSheet } from '@/constants/data';
-import { SEARCH_CLASS, CREATE_CLASS, CLASS_DETAIL, JOIN_INFO } from '@/constants/page'
+import { SEARCH_CLASS, CREATE_CLASS, CLASS_DETAIL, JOIN_INFO, INDEX } from '@/constants/page'
 import { LIMITSTORAGE, COLLECT_TOOLTIP_STORAGE, USERSTORAGE } from '@/constants/storage'
-import { PRO_TEXT_COLOR, PRO_BG_COLOR, WARING_COLOR } from '@/constants/theme'
-import { LOADING, EXPECTION } from '@/constants/toast'
+import { PRO_TEXT_COLOR, PRO_BG_COLOR, WARING_COLOR, PRIMARY_COLOR } from '@/constants/theme'
+import { LOADING, EXPECTION, QUIT_SUCCESS } from '@/constants/toast'
 // resources
 import './index.scss'
 import defaulAvatar from '../../assets/default_avatar.png'
 import joinClass from '../../assets/illustration_join_class.png'
 import createClass from '../../assets/illustration_create_class.png'
 import empty from '../../assets/illustration_empty.png'
+import shareImage from '../../assets/illustration_share.png'
 
 let createClasses
 function Index() {
@@ -164,29 +165,40 @@ function Index() {
     }
   }
 
-  const handleQuiteClass = async (classId: string) => {
+  const handleQuitClass = async (classId: string) => {
     try {
       const { tapIndex } = await showActionSheet({
         itemList: ['退出班级'],
         itemColor: WARING_COLOR,
       })
       if (tapIndex === 0) {
-        const confirm = await showModal('是否确认退出班级', WARING_COLOR)
-        console.log(confirm);
-        
-        if (confirm) {
-          console.log('quite class');
-          
-        } else {
+        const confirm = await showModal('是否确认退出班级', PRIMARY_COLOR)
+        if (!confirm) {
           return
+        }
+        Taro.showLoading({title: LOADING})
+        const result = await quitClass(classId)
+        
+        if (result && result['code'] === 200) {
+          Taro.showToast({title: QUIT_SUCCESS})
+          fetchIndexData()
+        } else {
+          showToast(EXPECTION)
         }
       }
     } catch (error) {
       console.log(error);
-      
+      // showToast(EXPECTION)
     }
   }
 
+  useShareAppMessage(() => {
+    return {
+      title: `查看班级同学分布地图，多联(蹭)系(饭)。`,
+      path: INDEX,
+      imageUrl: shareImage
+    }
+  })
 
   useDidShow(() => {
     setUserInfo()
@@ -219,7 +231,7 @@ function Index() {
   const classItemsDom = joinClasses.map(item => {
     return (<ClassItem
       onClick={() => { navigateTo(`${CLASS_DETAIL}?_id=${item['_id']}`) }}
-      onLongPress={() => { handleQuiteClass(item['_id']) }}
+      onLongPress={() => { handleQuitClass(item['_id']) }}
       classname={item['className']}
       totalNum={item['count']}
       joinNum={item['joinUsers']['length']}

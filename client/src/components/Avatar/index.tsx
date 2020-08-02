@@ -14,7 +14,7 @@ function Avatar (props: IAvatarProps) {
     <View className='avatar_container' 
       style={{width: `${radius}rpx`, height: `${radius}rpx`}}>
       <Image
-        mode='aspectFill' 
+        mode='scaleToFill' 
         src={image} 
         className='avatar_image'  
         style={{width: `${radius}rpx`, height: `${radius}rpx`, border:`${border}px solid #FFFFFF`}}/>

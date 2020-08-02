@@ -21,7 +21,7 @@ exports.main = async(event, context) => {
 	});
 
 	app.router('createMsg', async (ctx, next) => {
-    const templateId = 'hWSLUxrsphQb5G3_v9fuGsh3apcCYwbB51nuBdDXDI4'
+    const templateId = 'aQWd7THJR2uCIbuRF__6BKT9QHVHXgs5JB6hvMhR69c'
     const {className, token, creator, count} = classInfo
     const sendResult = await cloud.openapi.subscribeMessage.send({
       touser: OPENID,

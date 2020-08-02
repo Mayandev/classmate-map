@@ -78,7 +78,7 @@ const cropAvatar = async (imagePath: string, drawWidth: number, canvasId: string
   const { imageW, imageH, path } = await getImageWH(imagePath, drawWidth)
   const minSide = Math.min(imageW, imageH)
   const canvasCtx = Taro.createCanvasContext(canvasId)
-  const strokeWidth = 8
+  const strokeWidth = 4
   console.log(imageW, imageH);
   canvasCtx.save()
   canvasCtx.beginPath()
@@ -115,8 +115,8 @@ const getImageWH = async (imagePath: string, drawWidth: number) => {
   if (maxSide > drawWidth) {
     scale = drawWidth / maxSide;
   }
-  const imageW = Math.floor(width * scale)
-  const imageH = Math.floor(height * scale)
+  const imageW = Math.floor(width * scale * 0.5)
+  const imageH = Math.floor(height * scale * 0.5)
   return {imageH, imageW, path}
 }
 

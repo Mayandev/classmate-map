@@ -1,5 +1,17 @@
 import Taro from '@tarojs/taro'
 import { showToast } from './utils'
+
+const quitClass = async (classId: string) => {
+  const { result } = await Taro.cloud.callFunction({
+    name: 'class',
+    data: {
+      $url: 'quitClass',
+      classId
+    }
+  })
+  return result
+}
+
 const getLevel = async () => {
   const { result } = await Taro.cloud.callFunction({
     name: 'level',
@@ -21,7 +33,7 @@ const getAccountRes = async () => {
 
 const isClassFull = async (classId) => {
   const { result } = await Taro.cloud.callFunction({
-    name: 'class',
+    name: 'checkFull',
     data: {
       $url: 'check_full',
       classId
@@ -107,5 +119,6 @@ export {
   payRequest,
   createOrder,
   checkContentSecurity,
-  checkImageSecurity
+  checkImageSecurity,
+  quitClass
 }
