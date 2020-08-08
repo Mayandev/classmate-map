@@ -3,7 +3,7 @@
 	"cloudfunctionRoot": "cloud/functions/",
 	"projectname": "classmate-map",
 	"description": "班级同学毕业去向地图展示",
-	"appid": "",
+	"appid": "wxba09d83328cc7602",
 	"setting": {
 		"urlCheck": true,
 		"es6": false,
