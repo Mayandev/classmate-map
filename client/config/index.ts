@@ -36,7 +36,8 @@ const config = {
     '@tarojs/plugin-terser'
   ],
   defineConstants: {
-    LOCATION_APIKEY: JSON.stringify('574BZ-DHDRU-FDQVV-4H63F-XI7EO-LVBPB')
+    // 在腾讯地图开放平台申请 ApiKey
+    LOCATION_APIKEY: JSON.stringify('xxxx-xxxx-xxx-xxx')
   },
   alias: {
     '@/components': path.resolve(__dirname, '..', 'src/components'),
