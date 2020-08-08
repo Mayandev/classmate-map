@@ -1,7 +1,9 @@
 import Taro, { Component, Config } from '@tarojs/taro'
 import Index from './pages/index'
+import { set as setGlobalData, get as getGlobalData } from '@/utils/globaldata'
 
 import './app.scss'
+import { GLOBAL_KEY_PAYSUCCESS, GLOBAL_KEY_RESULTCODE, GLOBAL_KEY_MSG, GLOBAL_KEY_PAYJSORDERID } from './constants/data'
 
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
@@ -20,24 +22,59 @@ class App extends Component {
    */
   config: Config = {
     pages: [
-      'pages/index/index'
+      'pages/index/index',
+      'pages/charge/charge',
+      'pages/create-class/create-class',
+      'pages/search-class/search-class',
+      'pages/class-detail/class-detail',
+      'pages/join-info/join-info',
+      'pages/class-map/class-map',
+      'pages/create-class/create-success/create-success',
+      'pages/create-class/create-attention/create-attention'
     ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'black'
+      navigationBarTextStyle: 'black',
+      navigationStyle: 'custom'
     },
-    cloud: true
+    cloud: true,
+    permission: {
+      "scope.userLocation": {
+        "desc": "你的位置信息将用于在地图中展示"
+      }
+    },
+    navigateToMiniProgramAppIdList: [
+      "wx959c8c1fb2d877b5"
+    ]
   }
 
   componentDidMount () {
     if (process.env.TARO_ENV === 'weapp') {
-      Taro.cloud.init()
+      Taro.cloud.init({
+        env: 'class-map-6sie2',
+      })
     }
   }
 
-  componentDidShow () {}
+
+
+  componentDidShow () {
+    const { scene, referrerInfo } = this.$router.params
+    console.log(scene, referrerInfo);
+    
+    if ( referrerInfo && referrerInfo['appId'] === 'wx959c8c1fb2d877b5') { 
+      // 还应判断请求路径
+      let extraData = referrerInfo['extraData']
+      setGlobalData(GLOBAL_KEY_PAYSUCCESS, extraData['success'])
+      setGlobalData(GLOBAL_KEY_RESULTCODE, extraData['resultCode'])
+      setGlobalData(GLOBAL_KEY_MSG, extraData['msg'])
+      setGlobalData(GLOBAL_KEY_PAYJSORDERID, extraData['payjsOrderId'])
+      
+    }
+    
+  }
 
   componentDidHide () {}
 

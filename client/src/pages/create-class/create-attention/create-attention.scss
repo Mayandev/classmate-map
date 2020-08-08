@@ -1,0 +1,21 @@
+@import '../../../styles/mixin.scss';
+.attention_page {
+  padding: 20px 30px;
+  .attention_item {
+    margin: 25px 0px;
+
+    @include font('normal', normal, 32px);
+  }
+  .image_container {
+    @include flex(row, center, center);
+    .attention_image {
+      width: 400px;
+    }
+  }
+  .item_container {
+    margin-top: 30px;
+    padding: 10rpx 20rpx;
+    border-radius: 10px;
+    @include shadow();
+  }
+}

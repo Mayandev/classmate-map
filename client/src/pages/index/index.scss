@@ -1,0 +1,90 @@
+@import '../../styles/mixin.scss';
+
+.index {
+
+  .user_info {
+    @include flex(row, start, center);
+    position: fixed;
+    padding-left: 20px;
+    left: 34px;
+    z-index: 9999;
+    width: 450px;
+    overflow: hidden;
+    /*超出隐藏*/
+    white-space: nowrap;
+    /* 强制不换行 */
+    text-overflow: ellipsis;
+    /*文字隐藏的格式 */
+
+    .nickname {
+      @include font('normal', bold);
+      margin-left: 20px;
+    }
+  }
+
+  .page {
+    padding: 0px 54px 54px 54px;
+
+    .action_container {
+      @include flex(column, center, center);
+
+      .action_item {
+        @include wh(642px, 239px);
+        @include shadow();
+        @include flex(row, space-between);
+        border-radius: $radius;
+        padding: 38px;
+        margin-top: 44px;
+        box-sizing: border-box;
+
+        .action_txt {
+          height: 100%;
+          @include flex(column, space-between);
+
+          .action_title {
+            @include font('heading', bold);
+          }
+
+          .action_hint {
+            @include font('light');
+          }
+        }
+
+        .txt_right {
+          @include flex(column, space-between, flex-end);
+        }
+
+        .aciton_image {
+          @include wh(238px, 178px)
+        }
+      }
+    }
+
+    .join_container {
+      margin-top: 98px;
+
+      .title {
+        @include font('big', bold);
+      }
+
+      .empty_container {
+        @include flex(column, center, center);
+
+        .image {
+          margin-top: 62px;
+          @include wh(438px, 338px);
+        }
+
+        .empty_hint {
+          margin-top: 86px;
+          text-align: center;
+          @include font('light', normal, 32px);
+
+          .action {
+            color: $primary-color;
+          }
+        }
+      }
+    }
+  }
+}

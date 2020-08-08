@@ -1,0 +1,51 @@
+@import "../../styles/mixin.scss";
+$radius: 10px;
+$background: rgba($color: #000000, $alpha: 0.7);
+
+.tooltip-container {
+  position: fixed;
+  right: 20px;
+  z-index: 999999;
+  @include flex(row, start, center)
+}
+.tooltip {
+  font-size: 28px;
+  position: relative;
+  background-color: $background;
+  padding: 10px 16px;
+  color: #ffffff;
+  height: 60px;
+  border-bottom-left-radius: $radius;
+  border-top-left-radius: $radius;
+  .icon_menu_more {
+    width: 37px;
+    height: 14px;
+    margin: 0px 10px;
+  }
+  @include flex(row, center, center);
+}
+
+.tooltip::before {
+  content: " ";
+  border-left: 10px solid transparent;
+  border-top: 0px solid $background;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid $background;
+  position: absolute;
+  right: 70px;
+  top: -10px;
+}
+
+.tooltip-close {
+  padding-right: 16px;
+  height: 60px;
+  background-color: $background;
+  border-top-right-radius: $radius;
+  border-bottom-right-radius: $radius;
+  @include flex(row, center, center);
+}
+
+.close-icon {
+  width: 30px;
+  height: 30px;
+}

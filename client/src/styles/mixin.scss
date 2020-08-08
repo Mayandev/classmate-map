@@ -1,0 +1,47 @@
+@import './theme.scss';
+
+@mixin circle($radius) {
+  width: $radius;
+  height: $radius;
+  border-radius: 50%;
+}
+
+@mixin font($type, $bold: normal, $size: 36px) {
+  font-weight: $bold;
+  letter-spacing: 2px;
+  font-size: $size;
+  @if $type == 'heading' {
+    font-size: 42px;
+    color: $primary-text-color;
+  } @else if $type == 'normal' {
+    color: $primary-text-color;
+  } @else if $type == 'placeholader'{
+    color: $light-grey;
+  } @else if $type == 'light'{
+    color: $grey;
+  } @else if $type == 'second' {
+    color: $second-text-color;
+  } @else if $type == 'big' {
+    color: $primary-text-color;
+    font-size: 48px;
+  } @else if $type == 'white' {
+    color: white;
+  }
+}
+
+@mixin shadow($x: 0, $y: 14px, $blur: 40px, $radius: 0, $color: $shadow-color) {
+  box-shadow: $x $y $blur $radius $color;
+}
+
+@mixin wh($w, $h) {
+  width: $w;
+  height: $h;
+}
+
+@mixin flex($dir: row, $main: start, $cross: flex-start) {
+  display: flex;
+  flex-direction: $dir;
+  justify-content: $main;
+  align-items: $cross;
+}
+

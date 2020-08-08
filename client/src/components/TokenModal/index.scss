@@ -1,0 +1,61 @@
+@import "../../styles/mixin.scss";
+
+.auth_modal {
+  .modal_mask {
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 10000;
+    @include wh(100%, 100%);
+  }
+
+  .modal_container {
+    @include wh(568px, 384px);
+    @include flex(column, space-evenly, center);
+    position: fixed;
+    top: 45%;
+    left: 50%;
+    z-index: 20000;
+    transform: translate(-50%, -50%);
+    border-radius: 20px;
+    background-color: #FFFFFF;
+
+    .modal_title {
+
+        @include font('normal', bold);
+    }
+    .placeholder {
+      @include font('placeholader');
+    }
+
+    .form_input {
+      @include font('normal');
+      @include wh(464px, 82px);
+      border-bottom: 2px solid $light-grey;
+    }
+    .check_btn {
+      @include wh(464px, 82px);
+      @include font('white');
+      @include flex(row, center, center);
+      margin-top: 30px;
+      background: $primary-color;
+      box-shadow: 0 14px 40px 0 $second-color;
+      border-radius: 12px;
+      line-height: 82px;
+    }
+    .check_btn_hover {
+      box-shadow: none;
+    }
+    .modal_close {
+      position: absolute;
+      bottom: -102px;
+      left: 50%;
+      transform: translateX(-36px);
+      .close_icon {
+        @include wh(72px, 72px);
+      }
+    }
+  }
+
+}

@@ -1,0 +1,23 @@
+@import "../../styles/mixin.scss";
+
+.search_container {
+  @include flex(row, start, center);
+  @include wh(686px, 112px);
+  @include shadow();
+  background: #FFFFFF;
+  border-radius: 6px;
+  padding: 0px 56px;
+  .search_icon {
+    @include wh(36px, 36px);
+    margin-right: 44px;
+
+  }
+
+  .input {
+    width: 90%;
+  }
+
+  .input_hint {
+    @include font('placeholader', normal, 30px);
+  }
+}

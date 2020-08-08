@@ -1,0 +1,104 @@
+@import "../../styles/mixin.scss";
+.page_detail {
+  padding-bottom: 150px;
+}
+.navbar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+}
+
+.header {
+  @include wh(100%, 600px);
+  background-color: black;
+  z-index: -999;
+  position: relative;
+
+  .head-img {
+    @include wh(100%, 600px);
+  }
+
+
+  .mask {
+    @include wh(100%, 600px);
+    position: absolute;
+    background: rgba(0, 0, 0, 0.19);
+    left: 0;
+    top: 0;
+  }
+}
+
+.detail_container {
+  background: #FFFFFF;
+  margin-top: -40px;
+  border-radius: 32px 32px 0px 0px;
+  width: 100%;
+  padding: 60px 52px;
+
+  .classname_container {
+    @include flex(row, space-between, center);
+
+    .classname {
+      @include font('heading', bold, 48px);
+    }
+  }
+
+
+  .info_item {
+    margin-top: 40px;
+    @include font('second');
+  }
+
+  .empty_container {
+    @include flex(column, center, center);
+
+    .image {
+      margin-top: 62px;
+      @include wh(438px, 338px);
+    }
+
+    .empty_hint {
+      margin-top: 46px;
+      text-align: center;
+      @include font('light', normal, 32px);
+    }
+  }
+
+  .avatars {
+    margin-top: 20px;
+    @include flex(row, start, center);
+    flex-wrap: wrap;
+
+
+
+    .avatar_item {
+      margin-top: 15px;
+    }
+  }
+
+  .action_btn_container {
+    @include wh(100%, 150px);
+    @include flex(row, center, center);
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    background-color: #fff;
+
+    .action_btn {
+      @include wh(686px, 88px);
+      @include font('white');
+      @include flex(row, center, center);
+      background: $primary-color;
+      box-shadow: 0 14px 40px 0 $second-color;
+      border-radius: 12px;
+    }
+  }
+
+
+
+  .btn_hover {
+    box-shadow: none;
+  }
+}

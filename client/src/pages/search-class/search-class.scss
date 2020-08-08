@@ -1,0 +1,33 @@
+@import "../../styles/mixin.scss";
+
+.page_search {
+  .search_wrap {
+    @include flex(row, center, center);
+    padding-top: 32px;
+  }
+
+  .search_result {
+    margin-top: 98px;
+    padding: 0px 54px;
+
+    .title {
+      @include font('big', bold);
+    }
+  }
+
+  .empty_container {
+    margin-top: 50px;
+    @include flex(column, center, center);
+
+    .image {
+      margin-top: 62px;
+      @include wh(438px, 338px);
+    }
+
+    .empty_hint {
+      margin-top: 86px;
+      text-align: center;
+      @include font('light', normal, 32px);
+    }
+  }
+}

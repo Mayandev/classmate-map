@@ -1,0 +1,58 @@
+@import "../../../styles/mixin.scss";
+
+.success_page {
+  @include font('normal');
+  @include flex(column, start, center);
+
+  .success_icon {
+    @include wh(128px, 128px);
+    border-radius: 50%;
+  }
+
+  .success_title {
+    margin-top: 20px;
+  }
+
+  .success_info {
+    @include flex(row, center, center);
+    margin-top: 42px;
+
+    .token {
+      color: $primary-color;
+    }
+
+    .copy_icon {
+      @include wh(32px, 32px);
+    }
+  }
+
+  button::after{ 
+    border: none; 
+  }
+
+  .share_btn {
+    @include wh(612px, 92px);
+    @include font('white');
+    @include flex(row, center, center);
+    background: $primary-color;
+    box-shadow: 0 14px 40px 0 $second-color;
+    border-radius: 12px;
+    line-height: 92px;
+    margin-top: 30px;
+  }
+
+  .class_btn {
+    @include wh(612px, 92px);
+    @include font('white');
+    color: $primary-color;
+    background: #FFFFFF;
+    border-radius: 12px;
+    line-height: 92px;
+    margin-top: 60px;
+    border: 3px solid $primary-color;
+  }
+
+  .btn_hover {
+    box-shadow: none;
+  }
+}

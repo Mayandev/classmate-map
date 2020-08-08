@@ -41,9 +41,11 @@
     "@tarojs/taro-tt": "2.2.9",
     "@tarojs/taro-weapp": "2.2.9",
     "babel-runtime": "^6.26.0",
-    "nervjs": "^1.5.5",
     "nerv-devtools": "^1.5.5",
-    "regenerator-runtime": "0.11.1"
+    "nervjs": "^1.5.5",
+    "regenerator-runtime": "0.11.1",
+    "taro-navigationbar": "^2.1.1",
+    "taro-ui": "^2.3.4"
   },
   "devDependencies": {
     "@types/react": "^16.4.6",

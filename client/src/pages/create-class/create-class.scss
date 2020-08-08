@@ -1,0 +1,33 @@
+@import "~taro-ui/dist/style/components/switch.scss";
+@import "../../styles/mixin.scss";
+@import "../../styles/form.scss";
+
+
+.create_page {
+  padding: 20px 0px;
+  @include flex(column, start, center);
+  .press-canvas {
+    position: absolute;
+    top: -1000px;
+    background-color: gray;
+  }
+  
+  .image {
+    @include wh(352px, 236px);
+    margin-bottom: 50px;
+  }
+
+  .selected_image {
+    @include wh(80px, 80px);
+    border-radius: 12px;
+    @include shadow();
+  }
+
+  .notice {
+    @include font('light', normal, 32px)
+  }
+  .attention_txt {
+    color: $primary-color;
+  }
+
+}

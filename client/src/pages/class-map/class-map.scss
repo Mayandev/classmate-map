@@ -1,0 +1,114 @@
+@import '../../styles/mixin.scss';
+
+.map_page {
+  @include wh(100%, 100%);
+}
+
+.map {
+  width: 100%;
+  height: 100%;
+
+  .search_container {
+    @include wh(100%, 200px);
+    @include flex(row, center);
+    padding-top: 20px;
+    background: linear-gradient(180deg,
+        #FFFFFF 0%,
+        rgba(255, 255, 255, 1) 10%,
+        rgba(255, 255, 255, 0.90) 20%,
+        rgba(255, 255, 255, 0.85) 30%,
+        rgba(255, 255, 255, 0.70) 40%,
+        rgba(255, 255, 255, 0.50) 50%,
+        rgba(255, 255, 255, 0.40) 60%,
+        rgba(253, 253, 253, 0.30) 70%,
+        rgba(249, 249, 249, 0.20) 80%,
+        rgba(249, 249, 249, 0.10) 90%);
+  }
+
+
+
+  .people_info {
+    transform: translateY(120%);
+    @include wh(100%, 574px);
+    background: #FFFFFF;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    border-radius: 32px 32px 0 0;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.07);
+
+    .info_avatar {
+      margin-top: -75px;
+      @include flex(column, center, center);
+
+      .name {
+        @include font('normal', bold, 42px);
+        margin-top: 10px;
+      }
+    }
+
+    .info_detail {
+      padding: 20px 30px;
+
+      .info_item {
+        @include flex(row, start, center);
+        height: 70px;
+        width: 100%;
+
+        .info_icon {
+          @include wh(36px, 36px);
+          margin-right: 15px;
+        }
+
+        .info_txt {
+          @include font('second', normal, 32px);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+
+    }
+
+    .contact_btn {
+      @include wh(686px, 92px);
+      @include font('white');
+      @include flex(row, center, center);
+      background: $primary-color;
+      box-shadow: 0 14px 40px 0 $second-color;
+      border-radius: 12px;
+      margin-top: 30px;
+    }
+  }
+}
+
+@keyframes slideContentUp {
+  from {
+    transform: translateY(120%);
+    /*设置为正数则底部弹出来，负数则相反*/
+  }
+
+  to {
+    transform: translateY(0%);
+  }
+}
+
+@keyframes slideContentDown {
+  from {
+    transform: translateY(0%);
+  }
+
+  to {
+    transform: translateY(120%);
+  }
+}
+
+.open {
+  animation: slideContentUp 0.4s ease-in-out both;
+  /* animation-fill-mode: both 动画将会执行 forwards 和 backwards 执行的动作。 */
+}
+
+.close {
+  animation: slideContentDown 0.4s ease-in-out both;
+  /* animation-fill-mode: both 动画将会执行 forwards 和 backwards 执行的动作。 */
+}

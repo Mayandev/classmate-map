@@ -1,3 +1,5 @@
+import path from 'path'
+
 const config = {
   projectName: 'classmate-map',
   date: '2020-6-21',
@@ -34,6 +36,13 @@ const config = {
     '@tarojs/plugin-terser'
   ],
   defineConstants: {
+    // 在腾讯地图开放平台申请 ApiKey
+    LOCATION_APIKEY: JSON.stringify('xxxx-xxxx-xxx-xxx')
+  },
+  alias: {
+    '@/components': path.resolve(__dirname, '..', 'src/components'),
+    '@/utils': path.resolve(__dirname, '..', 'src/utils'),
+    '@/constants': path.resolve(__dirname, '..', 'src/constants')
   },
   mini: {
     postcss: {

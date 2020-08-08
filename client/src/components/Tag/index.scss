@@ -1,0 +1,11 @@
+@import "../../styles/mixin.scss";
+
+.tag_container {
+  border-radius: 6px;
+  @include flex(row, center, center);
+  .label {
+    font-size: 20px;
+    
+  }
+}
+
