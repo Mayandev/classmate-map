@@ -101,11 +101,11 @@ function JoinClass() {
             }
           })
 
-          const { fileID } = await Taro.cloud.uploadFile({
-            cloudPath: `user-avatar/${getFileName()}.png`,
-            filePath: get(GLOBAL_KEY_CROP_AVATAR_IMAGE), // 文件路径
-          })
-          avatarUrl = fileID
+          // const { fileID } = await Taro.cloud.uploadFile({
+          //   cloudPath: `user-avatar/${getFileName()}.png`,
+          //   filePath: get(GLOBAL_KEY_CROP_AVATAR_IMAGE), // 文件路径
+          // })
+          // avatarUrl = fileID
 
           if (result && result['data']) {
             Taro.hideLoading()
@@ -130,7 +130,7 @@ function JoinClass() {
             name: 'info',
             data: {
               $url: 'update',
-              info: { ...formData, address: addressSelect, location: geo, state: goWhereIdx },
+              info: { ...formData, avatarUrl, address: addressSelect, location: geo, state: goWhereIdx },
             }
           })
           console.log(updateResult);
