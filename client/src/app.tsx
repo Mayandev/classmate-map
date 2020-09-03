@@ -1,4 +1,5 @@
 import Taro, { Component, Config, showLoading } from '@tarojs/taro'
+import '@tarojs/async-await'
 import Index from './pages/index'
 import { set as setGlobalData, get as getGlobalData } from '@/utils/globaldata'
 

@@ -29,6 +29,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@tarojs/async-await": "^2.2.10",
     "@tarojs/components": "2.2.9",
     "@tarojs/components-qa": "2.2.9",
     "@tarojs/router": "2.2.9",

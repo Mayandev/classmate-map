@@ -1,23 +1,30 @@
 {
-	"miniprogramRoot": "client/dist/",
-	"cloudfunctionRoot": "cloud/functions/",
-	"projectname": "classmate-map",
-	"description": "班级同学毕业去向地图展示",
-	"appid": "wxba09d83328cc7602",
+	"description": "项目配置文件",
+	"packOptions": {
+		"ignore": []
+	},
+	"compileType": "miniprogram",
+	"libVersion": "2.4.0",
+	"projectname": "qq",
+	"scripts": {
+		"beforeCompile": "npm run compile",
+		"beforePreview": "npm run compile",
+		"beforeUpload": "npm run compile"
+	},
 	"setting": {
-		"urlCheck": true,
+		"urlCheck": false,
 		"es6": false,
 		"enhance": false,
 		"postcss": false,
 		"preloadBackgroundData": false,
-		"minified": false,
+		"minified": true,
 		"newFeature": true,
 		"coverView": true,
-		"nodeModules": false,
-		"autoAudits": false,
+		"nodeModules": true,
+		"autoAudits": true,
 		"showShadowRootInWxmlPanel": true,
 		"scopeDataCheck": false,
-		"uglifyFileName": false,
+		"uglifyFileName": true,
 		"checkInvalidKey": true,
 		"checkSiteMap": true,
 		"uploadWithSourceMap": true,
@@ -29,12 +36,14 @@
 		},
 		"useIsolateContext": true,
 		"useCompilerModule": false,
-		"userConfirmedUseCompilerModuleSwitch": false
+		"userConfirmedUseCompilerModuleSwitch": false,
+		"remoteDebugLogEnable": false,
+		"useAlphaLib": true
 	},
-	"compileType": "miniprogram",
+	"appid": "wxd9dd3261d8915de7",
+	"qqappid": "1110937220",
+	"cloudfunctionRoot": "cloud/",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
-	"cloudfunctionTemplateRoot": "cloudfunctionTemplate",
-	"libVersion": "2.11.3",
 	"condition": {}
 }
