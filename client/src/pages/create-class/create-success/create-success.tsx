@@ -7,6 +7,8 @@ import successIcon from '../../../assets/icon_create_success.png'
 import copyIcon from '../../../assets/icon_copy.png'
 import shareImg from '../../../assets/illustration_share.png'
 import { CLASS_DETAIL } from '@/constants/page'
+import { get } from '@/utils/globaldata';
+import { AD_HIDDEN } from '@/constants/data';
 
 function CreateSuccess() {
   const [token, setToken] = useState<string>('')
@@ -58,6 +60,12 @@ function CreateSuccess() {
         className='share_btn'
         hoverClass='btn_hover'
         openType='share'>邀请同学</Button>
+      <View className="ad_unit" hidden={get(AD_HIDDEN)}>
+        <ad-custom unit-id="adunit-407a89d2d5fda077"></ad-custom>
+      </View>
+      <View className="custom_small_ad" hidden={get(AD_HIDDEN)}>
+        <ad-custom unit-id="adunit-ca65da0dfdc0931c"></ad-custom>
+      </View>
     </View>
   )
 }

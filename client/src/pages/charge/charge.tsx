@@ -8,8 +8,8 @@ import './charge.scss'
 import placeholder from '../../assets/image_placeholder.png'
 import { LOADING, THIRD_PARTY, PAY_SUCCESS, EXPECTION } from '@/constants/toast'
 import { PRIMARY_COLOR } from '@/constants/theme'
-import { get as getGlobalData } from '@/utils/globaldata'
-import { GLOBAL_KEY_PAYSUCCESS, GLOBAL_KEY_MSG, GLOBAL_KEY_PAYJSORDERID } from '@/constants/data'
+import { get as getGlobalData, get } from '@/utils/globaldata'
+import { GLOBAL_KEY_PAYSUCCESS, GLOBAL_KEY_MSG, GLOBAL_KEY_PAYJSORDERID, AD_HIDDEN } from '@/constants/data'
 import { showToast } from '@/utils/utils'
 import { INDEX } from '@/constants/page'
 import { LIMITSTORAGE } from '@/constants/storage'
@@ -140,6 +140,9 @@ function Charge() {
       <Image mode='widthFix' className='account_info' src={accountRes ? accountRes : placeholder} />
       <Button onClick={bindCharge} className='charge_btn' hoverClass='charge_btn_hover'>升级 Pro</Button>
       <Button openType='contact' className='contact_btn'>联系客服</Button>
+      <View className="custom_small_ad" hidden={get(AD_HIDDEN)}>
+        <ad-custom unit-id="adunit-ca65da0dfdc0931c"></ad-custom>
+      </View>
     </View>
   )
 }

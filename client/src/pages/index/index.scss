@@ -85,6 +85,14 @@
           }
         }
       }
+
+      .ad_unit {
+        margin-top: 44px;
+        margin-bottom: 44px;
+        @include shadow();
+        border-radius: $radius;
+      }
+
     }
   }
 }

@@ -1,6 +1,6 @@
 // components
-import Taro, { useState, useEffect, usePullDownRefresh, useDidShow, showActionSheet, showTabBar, useShareAppMessage } from '@tarojs/taro'
-import { View, Text, Image } from '@tarojs/components'
+import Taro, { useState, useEffect, usePullDownRefresh, useDidShow, showActionSheet, useShareAppMessage, showLoading } from '@tarojs/taro'
+import { View, Text, Image, Ad } from '@tarojs/components'
 import AuthModal from '@/components/AuthModal'
 import Avatar from '@/components/Avatar'
 import ClassItem from '@/components/ClassItem'
@@ -23,6 +23,8 @@ import joinClass from '../../assets/illustration_join_class.png'
 import createClass from '../../assets/illustration_create_class.png'
 import empty from '../../assets/illustration_empty.png'
 import shareImage from '../../assets/illustration_share.png'
+import { get } from '@/utils/globaldata';
+import { AD_HIDDEN } from '../../constants/data';
 
 let createClasses
 function Index() {
@@ -35,17 +37,19 @@ function Index() {
   const [isAuth, setIsAuth] = useState(false)
   const [joinClasses, setJoinClasses] = useState([])
   const [userLevel, setUserLevel] = useState('normal')
+  const [smallAdHidden, setSamllAdHidden] = useState(get(AD_HIDDEN))
+
 
   const navigateTo = (url: string) => {
     Taro.navigateTo({ url });
   }
 
-  const bindCreateClass = () => {
+  const bindCreateClass = async () => {
     if (!isAuth) {
       setShowAuthModal(true)
       return
     }
-    const limitInfo = Taro.getStorageSync(LIMITSTORAGE) || []
+    const limitInfo = Taro.getStorageSync(LIMITSTORAGE) || {}
     if (!limitInfo['createLimit']) {
       showToast(EXPECTION)
       return
@@ -60,14 +64,8 @@ function Index() {
   }
 
   const fetchLimitInfo = async () => {
-    const limitInfo = await getLevel()
-    if (limitInfo && limitInfo['level']) {
-      Taro.setStorageSync(
-        LIMITSTORAGE,
-        limitInfo['limitData']
-      )
-      setUserLevel(limitInfo['level'])
-    }
+    const limitInfo = Taro.getStorageSync(LIMITSTORAGE)
+    setUserLevel(limitInfo['name'])
   }
 
   const fetchIndexData = async () => {
@@ -143,7 +141,7 @@ function Index() {
   const onAuthSuccess = () => {
     // 获取用户信息
     setUserInfo()
-    fetchLimitInfo()
+    // fetchLimitInfo()
   }
 
   const handleActionSheetClick = async () => {
@@ -176,11 +174,11 @@ function Index() {
         if (!confirm) {
           return
         }
-        Taro.showLoading({title: LOADING})
+        Taro.showLoading({ title: LOADING })
         const result = await quitClass(classId)
-        
+
         if (result && result['code'] === 200) {
-          Taro.showToast({title: QUIT_SUCCESS})
+          Taro.showToast({ title: QUIT_SUCCESS })
           fetchIndexData()
         } else {
           showToast(EXPECTION)
@@ -202,7 +200,6 @@ function Index() {
 
   useDidShow(() => {
     setUserInfo()
-    fetchLimitInfo()
   })
 
 
@@ -225,10 +222,25 @@ function Index() {
     setNavHeight(navHeight)
     handleTooltip()
     fetchIndexData()
+    fetchLimitInfo()
   }, [])
 
-
-  const classItemsDom = joinClasses.map(item => {
+  const classItemsDom = joinClasses.map((item, index) => {
+    if (index === 0) {
+      return (
+        <View>
+          <ClassItem
+            onClick={() => { navigateTo(`${CLASS_DETAIL}?_id=${item['_id']}`) }}
+            onLongPress={() => { handleQuitClass(item['_id']) }}
+            classname={item['className']}
+            totalNum={item['count']}
+            joinNum={item['joinUsers']['length']}
+            coverImage={item['classImage']}
+            isJoin={true} />
+          <View className="ad_unit" hidden={get(AD_HIDDEN)}><ad-custom unit-id="adunit-96e9336972ac1da2"></ad-custom></View>
+        </View>
+      )
+    }
     return (<ClassItem
       onClick={() => { navigateTo(`${CLASS_DETAIL}?_id=${item['_id']}`) }}
       onLongPress={() => { handleQuitClass(item['_id']) }}
@@ -237,6 +249,7 @@ function Index() {
       joinNum={item['joinUsers']['length']}
       coverImage={item['classImage']}
       isJoin={true} />)
+
   })
 
   return (
@@ -317,6 +330,9 @@ function Index() {
               : classItemsDom
           }
         </View>
+      </View>
+      <View className="custom_small_ad" hidden={smallAdHidden}>
+        <ad-custom unit-id="adunit-ca65da0dfdc0931c"></ad-custom>
       </View>
     </View>
   )

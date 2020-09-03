@@ -13,7 +13,7 @@ import selectArrow from '../../assets/icon_select_arrow.png'
 import './join-info.scss'
 import { CANCEL_SELECT, LOADING, EXPECTION, SAVE_SUCCESS, UPDATE_SUCCESS, CHECK_CONTENT } from "@/constants/toast"
 import { PRIMARY_COLOR } from "@/constants/theme"
-import { WHEREOPTION, PLACEOPTION, CROP_AVATAR_CANVAS_ID, GLOBAL_KEY_CROP_AVATAR_IMAGE } from "@/constants/data"
+import { WHEREOPTION, PLACEOPTION, CROP_AVATAR_CANVAS_ID, GLOBAL_KEY_CROP_AVATAR_IMAGE, AD_HIDDEN } from "@/constants/data"
 import { get } from "@/utils/globaldata"
 import { checkContentSecurity } from "@/utils/callcloudfunction"
 
@@ -260,6 +260,9 @@ function JoinClass() {
         <Button formType='submit' className='form_btn' hoverClass='form_btn_hover' >保存信息</Button>
       </Form>
       <View className='notice'>* 信息只能被同一班级的同学查看</View>
+      <View className="custom_small_ad" hidden={get(AD_HIDDEN)}>
+        <ad-custom unit-id="adunit-ca65da0dfdc0931c"></ad-custom>
+      </View>
     </View>
   )
 }

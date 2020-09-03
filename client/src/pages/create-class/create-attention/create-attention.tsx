@@ -4,6 +4,8 @@ import NavBar from 'taro-navigationbar'
 
 import './create-attention.scss'
 import create_attention from '../../../assets/illustration_create_attention_list.png'
+import { get } from "@/utils/globaldata";
+import { AD_HIDDEN } from "@/constants/data";
 
 function CreateAttention() {
   const AttentionData = [
@@ -29,6 +31,9 @@ function CreateAttention() {
             </View>
           )
         })}
+      </View>
+      <View className="custom_small_ad" hidden={get(AD_HIDDEN)}>
+        <ad-custom unit-id="adunit-ca65da0dfdc0931c"></ad-custom>
       </View>
     </View>
   )

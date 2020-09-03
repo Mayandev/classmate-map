@@ -7,6 +7,8 @@ import ClassItem from '@/components/ClassItem'
 import { SEARCHING, EXPECTION, SEARCH_EMPTY } from '@/constants/toast'
 import empty from '../../assets/illustration_empty.png'
 import './search-class.scss'
+import { get } from '@/utils/globaldata'
+import { AD_HIDDEN } from '@/constants/data'
 
 function SearchClass() {
   const [classInfo, setClassInfo] = useState({})
@@ -77,6 +79,9 @@ function SearchClass() {
           </View>
         }
 
+      </View>
+      <View className="custom_small_ad" hidden={get(AD_HIDDEN)}>
+        <ad-custom unit-id="adunit-ca65da0dfdc0931c"></ad-custom>
       </View>
     </View>
   )

@@ -9,3 +9,9 @@ page {
   padding-bottom: env(safe-area-inset-bottom);
   /* 兼容 iOS >= 11.2 */
 }
+
+.custom_small_ad {
+  position: fixed;
+  right: 20px;
+  bottom: 100px;
+}

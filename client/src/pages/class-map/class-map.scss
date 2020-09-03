@@ -9,7 +9,7 @@
   height: 100%;
 
   .search_container {
-    @include wh(100%, 200px);
+    @include wh(100%, 100px);
     @include flex(row, center);
     padding-top: 20px;
     background: linear-gradient(180deg,
@@ -45,6 +45,12 @@
         @include font('normal', bold, 42px);
         margin-top: 10px;
       }
+
+      .time_info {
+        font-size: 20rpx;
+        color: $grey;
+        margin-top: 10px;
+      }
     }
 
     .info_detail {
@@ -65,6 +71,7 @@
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
+          width: 700rpx;
         }
       }
 

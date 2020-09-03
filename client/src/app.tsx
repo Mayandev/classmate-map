@@ -1,9 +1,12 @@
-import Taro, { Component, Config } from '@tarojs/taro'
+import Taro, { Component, Config, showLoading } from '@tarojs/taro'
 import Index from './pages/index'
 import { set as setGlobalData, get as getGlobalData } from '@/utils/globaldata'
 
 import './app.scss'
-import { GLOBAL_KEY_PAYSUCCESS, GLOBAL_KEY_RESULTCODE, GLOBAL_KEY_MSG, GLOBAL_KEY_PAYJSORDERID } from './constants/data'
+import { GLOBAL_KEY_PAYSUCCESS, GLOBAL_KEY_RESULTCODE, GLOBAL_KEY_MSG, GLOBAL_KEY_PAYJSORDERID, AD_HIDDEN } from './constants/data'
+import { LOADING } from './constants/toast'
+import { getLevel } from './utils/callcloudfunction'
+import { LIMITSTORAGE } from './constants/storage'
 
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
@@ -39,6 +42,12 @@ class App extends Component {
       navigationBarTextStyle: 'black',
       navigationStyle: 'custom'
     },
+    plugins: {
+      "routePlan": {
+        "version": "1.0.8",
+        "provider": "wx50b5593e81dd937a"
+      }
+    },
     cloud: true,
     permission: {
       "scope.userLocation": {
@@ -71,14 +80,33 @@ class App extends Component {
       setGlobalData(GLOBAL_KEY_RESULTCODE, extraData['resultCode'])
       setGlobalData(GLOBAL_KEY_MSG, extraData['msg'])
       setGlobalData(GLOBAL_KEY_PAYJSORDERID, extraData['payjsOrderId'])
-      
     }
-    
+
+    // 获取用户等级
+    this.fetchLimitInfo()
   }
 
   componentDidHide () {}
 
   componentDidCatchError () {}
+
+
+  async fetchLimitInfo () {
+    showLoading({ title: LOADING })
+    try {
+      const limitInfo = await getLevel()
+      if (limitInfo && limitInfo['level']) {
+        Taro.setStorageSync(
+          LIMITSTORAGE,
+          limitInfo['limitData']
+        )
+        setGlobalData(AD_HIDDEN, limitInfo['limitData']['name'] !== 'normal')
+      }
+      Taro.hideLoading()
+    } catch (error) {
+      Taro.hideLoading()
+    }
+  }
 
   // 在 App 类中的 render() 函数没有实际作用
   // 请勿修改此函数

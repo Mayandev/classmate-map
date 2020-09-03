@@ -18,6 +18,8 @@ import TokenModal from "@/components/TokenModal"
 import { showToast, showLimitModal } from '@/utils/utils';
 import { isClassFull, getLevel } from "@/utils/callcloudfunction"
 import Tooltip from "@/components/Tooltip"
+import { get } from "@/utils/globaldata"
+import { AD_HIDDEN } from "@/constants/data"
 
 
 interface IClassDetailProps {
@@ -381,6 +383,9 @@ function ClassDetail() {
             {isJoin ? '查看同学分布地图' : '加入班级'}
           </Button>
         </View>
+      </View>
+      <View className="custom_small_ad" hidden={get(AD_HIDDEN)}>
+        <ad-custom unit-id="adunit-ca65da0dfdc0931c"></ad-custom>
       </View>
     </View>
   )

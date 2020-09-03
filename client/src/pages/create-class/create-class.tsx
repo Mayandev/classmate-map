@@ -16,7 +16,7 @@ import { PRIMARY_COLOR } from '@/constants/theme';
 import { checkContentSecurity, checkImageSecurity } from '@/utils/callcloudfunction';
 import { showSecurityModal, getFileName, compressImage } from '@/utils/utils';
 import { get } from '@/utils/globaldata';
-import { GLOBAL_KEY_COMPRESS_CLASS_IMAGE, CLASS_CANVAS_ID } from '@/constants/data';
+import { GLOBAL_KEY_COMPRESS_CLASS_IMAGE, CLASS_CANVAS_ID, AD_HIDDEN } from '@/constants/data';
 
 function CreateClass() {
 
@@ -151,7 +151,7 @@ function CreateClass() {
       <Canvas
         canvasId={CLASS_CANVAS_ID}
         className='press-canvas'
-        style={{width: `${canvasWidth}px`, height: `${canvasWidth}px`}} />
+        style={{ width: `${canvasWidth}px`, height: `${canvasWidth}px` }} />
       <NavBar title={'创建班级'} back />
       <Image className='image' src={illustrate} />
       <Form onSubmit={onCreateSubmit} className='form_container'>
@@ -209,6 +209,9 @@ function CreateClass() {
           onClick={() => Taro.navigateTo({ url: CREATE_ATTENTION })}>
           《创建规范》
         </Text>
+      </View>
+      <View className="custom_small_ad" hidden={get(AD_HIDDEN)}>
+        <ad-custom unit-id="adunit-ca65da0dfdc0931c"></ad-custom>
       </View>
     </View>
   )
