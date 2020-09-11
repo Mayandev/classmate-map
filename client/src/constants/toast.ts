@@ -23,6 +23,7 @@ export const CANCEL_SELECT = '取消选择'
 export const JOIN_SUCCESS ='加入成功'
 
 export const CREATING = '创建中...'
+export const UPDATING = '修改中...'
 export const IMG_UPLOADING = '图片上传...'
 export const SAVE_SUCCESS = '信息保存成功'
 export const UPDATE_SUCCESS = '信息更新成功'

@@ -33,6 +33,31 @@ const checkCount = (count: string, countLimit: number) => {
   return num > countLimit || num <= 0
 }
 
+const checkMinCount = (count: string, minLimit: number) => {
+  const num = Number(count)
+  return num < minLimit
+}
+
+const checkUpdateForm = (data) => {
+  const { creator, className, count, imagePath, countLimit, minLimit } = data;
+  if (checkFormEmpty(creator)) {
+    showToast(EMPTY_CREATOR)
+    return false
+  } else if (checkFormEmpty(className)) {
+    showToast(EMPTY_CLASSNAME)
+    return false
+  } else if (checkCount(count, countLimit)) {
+    showLimitModal('提示', `班级人数需≤${countLimit}，升级高级用户可以设置更多人数`, '了解一下')
+    return false
+  } else if (checkMinCount(count, minLimit)) {
+    showToast('需要大于已有班级成员个数')
+  } else if (checkFormEmpty(imagePath)) {
+    showToast(EMPTY_IMAGE)
+    return false
+  }
+  return true
+}
+
 const checkAddForm = async (data) => {
   const { creator, className, count, token, imagePath, countLimit } = data;
   
@@ -98,4 +123,4 @@ const checkTokenEqual = (inputToken, rightToken) => {
   return false
 }
 
-export { checkAddForm, checkJoinForm, checkTokenEqual }
+export { checkAddForm, checkJoinForm, checkTokenEqual, checkUpdateForm }

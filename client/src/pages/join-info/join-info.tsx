@@ -24,6 +24,7 @@ enum ActionType {
 let avatarName = ''
 let geo
 let addressClickCount = 0
+let avatarUploadName = ''
 function JoinClass() {
   const [goWhereIdx, setGoWhereIdx] = useState(0)
   const [addressSelect, setAddressSelect] = useState('')
@@ -58,7 +59,16 @@ function JoinClass() {
     try {
       const location = await Taro.chooseLocation({});
       console.log(location)
-      const { address, longitude, latitude } = location
+      let { address, longitude, latitude } = location
+      const randomAppendix = Number(Number(Math.random() / 200).toFixed(6))
+      const randomPlus = Math.floor(Math.random() * 2)
+      if (randomPlus) {
+        longitude += randomAppendix
+        latitude += randomAppendix
+      } else {
+        longitude = String(Number(longitude) - randomAppendix)
+        latitude = String(Number(latitude) - randomAppendix)
+      }
       geo = { longitude, latitude }
       setAddressSelect(address)
     } catch (error) {
@@ -70,6 +80,7 @@ function JoinClass() {
   const onJoinSubmit = async (e) => {
     const formData = e.detail.value
     let avatarUrl = avatar
+    let locationAvatar = 'cloud://class-map-6sie2.636c-class-map-6sie2-1302773560/resource/icon_avatar_location.png'
     // 如果有输入值不合法，返回
     if (!checkJoinForm({ ...formData, addressSelect })) {
       return
@@ -88,25 +99,22 @@ function JoinClass() {
       // 上传头像
       // 先上传图片，如果用户选择了自己的头像，则需要上传，否则使用用户的微信头像
       Taro.showLoading({ title: LOADING })
-
-
       switch (formAction) {
         case ActionType.Add:
+          const addFileName = getFileName()
+          const { fileID } = await Taro.cloud.uploadFile({
+            cloudPath: `avatar/${addFileName}.png`,
+            filePath: get(GLOBAL_KEY_CROP_AVATAR_IMAGE), // 文件路径
+          })
+          locationAvatar = fileID
           // 调用加入云函数，将用户信息插入班级表，将班级信息插入到用户集合
           const { result } = await Taro.cloud.callFunction({
             name: 'info',
             data: {
               $url: 'add',
-              info: { ...formData, avatarUrl, address: addressSelect, location: geo, state: goWhereIdx },
+              info: { ...formData, avatarUrl, address: addressSelect, location: geo, state: goWhereIdx, locationAvatar, avatarName: addFileName },
             }
           })
-
-          // const { fileID } = await Taro.cloud.uploadFile({
-          //   cloudPath: `user-avatar/${getFileName()}.png`,
-          //   filePath: get(GLOBAL_KEY_CROP_AVATAR_IMAGE), // 文件路径
-          // })
-          // avatarUrl = fileID
-
           if (result && result['data']) {
             Taro.hideLoading()
             Taro.setStorageSync(JOININFO, result['data'])
@@ -126,11 +134,16 @@ function JoinClass() {
           }
           break;
         case ActionType.Update:
+          const { fileID: updateFileID } = await Taro.cloud.uploadFile({
+            cloudPath: `avatar/${avatarUploadName}.png`,
+            filePath: get(GLOBAL_KEY_CROP_AVATAR_IMAGE), // 文件路径
+          })
+          locationAvatar = updateFileID
           const updateResult = await Taro.cloud.callFunction({
             name: 'info',
             data: {
               $url: 'update',
-              info: { ...formData, avatarUrl, address: addressSelect, location: geo, state: goWhereIdx },
+              info: { ...formData, avatarUrl, address: addressSelect, location: geo, state: goWhereIdx, locationAvatar, avatarName: avatarUploadName },
             }
           })
           console.log(updateResult);
@@ -174,6 +187,7 @@ function JoinClass() {
         setUpdateValue(data)
         setAddressSelect(data['address'])
         setGoWhereIdx(data['state'])
+        avatarUploadName = data['avatarName'] === '' ? getFileName() : data['avatarName']
         // const infoStorage = Taro.getStorageSync(JOIN_INFO)
 
         // TODO: 设置缓存
@@ -261,7 +275,7 @@ function JoinClass() {
       </Form>
       <View className='notice'>* 信息只能被同一班级的同学查看</View>
       <View className="custom_small_ad" hidden={get(AD_HIDDEN)}>
-        <ad-custom unit-id="adunit-ca65da0dfdc0931c"></ad-custom>
+        <ad-custom unit-id="adunit-906053a3e8508c69"></ad-custom>
       </View>
     </View>
   )

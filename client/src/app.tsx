@@ -33,7 +33,8 @@ class App extends Component {
       'pages/join-info/join-info',
       'pages/class-map/class-map',
       'pages/create-class/create-success/create-success',
-      'pages/create-class/create-attention/create-attention'
+      'pages/create-class/create-attention/create-attention',
+      'pages/class-manage/class-manage'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -69,7 +70,7 @@ class App extends Component {
 
 
 
-  componentDidShow () {
+  async componentDidShow () {
     const { scene, referrerInfo } = this.$router.params
     console.log(scene, referrerInfo);
     
@@ -83,7 +84,7 @@ class App extends Component {
     }
 
     // 获取用户等级
-    this.fetchLimitInfo()
+    await this.fetchLimitInfo()
   }
 
   componentDidHide () {}
@@ -100,7 +101,9 @@ class App extends Component {
           LIMITSTORAGE,
           limitInfo['limitData']
         )
-        setGlobalData(AD_HIDDEN, limitInfo['limitData']['name'] !== 'normal')
+        console.log(limitInfo);
+        
+        setGlobalData(AD_HIDDEN, limitInfo['level'] !== 'normal')
       }
       Taro.hideLoading()
     } catch (error) {

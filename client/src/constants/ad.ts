@@ -1,0 +1,1 @@
+export const AD_INDEX_ITEM = ''

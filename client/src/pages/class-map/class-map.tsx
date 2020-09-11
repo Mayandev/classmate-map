@@ -76,7 +76,7 @@ function ClassMap() {
         id: user['openId'],
         longitude: user['location']['longitude'],
         latitude: user['location']['latitude'],
-        iconPath: user['avatarUrl'],
+        iconPath: user['locationAvatar'],
         width: 30,
         height: 30,
         alpha: 1,
@@ -116,6 +116,18 @@ function ClassMap() {
   const onMarkerTap = (e) => {
     const { markerId } = e
     const [user] = joinUsers.filter(user => user.openId === markerId)
+    marks.map((item) => {
+      if (item['id'] === markerId) {
+        item['width'] = 40
+        item['height'] = 40
+        item['zIndex'] = 2
+      } else {
+        item['width'] = 30
+        item['height'] = 30
+        item['zIndex'] = 1
+      }
+    })
+    setMarks(marks)
     setCurrentUser(user)
     setCallOutOpen('open')
   }

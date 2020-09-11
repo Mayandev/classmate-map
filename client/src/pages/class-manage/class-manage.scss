@@ -1,0 +1,27 @@
+@import '../../styles/mixin.scss';
+
+.page {
+  padding: 0px 54px 54px 54px;
+}
+
+.empty_container {
+  @include flex(column, center, center);
+
+  .image {
+    margin-top: 62px;
+    @include wh(438px, 338px);
+  }
+
+  .empty_hint {
+    margin-top: 86px;
+    text-align: center;
+    @include font('light', normal, 32px);
+  }
+} 
+
+.ad_unit {
+  margin-top: 44px;
+  margin-bottom: 44px;
+  @include shadow();
+  border-radius: $radius;
+}

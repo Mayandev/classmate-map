@@ -385,7 +385,7 @@ function ClassDetail() {
         </View>
       </View>
       <View className="custom_small_ad" hidden={get(AD_HIDDEN)}>
-        <ad-custom unit-id="adunit-ca65da0dfdc0931c"></ad-custom>
+        <ad-custom unit-id="adunit-1ea99652e18ed037"></ad-custom>
       </View>
     </View>
   )

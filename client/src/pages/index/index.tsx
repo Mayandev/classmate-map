@@ -11,8 +11,8 @@ import Tooltip from '@/components/Tooltip'
 import { showToast, showLimitModal, showModal } from '@/utils/utils';
 import { getLevel, quitClass } from '@/utils/callcloudfunction'
 // constans
-import { INDEX_ACTION_SHEET, IndexActionSheet } from '@/constants/data';
-import { SEARCH_CLASS, CREATE_CLASS, CLASS_DETAIL, JOIN_INFO, INDEX } from '@/constants/page'
+import { INDEX_ACTION_SHEET, IndexActionSheet, AD_HIDDEN, ActionType } from '@/constants/data';
+import { SEARCH_CLASS, CREATE_CLASS, CLASS_DETAIL, JOIN_INFO, INDEX, CHARGE, CLASS_MANAGE } from '@/constants/page'
 import { LIMITSTORAGE, COLLECT_TOOLTIP_STORAGE, USERSTORAGE } from '@/constants/storage'
 import { PRO_TEXT_COLOR, PRO_BG_COLOR, WARING_COLOR, PRIMARY_COLOR } from '@/constants/theme'
 import { LOADING, EXPECTION, QUIT_SUCCESS } from '@/constants/toast'
@@ -24,7 +24,6 @@ import createClass from '../../assets/illustration_create_class.png'
 import empty from '../../assets/illustration_empty.png'
 import shareImage from '../../assets/illustration_share.png'
 import { get } from '@/utils/globaldata';
-import { AD_HIDDEN } from '../../constants/data';
 
 let createClasses
 function Index() {
@@ -37,7 +36,6 @@ function Index() {
   const [isAuth, setIsAuth] = useState(false)
   const [joinClasses, setJoinClasses] = useState([])
   const [userLevel, setUserLevel] = useState('normal')
-  const [smallAdHidden, setSamllAdHidden] = useState(get(AD_HIDDEN))
 
 
   const navigateTo = (url: string) => {
@@ -56,7 +54,7 @@ function Index() {
     }
 
     if (limitInfo['createLimit'] > createClasses.length) {
-      navigateTo(CREATE_CLASS)
+      navigateTo(`${CREATE_CLASS}?action=${ActionType.CREATE}`)
     } else {
       showLimitModal('提示', '创建班级数已满，您需要升级账户', '升级 Pro')
     }
@@ -64,8 +62,14 @@ function Index() {
   }
 
   const fetchLimitInfo = async () => {
-    const limitInfo = Taro.getStorageSync(LIMITSTORAGE)
-    setUserLevel(limitInfo['name'])
+    const limitInfo = await getLevel()
+    if (limitInfo && limitInfo['level']) {
+      Taro.setStorageSync(
+        LIMITSTORAGE,
+        limitInfo['limitData']
+      )
+      setUserLevel(limitInfo['level'])
+    }
   }
 
   const fetchIndexData = async () => {
@@ -149,12 +153,17 @@ function Index() {
       const { tapIndex } = await showActionSheet({
         itemList: INDEX_ACTION_SHEET,
       })
+      console.log('tapindex。。。。。。', tapIndex);
       switch (tapIndex) {
         case IndexActionSheet.CLASS:
-          navigateTo(JOIN_INFO)
+          navigateTo(CLASS_MANAGE)
           break;
         case IndexActionSheet.INFO:
           navigateTo(JOIN_INFO)
+          break;
+        case IndexActionSheet.ACCOUNT:
+          navigateTo(CHARGE)
+          break;
         default:
           break;
       }
@@ -176,7 +185,7 @@ function Index() {
         }
         Taro.showLoading({ title: LOADING })
         const result = await quitClass(classId)
-
+        
         if (result && result['code'] === 200) {
           Taro.showToast({ title: QUIT_SUCCESS })
           fetchIndexData()
@@ -223,6 +232,7 @@ function Index() {
     handleTooltip()
     fetchIndexData()
     fetchLimitInfo()
+    
   }, [])
 
   const classItemsDom = joinClasses.map((item, index) => {
@@ -331,7 +341,7 @@ function Index() {
           }
         </View>
       </View>
-      <View className="custom_small_ad" hidden={smallAdHidden}>
+      <View className="custom_small_ad" hidden={get(AD_HIDDEN)}>
         <ad-custom unit-id="adunit-ca65da0dfdc0931c"></ad-custom>
       </View>
     </View>
