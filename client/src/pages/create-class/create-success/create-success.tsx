@@ -61,10 +61,10 @@ function CreateSuccess() {
         hoverClass='btn_hover'
         openType='share'>邀请同学</Button>
       <View className="ad_unit" hidden={get(AD_HIDDEN)}>
-        <ad-custom unit-id="adunit-407a89d2d5fda077"></ad-custom>
+        {/*<ad-custom unit-id="adunit-407a89d2d5fda077"></ad-custom>*/}
       </View>
       <View className="custom_small_ad" hidden={get(AD_HIDDEN)}>
-        <ad-custom unit-id="adunit-ca65da0dfdc0931c"></ad-custom>
+        {/*<ad-custom unit-id="adunit-ca65da0dfdc0931c"></ad-custom>*/}
       </View>
     </View>
   )

@@ -141,7 +141,7 @@ function Charge() {
       <Button onClick={bindCharge} className='charge_btn' hoverClass='charge_btn_hover'>升级 Pro</Button>
       <Button openType='contact' className='contact_btn'>联系客服</Button>
       <View className="custom_small_ad" hidden={get(AD_HIDDEN)}>
-        <ad-custom unit-id="adunit-ca65da0dfdc0931c"></ad-custom>
+        {/*<ad-custom unit-id="adunit-ca65da0dfdc0931c"></ad-custom>*/}
       </View>
     </View>
   )

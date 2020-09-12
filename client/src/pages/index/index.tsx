@@ -247,7 +247,7 @@ function Index() {
             joinNum={item['joinUsers']['length']}
             coverImage={item['classImage']}
             isJoin={true} />
-          <View className="ad_unit" hidden={get(AD_HIDDEN)}><ad-custom unit-id="adunit-96e9336972ac1da2"></ad-custom></View>
+          <View className="ad_unit" hidden={get(AD_HIDDEN)}>{/*<ad-custom unit-id="adunit-96e9336972ac1da2"></ad-custom>*/}</View>
         </View>
       )
     }
@@ -342,7 +342,7 @@ function Index() {
         </View>
       </View>
       <View className="custom_small_ad" hidden={get(AD_HIDDEN)}>
-        <ad-custom unit-id="adunit-ca65da0dfdc0931c"></ad-custom>
+        {/*<ad-custom unit-id="adunit-ca65da0dfdc0931c"></ad-custom>*/}
       </View>
     </View>
   )

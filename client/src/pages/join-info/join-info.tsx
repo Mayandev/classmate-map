@@ -275,7 +275,7 @@ function JoinClass() {
       </Form>
       <View className='notice'>* 信息只能被同一班级的同学查看</View>
       <View className="custom_small_ad" hidden={get(AD_HIDDEN)}>
-        <ad-custom unit-id="adunit-906053a3e8508c69"></ad-custom>
+        {/*<ad-custom unit-id="adunit-906053a3e8508c69"></ad-custom>*/}
       </View>
     </View>
   )

@@ -59,7 +59,7 @@ function ClassManage() {
       <NavBar back title={'班级管理'} />
       <View className="page">
         <View className="ad_unit" hidden={get(AD_HIDDEN)}>
-          <ad-custom unit-id="adunit-f490192041c3b170"></ad-custom>
+          {/*<ad-custom unit-id="adunit-f490192041c3b170"></ad-custom>*/}
         </View>
         <View className='item_container'>
           {
@@ -77,7 +77,7 @@ function ClassManage() {
         </View>
       </View>
       <View className="custom_small_ad" hidden={get(AD_HIDDEN)}>
-        <ad-custom unit-id="adunit-dae90770d3103677"></ad-custom>
+        {/*<ad-custom unit-id="adunit-dae90770d3103677"></ad-custom>*/}
       </View>
     </View>
   )

@@ -33,7 +33,7 @@ function CreateAttention() {
         })}
       </View>
       <View className="custom_small_ad" hidden={get(AD_HIDDEN)}>
-        <ad-custom unit-id="adunit-e50ac71dbff09edd"></ad-custom>
+        {/*<ad-custom unit-id="adunit-e50ac71dbff09edd"></ad-custom>*/}
       </View>
     </View>
   )

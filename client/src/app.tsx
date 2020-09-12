@@ -63,7 +63,7 @@ class App extends Component {
   componentDidMount () {
     if (process.env.TARO_ENV === 'weapp') {
       Taro.cloud.init({
-        env: 'class-map-6sie2',
+        env: 'test-xgu28',
       })
     }
   }

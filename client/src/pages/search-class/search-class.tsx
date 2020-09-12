@@ -80,7 +80,7 @@ function SearchClass() {
         }
       </View>
       <View className="custom_small_ad" hidden={get(AD_HIDDEN)}>
-        <ad-custom unit-id="adunit-dd6051faa5b6ef48"></ad-custom>
+        {/*<ad-custom unit-id="adunit-dd6051faa5b6ef48"></ad-custom>*/}
       </View>
     </View>
   )

@@ -299,7 +299,7 @@ function CreateClass() {
         </Text>
       </View>
       <View className="custom_small_ad" hidden={get(AD_HIDDEN)}>
-        <ad-custom unit-id="adunit-0d7af8f6497b81fd"></ad-custom>
+        {/*<ad-custom unit-id="adunit-0d7af8f6497b81fd"></ad-custom>*/}
       </View>
     </View>
   )
