@@ -60,6 +60,3 @@ $ taro build --type weapp
 如果项目编译报错，请将 Taro 版本回退至指定的 v2.2.9 版本。
 
 如果项目对你有帮助，可以右上角点击 star。
-
-关注公众号「**Smart**」，里面可以联系到我，也可以加入交流群，和大家一起探讨前端/小程序相关的话题。
-![](https://mayandev.oss-cn-hangzhou.aliyuncs.com/blog/v2-6a783f32c467334cea900e06429ea943_1440w.jpg)
