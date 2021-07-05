@@ -1,0 +1,3 @@
+{"_id":"b31a516f5f26186400330df43ddae24e","countLimit":150.0,"createLimit":100.0,"joinLimit":100.0,"name":"pro+","prize":1000.0}
+{"_id":"84e72bb95f244a57003656d128c10479","joinLimit":3.0,"name":"normal","countLimit":50.0,"createLimit":2.0,"prize":0.0}
+{"_id":"cb1a2f465f2502610036767f201b7b2f","name":"pro","createLimit":5.0,"joinLimit":10.0,"countLimit":100.0,"prize":990.0}

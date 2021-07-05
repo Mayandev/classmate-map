@@ -48,6 +48,8 @@ $ npm install
 
 ### 运行项目
 
+打开云开发控制台，创建 [db](./db) 文件夹下方的几个数据库，并导入 json 数据。
+
 使用 Taro 全局命令启动项目，编译好后直接使用小程序开发者工具打开即可预览调试。
 
 ```bash
@@ -56,6 +58,7 @@ $ taro build --type weapp --watch
 # 编译构建
 $ taro build --type weapp
 ```
+
 
 如果项目编译报错，请将 Taro 版本回退至指定的 v2.2.9 版本。
 
