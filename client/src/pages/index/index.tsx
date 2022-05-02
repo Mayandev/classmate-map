@@ -8,12 +8,12 @@ import NavBar from 'taro-navigationbar'
 import Tag from '@/components/Tag'
 import Tooltip from '@/components/Tooltip'
 // utils
-import { showToast, showLimitModal, showModal } from '@/utils/utils';
-import { getLevel, quitClass } from '@/utils/callcloudfunction'
+import { showToast, showModal } from '@/utils/utils';
+import { quitClass } from '@/utils/callcloudfunction'
 // constans
 import { INDEX_ACTION_SHEET, IndexActionSheet, AD_HIDDEN, ActionType } from '@/constants/data';
-import { SEARCH_CLASS, CREATE_CLASS, CLASS_DETAIL, JOIN_INFO, INDEX, CHARGE, CLASS_MANAGE } from '@/constants/page'
-import { LIMITSTORAGE, COLLECT_TOOLTIP_STORAGE, USERSTORAGE } from '@/constants/storage'
+import { SEARCH_CLASS, CLASS_DETAIL, JOIN_INFO, INDEX, CHARGE, CLASS_MANAGE } from '@/constants/page'
+import { COLLECT_TOOLTIP_STORAGE, USERSTORAGE } from '@/constants/storage'
 import { PRO_TEXT_COLOR, PRO_BG_COLOR, WARING_COLOR, PRIMARY_COLOR } from '@/constants/theme'
 import { LOADING, EXPECTION, QUIT_SUCCESS } from '@/constants/toast'
 // resources
@@ -46,29 +46,6 @@ function Index() {
     if (!isAuth) {
       setShowAuthModal(true)
       return
-    }
-    const limitInfo = Taro.getStorageSync(LIMITSTORAGE) || {}
-    if (!limitInfo['createLimit']) {
-      showToast(EXPECTION)
-      return
-    }
-
-    if (limitInfo['createLimit'] > createClasses.length) {
-      navigateTo(`${CREATE_CLASS}?action=${ActionType.CREATE}`)
-    } else {
-      showLimitModal('提示', '创建班级数已满，您需要升级账户', '升级 Pro')
-    }
-
-  }
-
-  const fetchLimitInfo = async () => {
-    const limitInfo = await getLevel()
-    if (limitInfo && limitInfo['level']) {
-      Taro.setStorageSync(
-        LIMITSTORAGE,
-        limitInfo['limitData']
-      )
-      setUserLevel(limitInfo['level'])
     }
   }
 
@@ -153,7 +130,6 @@ function Index() {
       const { tapIndex } = await showActionSheet({
         itemList: INDEX_ACTION_SHEET,
       })
-      console.log('tapindex。。。。。。', tapIndex);
       switch (tapIndex) {
         case IndexActionSheet.CLASS:
           navigateTo(CLASS_MANAGE)
@@ -231,7 +207,6 @@ function Index() {
     setNavHeight(navHeight)
     handleTooltip()
     fetchIndexData()
-    fetchLimitInfo()
     
   }, [])
 

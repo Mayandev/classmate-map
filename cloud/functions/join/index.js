@@ -10,7 +10,8 @@ exports.main = async (event) => {
   const classCollection = 'class'
   const userCollection = 'user'
   const { infoId, classId } = event
-
+  const infoMail = ''
+  const info = {}
   // 获取用户的班级数
   const {data: userData} = await db.collection('user').where({
     openId: OPENID

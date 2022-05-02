@@ -7,7 +7,7 @@ import Avatar from "@/components/Avatar"
 
 import { JOIN_INFO, CLASS_MAP, CLASS_DETAIL } from '@/constants/page'
 import { LOADING, EXPECTION, JOIN_SUCCESS } from "@/constants/toast"
-import { CLASSSTORAGE, JOININFO, JOINUSERS, USERSTORAGE, CLASS_SHARE_TOOLTIP_STORAGE, LIMITSTORAGE } from '@/constants/storage'
+import { CLASSSTORAGE, JOININFO, JOINUSERS, USERSTORAGE, CLASS_SHARE_TOOLTIP_STORAGE } from '@/constants/storage'
 
 import empty from '../../assets/illustration_empty.png'
 import imagePlaceholder from '../../assets/image_placeholder.png'
@@ -15,7 +15,7 @@ import imagePlaceholder from '../../assets/image_placeholder.png'
 import './class-detail.scss'
 import AuthModal from "@/components/AuthModal"
 import TokenModal from "@/components/TokenModal"
-import { showToast, showLimitModal } from '@/utils/utils';
+import { showToast } from '@/utils/utils';
 import { isClassFull, getLevel } from "@/utils/callcloudfunction"
 import Tooltip from "@/components/Tooltip"
 import { get } from "@/utils/globaldata"
@@ -161,12 +161,6 @@ function ClassDetail() {
         }
       })
       console.log(result)
-      if (result && result['code'] == 500) {
-        showLimitModal('提示', '您加入的班级数已满，升级为 pro 账户可以加入此的班级', '了解一下')
-        setShowTokenModal(false)
-        Taro.hideLoading()
-        return
-      }
       if (result && result['code'] == 200 && result['data']['classRes']['stats']['updated']) {
         setShowTokenModal(false)
         await fetchDetail(classId)
