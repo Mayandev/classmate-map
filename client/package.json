@@ -50,10 +50,10 @@
   "devDependencies": {
     "@types/react": "^16.4.6",
     "@types/webpack-env": "^1.13.6",
-    "@tarojs/mini-runner": "2.2.9",
+    "@tarojs/mini-runner": "3.5.11",
     "@tarojs/plugin-sass": "2.2.9",
     "@tarojs/plugin-terser": "2.2.9",
-    "@tarojs/webpack-runner": "2.2.9",
+    "@tarojs/webpack-runner": "3.5.11",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-plugin-transform-jsx-stylesheet": "^0.6.5",
