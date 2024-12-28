@@ -91,6 +91,7 @@ function ClassDetail() {
           _id
         }
       });
+
       if (result) {
         setClassState(result['classData'])
         setIsJoin(result['isJoin'])

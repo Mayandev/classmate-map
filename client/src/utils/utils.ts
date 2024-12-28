@@ -4,8 +4,6 @@ import { CHARGE } from '@/constants/page'
 import { set } from './globaldata'
 import { GLOBAL_KEY_COMPRESS_CLASS_IMAGE, GLOBAL_KEY_CROP_AVATAR_IMAGE } from '@/constants/data'
 
-import avatarLocation from '../assets/icon_avatar_location.png'
-
 const showToast = (title = '') => {
   Taro.showToast({ title, icon: 'none' })
 }
@@ -78,7 +76,7 @@ const compressImage = async (path: string, drawWidth: number, canvasId: string) 
 
 const cropAvatar = async (imagePath: string, drawWidth: number, canvasId: string) => {
   const { path } = await getImageWH(imagePath, drawWidth)
-  const { path: location_icon } = await getImageWH('cloud://class-map-6sie2.636c-class-map-6sie2-1302773560/resource/icon_avatar_location.png', drawWidth)
+  const { path: location_icon } = await getImageWH('cloud://class-map-6sie2.636c-class-map-6sie2-1302773560/resource/cloud://classmate-map-2g34db9r1f839533.636c-classmate-map-2g34db9r1f839533-1302773560/resource/icon_avatar_location.png', drawWidth)
   // const minSide = Math.min(imageW, imageH)
   const diameter = 50;
   const canvasCtx = Taro.createCanvasContext(canvasId)

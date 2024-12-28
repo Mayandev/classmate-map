@@ -80,7 +80,7 @@ function JoinClass() {
   const onJoinSubmit = async (e) => {
     const formData = e.detail.value
     let avatarUrl = avatar
-    let locationAvatar = 'cloud://class-map-6sie2.636c-class-map-6sie2-1302773560/resource/icon_avatar_location.png'
+    let locationAvatar = 'cloud://class-map-6sie2.636c-class-map-6sie2-1302773560/resource/cloud://classmate-map-2g34db9r1f839533.636c-classmate-map-2g34db9r1f839533-1302773560/resource/icon_avatar_location.png'
     // 如果有输入值不合法，返回
     if (!checkJoinForm({ ...formData, addressSelect })) {
       return

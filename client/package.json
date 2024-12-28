@@ -51,7 +51,7 @@
     "@types/react": "^16.4.6",
     "@types/webpack-env": "^1.13.6",
     "@tarojs/mini-runner": "2.2.9",
-    "@tarojs/plugin-sass": "2.2.9",
+    "@tarojs/plugin-sass": "2.2.22",
     "@tarojs/plugin-terser": "2.2.9",
     "@tarojs/webpack-runner": "2.2.9",
     "babel-plugin-transform-class-properties": "^6.24.1",
